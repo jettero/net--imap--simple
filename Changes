@@ -1,8 +1,8 @@
-1.71_001: Fri Oct 10 09:36:57 EDT 2008
+1.17001: Fri Oct 10 09:36:57 EDT 2008
    - I decided I need a Plus.pm file so things show up right in
      CPAN.  I might want to do more updates...
 
-1.71: Fri Oct 10 06:48:12 EDT 2008
+1.17: Fri Oct 10 06:48:12 EDT 2008
    - I'm tired of waiting for those guys, I applied my patches
      and I'm releasing it to CPAN.  For all I know they never
      heard from me, but what else can I do RT and email is the
