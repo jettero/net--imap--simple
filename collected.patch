@@ -1,0 +1,81 @@
+diff -urP Net-IMAP-Simple-1.17/lib/Net/IMAP/Simple.pm Net-IMAP-Simple-1.17.patched/lib/Net/IMAP/Simple.pm
+--- Net-IMAP-Simple-1.17/lib/Net/IMAP/Simple.pm	2006-10-11 12:23:45.000000000 -0400
++++ Net-IMAP-Simple-1.17.patched/lib/Net/IMAP/Simple.pm	2008-10-10 07:10:34.000000000 -0400
+@@ -221,7 +221,7 @@
+ sub select {
+  my ( $self, $mbox ) = @_;
+ 
+- $mbox = 'INBOX' unless $mbox;
++ $mbox = $self->current_box unless $mbox;
+ 
+  $self->{working_box} = $mbox;
+ 
+@@ -311,6 +311,25 @@
+  return $self->{BOXES}->{ $self->current_box }->{recent};
+ }
+ 
++=pod
++
++=item unseen
++
++    print "Unseen messages value: " . $imap->unseen . "\n";
++
++This method accepts an optional folder name and returns the 'UNSEEN' value provided durning a SELECT result set. If no folder name is provided the last folder $imap->select'ed will be used.
++
++This method uses caching.
++
++=cut
++
++sub unseen {
++ my ($self, $folder) = @_;
++
++ $self->select($folder);
++ return $self->{BOXES}{ $self->current_box }{oflags}{UNSEEN};
++}
++
+ 
+ =pod
+ 
+@@ -433,6 +452,33 @@
+ 
+ }
+ 
++=item put
++
++  $imap->put( $mailbox_name, $message ) or warn $imap->errstr;
++
++Save a message to the server under the folder named $mailbox_name.
++
++=cut
++
++sub put {
++    my ( $self, $mailbox_name, $msg ) = @_;
++
++    my $size = length $msg;
++
++    $self->_process_cmd(
++        cmd     => [APPEND => "$mailbox_name (\\Seen) {$size}"],
++        final   => sub { 1 },
++        process => sub {
++            if( $size ) {
++                my $sock = $self->_sock;
++                print $sock $msg;
++                $size = undef;
++                print $sock "\r\n";
++            }
++        },
++    );
++}
++
+ =pod
+ 
+ =item getfh
+@@ -898,7 +944,7 @@
+  $str =~ s/\r/\\r/g;
+  $str =~ s/\cM/^M/g;
+ 
+- my $line = "[$package :: $filename :: $line\@$dline -> $routine] $str\n";
++ $line = "[$package :: $filename :: $line\@$dline -> $routine] $str\n";
+  if(ref($self->{debug}) eq 'GLOB'){
+ 	write($self->{debug}, $line);
+  } else {

@@ -4,7 +4,17 @@ use Archive::Tar;
 
 my $tar = Archive::Tar->new;
    $tar->read('Net-IMAP-Simple-1.17.tar.gz', 1);
-   $tar->extract_file('Net-IMAP-Simple-1.17/lib', 'lib');
+
+for my $f ($tar->list_files) {
+    next unless $f =~ m/1\.17\/(?:lib|t)/;
+
+    my $x = $f;
+       $x =~ s/^Net-IMAP-Simple-1.17\///;
+
+    $tar->extract_file($f, $x);
+}
+
+die "problem extracting Net::IMAP::Simple" unless -d 'lib' and -d 't';
 
 WriteMakefile(
     NAME         => 'Net::IMAP::Simple::Plus',
