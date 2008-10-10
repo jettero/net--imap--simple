@@ -5,3 +5,5 @@ Makefile.PL
 META.yml
 Net-IMAP-Simple-1.17-patched.tar.gz
 Net-IMAP-Simple-1.17.tar.gz
+inc/Text/Patch.pm
+patch
