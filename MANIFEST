@@ -4,7 +4,8 @@ README
 Makefile.PL
 Net-IMAP-Simple-1.17.tar.gz
 patch
-collected.patch
+collect1.patch
+collect2.patch
 put.patch
 select_bug.patch
 unseen.patch

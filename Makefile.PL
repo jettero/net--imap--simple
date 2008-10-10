@@ -18,7 +18,12 @@ die "problem extracting Net::IMAP::Simple" unless -d 'lib' and -d 't';
 
 print "\n\npatching ...\n\n";
 
-open IN, "collected.patch" or die $!;
+open IN, "collect1.patch" or die $!;
+open OUT, "|-", $^X, patch => '-p1' or die $!;
+print OUT $_ while <IN>;
+close IN; close OUT;
+
+open IN, "collect2.patch" or die $!;
 open OUT, "|-", $^X, patch => '-p1' or die $!;
 print OUT $_ while <IN>;
 close IN; close OUT;

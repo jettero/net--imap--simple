@@ -1,3 +1,6 @@
+1.17002: Fri Oct 10 14:21:24 EDT 2008
+   - added flags() and gave put() flag capability
+
 1.17001: Fri Oct 10 09:36:57 EDT 2008
    - I decided I need a Plus.pm file so things show up right in
      CPAN.  I might want to do more updates...
