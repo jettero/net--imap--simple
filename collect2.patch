@@ -1,6 +1,6 @@
 diff -urP Net-IMAP-Simple-1.17.patched/lib/Net/IMAP/Simple.pm Net-IMAP-Simple-1.17.patched2/lib/Net/IMAP/Simple.pm
 --- Net-IMAP-Simple-1.17.patched/lib/Net/IMAP/Simple.pm	2008-10-10 14:13:54.000000000 -0400
-+++ Net-IMAP-Simple-1.17.patched2/lib/Net/IMAP/Simple.pm	2008-10-10 14:34:35.000000000 -0400
++++ Net-IMAP-Simple-1.17.patched2/lib/Net/IMAP/Simple.pm	2008-10-10 14:38:50.000000000 -0400
 @@ -330,7 +330,6 @@
   return $self->{BOXES}{ $self->current_box }{oflags}{UNSEEN};
  }
