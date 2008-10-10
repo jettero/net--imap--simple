@@ -1,6 +1,6 @@
 diff -urP Net-IMAP-Simple-1.17.patched/lib/Net/IMAP/Simple.pm Net-IMAP-Simple-1.17.patched2/lib/Net/IMAP/Simple.pm
 --- Net-IMAP-Simple-1.17.patched/lib/Net/IMAP/Simple.pm	2008-10-10 14:13:54.000000000 -0400
-+++ Net-IMAP-Simple-1.17.patched2/lib/Net/IMAP/Simple.pm	2008-10-10 14:27:37.000000000 -0400
++++ Net-IMAP-Simple-1.17.patched2/lib/Net/IMAP/Simple.pm	2008-10-10 14:34:35.000000000 -0400
 @@ -330,7 +330,6 @@
   return $self->{BOXES}{ $self->current_box }{oflags}{UNSEEN};
  }
@@ -9,17 +9,32 @@ diff -urP Net-IMAP-Simple-1.17.patched/lib/Net/IMAP/Simple.pm Net-IMAP-Simple-1.
  =pod
  
  =item current_box
-@@ -461,12 +460,17 @@
+@@ -454,24 +453,41 @@
+ 
+ =item put
+ 
+-  $imap->put( $mailbox_name, $message ) or warn $imap->errstr;
++  $imap->put( $mailbox_name, $message, @flags ) or warn $imap->errstr;
++
++Save a message to the server under the folder named $mailbox_name.  You may
++optionally specify flags for the mail (e.g. \Seen, \Answered), but they must
++start with a slash.
+ 
+-Save a message to the server under the folder named $mailbox_name.
++If $msg is an arrayref, the lines will be printed correctly.
+ 
  =cut
  
  sub put {
 -    my ( $self, $mailbox_name, $msg ) = @_;
 +    my ( $self, $mailbox_name, $msg, @flags ) = @_;
-+
-+    my $size  = length $msg;
-+
  
--    my $size = length $msg;
+     my $size = length $msg;
++    if( ref $msg eq "ARRAY" ) {
++        $size = 0;
++        $size += length $_ for @$msg;
++    }
++
 +    @flags = map {split(m/\s+/, $_)} @flags;
 +    @flags = grep {m/^\\\w+\z/} @flags;
 +  # @flags = ('\Seen') unless @flags;
@@ -30,7 +45,18 @@ diff -urP Net-IMAP-Simple-1.17.patched/lib/Net/IMAP/Simple.pm Net-IMAP-Simple-1.
          final   => sub { 1 },
          process => sub {
              if( $size ) {
-@@ -481,6 +485,26 @@
+                 my $sock = $self->_sock;
+-                print $sock $msg;
++                if( ref $msg eq "ARRAY" ) {
++                    print $sock $_ for @$msg;
++
++                } else {
++                    print $sock $msg;
++                }
+                 $size = undef;
+                 print $sock "\r\n";
+             }
+@@ -481,6 +497,28 @@
  
  =pod
  
@@ -39,7 +65,9 @@ diff -urP Net-IMAP-Simple-1.17.patched/lib/Net/IMAP/Simple.pm Net-IMAP-Simple-1.
 +    my @flags = $imap->flags( $message_number );
 +    my $flags = $imap->flags( $message_number );
 +
-+    print "Flags on message #$message_number: @$flags\n";
++    # aught to come out roughly the same
++    print "Flags on message #$message_number: @flags\n";
++    print "Flags on message #$message_number: $flags\n";
 +
 +=cut
 +
