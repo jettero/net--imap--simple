@@ -16,9 +16,16 @@ for my $f ($tar->list_files) {
 
 die "problem extracting Net::IMAP::Simple" unless -d 'lib' and -d 't';
 
+print "\n\npatching ...\n\n";
+
 open IN, "collected.patch" or die $!;
 open OUT, "|-", $^X, patch => '-p1' or die $!;
-print OUT $_ while <$in>;
+print OUT $_ while <IN>;
+close IN; close OUT;
+
+print "\n\n";
+
+unlink $_ for glob("lib/Net/IMAP/Simple.pm.*");
 
 WriteMakefile(
     NAME         => 'Net::IMAP::Simple::Plus',
