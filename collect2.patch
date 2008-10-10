@@ -1,6 +1,6 @@
 diff -urP Net-IMAP-Simple-1.17.patched/lib/Net/IMAP/Simple.pm Net-IMAP-Simple-1.17.patched2/lib/Net/IMAP/Simple.pm
 --- Net-IMAP-Simple-1.17.patched/lib/Net/IMAP/Simple.pm	2008-10-10 14:13:54.000000000 -0400
-+++ Net-IMAP-Simple-1.17.patched2/lib/Net/IMAP/Simple.pm	2008-10-10 14:20:45.000000000 -0400
++++ Net-IMAP-Simple-1.17.patched2/lib/Net/IMAP/Simple.pm	2008-10-10 14:27:37.000000000 -0400
 @@ -330,7 +330,6 @@
   return $self->{BOXES}{ $self->current_box }{oflags}{UNSEEN};
  }
@@ -9,17 +9,20 @@ diff -urP Net-IMAP-Simple-1.17.patched/lib/Net/IMAP/Simple.pm Net-IMAP-Simple-1.
  =pod
  
  =item current_box
-@@ -461,12 +460,14 @@
+@@ -461,12 +460,17 @@
  =cut
  
  sub put {
 -    my ( $self, $mailbox_name, $msg ) = @_;
 +    my ( $self, $mailbox_name, $msg, @flags ) = @_;
++
++    my $size  = length $msg;
++
  
 -    my $size = length $msg;
-+    my $size  = length $msg;
-+    my @flags = grep {m/^\\\w+\z/} @flags;
-+     # @flags = ('\Seen') unless @flags;
++    @flags = map {split(m/\s+/, $_)} @flags;
++    @flags = grep {m/^\\\w+\z/} @flags;
++  # @flags = ('\Seen') unless @flags;
  
      $self->_process_cmd(
 -        cmd     => [APPEND => "$mailbox_name (\\Seen) {$size}"],
@@ -27,12 +30,13 @@ diff -urP Net-IMAP-Simple-1.17.patched/lib/Net/IMAP/Simple.pm Net-IMAP-Simple-1.
          final   => sub { 1 },
          process => sub {
              if( $size ) {
-@@ -481,6 +482,25 @@
+@@ -481,6 +485,26 @@
  
  =pod
  
 +=item flags
 +
++    my @flags = $imap->flags( $message_number );
 +    my $flags = $imap->flags( $message_number );
 +
 +    print "Flags on message #$message_number: @$flags\n";
@@ -45,7 +49,7 @@ diff -urP Net-IMAP-Simple-1.17.patched/lib/Net/IMAP/Simple.pm Net-IMAP-Simple-1.
 +    my $lines = '';
 +    $self->_process_cmd(
 +        cmd     => [FETCH=> qq[$number (FLAGS)]],
-+        final   => sub { my ($flags) = $lines =~ /FLAGS \(.+\)/i; [split m/\s+/, $flags] },
++        final   => sub { my ($flags) = $lines =~ m/FLAGS \(([^()]+)\)/i; wantarray ? split(m/\s+/, $flags) : $flags },
 +        process => sub { $lines .= $_[0] },
 +    );
 +}
