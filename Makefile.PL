@@ -29,6 +29,6 @@ unlink $_ for glob("lib/Net/IMAP/Simple.pm.*");
 
 WriteMakefile(
     NAME         => 'Net::IMAP::Simple::Plus',
-    VERSION_FROM => 'lib/Net/IMAP/Simple.pm',
+    VERSION_FROM => 'Plus.pm',
     AUTHOR       => 'Paul Miller <jettero@cpan.org>',
 );

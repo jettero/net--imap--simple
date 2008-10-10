@@ -1,0 +1,24 @@
+=head1 NAME
+
+Net::IMAP::Simple::Plus - NIS 1.71 plus a couple patches
+
+=head1 SYNOPSIS
+
+This merely adds C<put()>, C<unseen()> and fixes a couple trivial bugs.  It also
+adds docs for them in that module.  In short, see L<Net::IMAP::Simple>.
+
+=head1 AUTHOR
+
+Paul Miller <jettero@cpan.org>
+
+I am using this software in my own projects...  If you find bugs, please
+please please let me know. :) Actually, let me know if you find it handy at
+all.  Half the fun of releasing this stuff is knowing that people use it.
+
+=head1 COPYRIGHT
+
+Copyright (c) 2008 Paul Miller -- Same as L<Net::IMAP::Simple>.
+
+=head1 SEE ALSO
+
+perl(1), L<Net::IMAP::Simple>
