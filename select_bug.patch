@@ -1,0 +1,11 @@
+--- /usr/local/share/perl/5.8.8/Net/IMAP/Simple.pm	2008-02-02 08:22:23.000000000 -0500
++++ ./Simple.pm	2008-02-02 08:21:37.000000000 -0500
+@@ -221,7 +221,7 @@
+ sub select {
+  my ( $self, $mbox ) = @_;
+ 
+- $mbox = 'INBOX' unless $mbox;
++ $mbox = $self->current_box unless $mbox;
+ 
+  $self->{working_box} = $mbox;
+ 

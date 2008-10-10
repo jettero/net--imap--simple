@@ -1,0 +1,28 @@
+--- /usr/local/share/perl/5.8.8/Net/IMAP/Simple.pm	2008-01-30 21:57:12.000000000 -0500
++++ ./Simple.pm	2008-02-02 08:13:26.000000000 -0500
+@@ -311,6 +311,25 @@
+  return $self->{BOXES}->{ $self->current_box }->{recent};
+ }
+ 
++=pod
++
++=item unseen
++
++    print "Unseen messages value: " . $imap->unseen . "\n";
++
++This method accepts an optional folder name and returns the 'UNSEEN' value provided durning a SELECT result set. If no folder name is provided the last folder $imap->select'ed will be used.
++
++This method uses caching.
++
++=cut
++
++sub unseen {
++ my ($self, $folder) = @_;
++
++ $self->select($folder);
++ return $self->{BOXES}{ $self->current_box }{oflags}{UNSEEN};
++}
++
+ 
+ =pod
+ 

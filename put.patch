@@ -1,0 +1,36 @@
+--- /usr/local/share/perl/5.8.8/Net/IMAP/Simple.pm	2006-10-11 12:23:45.000000000 -0400
++++ ./Simple.pm	2008-01-30 21:52:24.000000000 -0500
+@@ -433,6 +433,33 @@
+ 
+ }
+ 
++=item put
++
++  $imap->put( $mailbox_name, $message ) or warn $imap->errstr;
++
++Save a message to the server under the folder named $mailbox_name.
++
++=cut
++
++sub put {
++    my ( $self, $mailbox_name, $msg ) = @_;
++
++    my $size = length $msg;
++
++    $self->_process_cmd(
++        cmd     => [APPEND => "$mailbox_name (\\Seen) {$size}"],
++        final   => sub { 1 },
++        process => sub {
++            if( $size ) {
++                my $sock = $self->_sock;
++                print $sock $msg;
++                $size = undef;
++                print $sock "\r\n";
++            }
++        },
++    );
++}
++
+ =pod
+ 
+ =item getfh

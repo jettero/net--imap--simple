@@ -1,0 +1,8 @@
+This is nothing more than the Net-IMAP-Simple-1.17.tar.gz
+distribution with two patches applied.  I wanted put() and I
+wanted unseen() and the three maintainers listed in the docs are
+blackholes.
+
+If you'd like to put() messages and check to see how many are
+unseen() and you'd like to use Net::IMAP::Simple::SSL to do it,
+this is the pacakge for you.
