@@ -9,7 +9,7 @@ for my $f ($tar->list_files) {
     next unless $f =~ m/1\.17\/(?:lib|t)/;
 
     my $x = $f;
-       $x =~ s/^Net-IMAP-Simple-1.17\///;
+       $x =~ s/^Net-IMAP-Simple-1\.17\///;
 
     $tar->extract_file($f, $x);
 }
