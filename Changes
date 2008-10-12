@@ -1,3 +1,7 @@
+1.17003: Sun Oct 12 13:15:14 EDT 2008
+   - I altered the docs very slightly, not enough to release
+     anything (yet)
+
 1.17002: Fri Oct 10 14:21:24 EDT 2008
    - added flags() and gave put() flag capability
 

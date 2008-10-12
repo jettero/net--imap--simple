@@ -5,5 +5,5 @@ maintainers listed in the docs are blackholes.
 If you'd like to put() messages and check to see how many are unseen() and
 you'd like to use Net::IMAP::Simple::SSL to do it, this is the pacakge for you.
 
-Included with this dist is CWEST's patch, the Net-IMAP-Simple-1.17.tar.gz, and
-my own patches.
+Included with this dist is CWEST's patch program, the
+Net-IMAP-Simple-1.17.tar.gz, and my own patches.

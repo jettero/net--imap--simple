@@ -1,4 +1,4 @@
 
 package Net::IMAP::Simple::Plus;
 
-our $VERSION = '1.17002';
+our $VERSION = '1.17003';

@@ -4,8 +4,9 @@ Net::IMAP::Simple::Plus - NIS 1.71 plus a couple patches
 
 =head1 SYNOPSIS
 
-This merely adds C<put()>, C<unseen()> and fixes a couple trivial bugs.  It also
-adds docs for them in that module.  In short, see L<Net::IMAP::Simple>.
+This merely adds C<put()>, C<unseen()>, C<flags()> and fixes a couple trivial
+bugs.  It also adds docs for them in that module.  In short, see
+L<Net::IMAP::Simple>.
 
 =head1 AUTHOR
 
