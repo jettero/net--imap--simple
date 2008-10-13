@@ -28,9 +28,15 @@ open OUT, "|-", $^X, patch => '-p1' or die $!;
 print OUT $_ while <IN>;
 close IN; close OUT;
 
+open IN, "corion.patch" or die $!;
+open OUT, "|-", $^X, 'patch' or die $!;
+print OUT $_ while <IN>;
+close IN; close OUT;
+
 print "\n\n";
 
-unlink $_ for glob("lib/Net/IMAP/Simple.pm.*");
+unlink $_ for glob("lib/Net/IMAP/Simple.pm.*"); # some patches add .orig
+unlink $_ for glob("lib/Net/IMAP/Simple.pm[A-Za-z]*"); # some add Orig
 
 WriteMakefile(
     NAME         => 'Net::IMAP::Simple::Plus',
