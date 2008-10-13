@@ -1,6 +1,7 @@
 1.17003: Mon Oct 13 06:54:18 EDT 2008
    - Corion gave me starttls() to include and suggested I apply
      for co-maintainership.
+   - I introduced bugs in 002 ... fixed
 
 1.17003: Sun Oct 12 13:15:14 EDT 2008
    - I altered the docs very slightly, not enough to release

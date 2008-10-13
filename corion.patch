@@ -1,6 +1,6 @@
 diff -urP lib/Net/IMAP/Simple.pm lib.c/Net/IMAP/Simple.pm
---- lib/Net/IMAP/Simple.pm	2008-10-13 07:45:18.000000000 -0400
-+++ lib.c/Net/IMAP/Simple.pm	2008-10-13 07:45:43.000000000 -0400
+--- lib/Net/IMAP/Simple.pm	2008-10-13 07:50:23.000000000 -0400
++++ lib.c/Net/IMAP/Simple.pm	2008-10-13 07:50:49.000000000 -0400
 @@ -1,5 +1,6 @@
  package Net::IMAP::Simple;
  use strict;
@@ -8,7 +8,7 @@ diff -urP lib/Net/IMAP/Simple.pm lib.c/Net/IMAP/Simple.pm
  use IO::File;
  use IO::Socket;
  
-@@ -187,6 +188,44 @@
+@@ -187,6 +188,47 @@
  
  =head1 METHODS
  
@@ -25,6 +25,9 @@ diff -urP lib/Net/IMAP/Simple.pm lib.c/Net/IMAP/Simple.pm
 +sub starttls {
 +    my ($self) = @_;
 +
++    eval "use IO::Socket::SSL; 1" or croak $@;
++    eval "use Net::SSLeay; 1"     or croak $@;
++
 +    $self->{debug} = 1;
 +
 +    warn "Processing STARTTLS command";
@@ -39,7 +42,7 @@ diff -urP lib/Net/IMAP/Simple.pm lib.c/Net/IMAP/Simple.pm
 +                SSL_version    =>    "SSLv3 TLSv1",
 +                SSL_startHandshake => 0,
 +            )) {
-+                croak "Couldn't start TLS: ".IO::Socket::SSL::errstr."\n";
++                croak "Couldn't start TLS: " . IO::Socket::SSL::errstr() . "\n";
 +            }
 +
 +            $self->_debug(caller,__LINE__,'starttls',"TLS initialization done")
