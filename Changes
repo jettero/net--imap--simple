@@ -2,6 +2,9 @@
    - Corion gave me starttls() to include and suggested I apply
      for co-maintainership.
    - I introduced bugs in 002 ... fixed
+   - fixed a useless use of hash bug (??) by changing
+     write($self->{debug}, $line) to
+     print {$self->{debug}} $line.  Odd.
 
 1.17003: Sun Oct 12 13:15:14 EDT 2008
    - I altered the docs very slightly, not enough to release
