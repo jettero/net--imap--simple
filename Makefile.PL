@@ -39,6 +39,13 @@ if( !$ENV{SKIP_COR} ) {
     close IN; close OUT;
 }
 
+if( !$ENV{SKIP_UHB} ) {
+    open IN, "useless-hash-bug.patch" or die $!;
+    open OUT, "|-", $^X, 'patch' or die $!;
+    print OUT $_ while <IN>;
+    close IN; close OUT;
+}
+
 print "\n\n";
 
 unlink $_ for glob("lib/Net/IMAP/Simple.pm.*"); # some patches add .orig
