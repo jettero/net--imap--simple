@@ -62,8 +62,8 @@ diff -urP Net-IMAP-Simple-1.17.patched/lib/Net/IMAP/Simple.pm Net-IMAP-Simple-1.
  
 +=item flags
 +
-+    my @flags = $imap->flags( $message_number );
-+    my $flags = $imap->flags( $message_number );
++    my @flags = $imap->msg_flags( $message_number );
++    my $flags = $imap->msg_flags( $message_number );
 +
 +    # aught to come out roughly the same
 +    print "Flags on message #$message_number: @flags\n";
@@ -71,7 +71,7 @@ diff -urP Net-IMAP-Simple-1.17.patched/lib/Net/IMAP/Simple.pm Net-IMAP-Simple-1.
 +
 +=cut
 +
-+sub flags {
++sub msg_flags {
 +    my ( $self, $number ) = @_;
 +    
 +    my $lines = '';
