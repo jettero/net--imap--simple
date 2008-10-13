@@ -12,3 +12,4 @@ unseen.patch
 Plus.pm
 Plus.pod
 corion.patch
+useless-hash-bug.patch
