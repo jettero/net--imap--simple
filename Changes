@@ -1,3 +1,10 @@
+1.17004: Thu Oct 16 07:20:30 EDT 2008
+   - This might fix the darwin build problems.  I think the silly
+     pure perl version of patch I'm distributing (thank you CWEST
+     btw) was expecting darwin to do something it didn't want to
+     do ... I use unlink() excessively to solve this problem
+     (theoretically).
+
 1.17003: Mon Oct 13 06:54:18 EDT 2008
    - Corion gave me starttls() to include and suggested I apply
      for co-maintainership.
