@@ -18,18 +18,19 @@ die "problem extracting Net::IMAP::Simple" unless -d 'lib' and -d 't';
 
 print "\n\npatching ...\n\n";
 
-if( !$ENV{SKIP_CL1} ) {
-    open IN, "collect1.patch" or die $!;
-    open OUT, "|-", $^X, patch => '-p1' or die $!;
-    print OUT $_ while <IN>;
-    close IN; close OUT;
-}
+patcher("collect1.patch", '-p1');
+patcher("collect2.patch", '-p1');
 
-if( !$ENV{SKIP_CL2} ) {
-    open IN, "collect2.patch" or die $!;
-    open OUT, "|-", $^X, patch => '-p1' or die $!;
+sub patcher {
+    my ($file, @switches) = @_;
+
+    open IN, $file or die $!;
+    open OUT, "|-", $^X, patch => @switches or die $!;
     print OUT $_ while <IN>;
     close IN; close OUT;
+
+    unlink $_ for glob("lib/Net/IMAP/Simple.pm.*"); # some patches add .orig
+    unlink $_ for glob("lib/Net/IMAP/Simple.pm[A-Za-z]*"); # some add Orig
 }
 
 if( !$ENV{SKIP_COR} ) {
@@ -37,6 +38,9 @@ if( !$ENV{SKIP_COR} ) {
     open OUT, "|-", $^X, 'patch' or die $!;
     print OUT $_ while <IN>;
     close IN; close OUT;
+
+    unlink $_ for glob("lib/Net/IMAP/Simple.pm.*"); # some patches add .orig
+    unlink $_ for glob("lib/Net/IMAP/Simple.pm[A-Za-z]*"); # some add Orig
 }
 
 if( !$ENV{SKIP_UHB} ) {
@@ -44,15 +48,17 @@ if( !$ENV{SKIP_UHB} ) {
     open OUT, "|-", $^X, 'patch' or die $!;
     print OUT $_ while <IN>;
     close IN; close OUT;
+
+    unlink $_ for glob("lib/Net/IMAP/Simple.pm.*"); # some patches add .orig
+    unlink $_ for glob("lib/Net/IMAP/Simple.pm[A-Za-z]*"); # some add Orig
 }
 
 print "\n\n";
-
-unlink $_ for glob("lib/Net/IMAP/Simple.pm.*"); # some patches add .orig
-unlink $_ for glob("lib/Net/IMAP/Simple.pm[A-Za-z]*"); # some add Orig
 
 WriteMakefile(
     NAME         => 'Net::IMAP::Simple::Plus',
     VERSION_FROM => 'Plus.pm',
     AUTHOR       => 'Paul Miller <jettero@cpan.org>',
+
+    clean => { FILES => ".devnull" }
 );
