@@ -20,32 +20,16 @@ print "\n\npatching ...\n\n";
 
 patcher("collect1.patch", '-p1');
 patcher("collect2.patch", '-p1');
+patcher("corion.patch");
+patcher("useless-hash-bug.patch");
 
 sub patcher {
     my ($file, @switches) = @_;
 
+    return if -f ".enable_skipper" and $ENV{SKIP_PATCH} and $file =~ m/$ENV{SKIP_PATCH}/;
+
     open IN, $file or die $!;
     open OUT, "|-", $^X, patch => @switches or die $!;
-    print OUT $_ while <IN>;
-    close IN; close OUT;
-
-    unlink $_ for glob("lib/Net/IMAP/Simple.pm.*"); # some patches add .orig
-    unlink $_ for glob("lib/Net/IMAP/Simple.pm[A-Za-z]*"); # some add Orig
-}
-
-if( !$ENV{SKIP_COR} ) {
-    open IN, "corion.patch" or die $!;
-    open OUT, "|-", $^X, 'patch' or die $!;
-    print OUT $_ while <IN>;
-    close IN; close OUT;
-
-    unlink $_ for glob("lib/Net/IMAP/Simple.pm.*"); # some patches add .orig
-    unlink $_ for glob("lib/Net/IMAP/Simple.pm[A-Za-z]*"); # some add Orig
-}
-
-if( !$ENV{SKIP_UHB} ) {
-    open IN, "useless-hash-bug.patch" or die $!;
-    open OUT, "|-", $^X, 'patch' or die $!;
     print OUT $_ while <IN>;
     close IN; close OUT;
 
