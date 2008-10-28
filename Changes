@@ -1,3 +1,7 @@
+1.17005: Tue Oct 28 13:10:40 EDT 2008
+   - I fixed a couple tiny little things with flags() and a pod
+     typo
+
 1.17004: Thu Oct 16 07:20:30 EDT 2008
    - This might fix the darwin build problems.  I think the silly
      pure perl version of patch I'm distributing (thank you CWEST
