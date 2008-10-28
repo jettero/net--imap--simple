@@ -22,6 +22,7 @@ patcher("collect1.patch", '-p1');
 patcher("collect2.patch", '-p1');
 patcher("corion.patch");
 patcher("useless-hash-bug.patch");
+patcher("10-28-08.flags-bug.patch", '-p1');
 
 sub patcher {
     my ($file, @switches) = @_;
