@@ -1,3 +1,6 @@
+1.17006: Fri Oct 31 07:56:45 EDT 2008
+   - trying to make the makefile.pl work in 5.6
+
 1.17005: Tue Oct 28 13:10:40 EDT 2008
    - I fixed a couple tiny little things with flags() and a pod
      typo

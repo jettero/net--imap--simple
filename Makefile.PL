@@ -30,7 +30,14 @@ sub patcher {
     return if -f ".enable_skipper" and $ENV{SKIP_PATCH} and $file =~ m/$ENV{SKIP_PATCH}/;
 
     open IN, $file or die $!;
-    open OUT, "|-", $^X, patch => @switches or die $!;
+    if( $[ < 5.008 ) {
+        # I wonder how often this wont work...
+        # corollary: who has a space in their perl executable name?
+        open OUT, "|$^X patch @switches" or die $!;
+
+    } else {
+        open OUT, "|-", $^X, patch => @switches or die $!;
+    }
     print OUT $_ while <IN>;
     close IN; close OUT;
 
