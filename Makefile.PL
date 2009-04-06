@@ -52,5 +52,17 @@ WriteMakefile(
     VERSION_FROM => 'Plus.pm',
     AUTHOR       => 'Paul Miller <jettero@cpan.org>',
 
-    clean => { FILES => ".devnull" }
+    clean => { FILES => ".devnull" },
+
+    ($ExtUtils::MakeMaker::VERSION ge '6.48'? 
+        (MIN_PERL_VERSION => 5.008,
+            META_MERGE => {
+                keywords => [qw(imap)],
+                resources=> {
+                    repository => 'http://github.com/jettero/net--imap--simple/tree/nisp',
+                },
+            },
+
+        LICENSE	=> 'lgpl2',
+    ) : ()),
 );
