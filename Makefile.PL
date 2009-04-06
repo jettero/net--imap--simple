@@ -59,7 +59,7 @@ WriteMakefile(
             META_MERGE => {
                 keywords => [qw(imap)],
                 resources=> {
-                    repository => 'http://github.com/jettero/net--imap--simple/tree/nisp',
+                    repository => 'http://github.com/jettero/net--imap--simple/tree/master',
                 },
             },
 
