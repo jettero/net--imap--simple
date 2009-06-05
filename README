@@ -1,29 +1,22 @@
 NAME
-    Net::IMAP::Simple - Perl extension for simple IMAP account handling.
+
+Net::IMAP::Simple - Perl extension for simple IMAP account handling.
 
 SYNOPSIS
-        use Net::IMAP::Simple;
-        use Email::Simple;
 
-        my $server = Net::IMAP::Simple->new( 'someserver' );
-        $server->login( 'someuser', 'somepassword' );
-    
-        my $nmessages = $server->select( 'somefolder' );
+    use strict;
+    use warings;
+    use Net::IMAP::Simple;
 
-        foreach my $msg ( 1 .. $number_of_messages ) {
-            print "This message has been read before...\n"
-              if $server->seen( $msg );
+    my $server = Net::IMAP::Simple->new( 'someserver' );
+    $server->login( 'someuser', 'somepassword' );
 
-            my $email = Email::Simple->new( join '', @{$server->get( $msg )} );
-        
-            print $email->header('Subject'), "\n";
-        }
-
-        $server->quit();
+    for ( 1 .. $server->select( 'somefolder' ) ) {
+        print $email->header('Subject'), "\n";
+    }
+    $server->quit();
 
 COPYRIGHT
-    Copyright (c) 2004 Casey West. Copyright (c) 1999 Joao Fonseca.
-    Copyright (c) 2009 Paul Miller
 
-    All rights reserved. This program is free software; you can redistribute
-    it and/or modify it under the same terms as Perl itself.
+All rights reserved. This program is free software; you can redistribute
+it and/or modify it under the same terms as Perl itself.
