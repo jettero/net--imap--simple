@@ -1044,17 +1044,17 @@ __END__
 
 =head1 AUTHOR
 
-Colin Faber, <F<cfaber@fpsn.net>>.
+Colin Faber, C<< <cfaber@fpsn.net> >>.
 
-Casey West, <F<casey@geeknst.com>>.
+Casey West, C<< <casey@geeknst.com> >>.
 
-Joao Fonseca, <F<joao_g_fonseca@yahoo.com>>.
+Joao Fonseca, C<< <joao_g_fonseca@yahoo.com> >>.
+
+Later maintainer: Paul Miller C<< <jettero@cpan.org> >>
 
 =head1 SEE ALSO
 
-L<Net::IMAP>,
-L<perl>,
-L<Changes>
+L<perl> L<Net::IMAP> L<Changes>
 
 =head1 COPYRIGHT
 
