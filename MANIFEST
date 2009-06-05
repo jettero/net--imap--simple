@@ -1,7 +1,10 @@
 Changes
 contrib/imap.pl
-Simple.pm
 Makefile.PL
 MANIFEST
 README
+Simple.pm
 t/01_load.t
+t/critic.t
+t/pod_coverage.t
+t/pod.t
