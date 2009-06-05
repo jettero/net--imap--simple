@@ -330,7 +330,7 @@ sub flags {
  my ($self, $folder) = @_;
 
  $self->select($folder);
- return @{ $self->{BOXES}->{ $self->current_box }->{flags} };
+ return @{ $self->{BOXES}->{ $self->current_box }->{flags} || [] };
 }
 
 
