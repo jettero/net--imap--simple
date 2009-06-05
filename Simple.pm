@@ -91,12 +91,12 @@ sub _sock_from   { $_[0]->{use_v6} ? 'IO::Socket::INET6' : 'IO::Socket::INET' }
 sub starttls {
     my ($self) = @_;
 
-    eval "use IO::Socket::SSL; 1" or croak $@;
-    eval "use Net::SSLeay; 1"     or croak $@;
+    use IO::Socket::SSL; import IO::Socket::SSL;
+    use Net::SSLeay;     import Net::SSLeay;
 
-    $self->{debug} = 1;
+    # $self->{debug} = 1;
+    # warn "Processing STARTTLS command";
 
-    warn "Processing STARTTLS command";
     $self->_process_cmd(
         cmd   => ['STARTTLS'],
         final => sub {
@@ -115,10 +115,10 @@ sub starttls {
                 croak "Couldn't start TLS: " . IO::Socket::SSL::errstr() . "\n";
             }
 
-            $self->_debug( caller, __LINE__, 'starttls', "TLS initialization done" );
+            $self->_debug( caller, __LINE__, 'starttls', "TLS initialization done" ) if $this->{debug};
         },
 
-        #process => sub { push @lines, $_[0] if $_[0] =~ /^(?: \s+\S+ | [^:]+: )/x },
+        # process => sub { push @lines, $_[0] if $_[0] =~ /^(?: \s+\S+ | [^:]+: )/x },
     );
 }
 
