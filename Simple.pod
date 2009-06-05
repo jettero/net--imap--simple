@@ -4,7 +4,8 @@ Net::IMAP::Simple - Perl extension for simple IMAP account handling.
 
 =head1 SYNOPSIS
 
-    # Duh
+    use strict;
+    use warnings;
     use Net::IMAP::Simple;
     use Email::Simple;
 
@@ -46,6 +47,8 @@ This module is a simple way to access IMAP accounts.
     # OR
 
     my $imap = Net::IMAP::Simple->new( $server [, option_name => option_value ] );
+
+=head2 new
 
 This class method constructs a new C<Net::IMAP::Simple> object. It takes one
 required parameter which is the server to connect to, and additional optional
@@ -136,8 +139,7 @@ errstr() error handler is set with the error message.
 
 =item messages
 
-    print "Messages in Junk Mail -- " . $imap->messages("INBOX.Junk Mail") .
-"\n";
+    print "Messages in Junk Mail -- " . $imap->messages("INBOX.Junk Mail") .  "\n";
 
 This method is an alias for $imap->select
 
