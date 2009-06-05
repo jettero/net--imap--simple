@@ -1,6 +1,7 @@
-^.pm-desc.html$
-^.st$
 ^blib$
-^Makefile$
-^pm_to_blib$
 ^.git
+^Makefile$
+^MANIFEST.SKIP$
+^.pm-desc.html$
+^pm_to_blib$
+^.st$
