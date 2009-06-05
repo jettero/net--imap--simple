@@ -1,11 +1,13 @@
 package Net::IMAP::Simple;
+
 use strict;
+use warnings;
+
 use Carp;
 use IO::File;
 use IO::Socket;
 
-use vars qw[$VERSION];
-$VERSION = $1 if('$Id: Simple.pm,v 1.17 2006/10/11 16:23:45 cfaber Exp $' =~ /,v ([\d_.]+) /);
+our $VERSION = "1.1800";
 
 =head1 NAME
 
