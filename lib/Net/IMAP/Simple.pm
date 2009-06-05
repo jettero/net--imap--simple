@@ -221,7 +221,7 @@ Selects a folder named in the single required parameter. The number of messages 
 sub select {
  my ( $self, $mbox ) = @_;
 
- $mbox = 'INBOX' unless $mbox;
+ $mbox = $self->current_box unless $mbox;
 
  $self->{working_box} = $mbox;
 
@@ -309,6 +309,25 @@ sub recent {
 
  $self->select($folder);
  return $self->{BOXES}->{ $self->current_box }->{recent};
+}
+
+=pod
+
+=item unseen
+
+    print "Unseen messages value: " . $imap->unseen . "\n";
+
+This method accepts an optional folder name and returns the 'UNSEEN' value provided durning a SELECT result set. If no folder name is provided the last folder $imap->select'ed will be used.
+
+This method uses caching.
+
+=cut
+
+sub unseen {
+ my ($self, $folder) = @_;
+
+ $self->select($folder);
+ return $self->{BOXES}{ $self->current_box }{oflags}{UNSEEN};
 }
 
 
@@ -431,6 +450,33 @@ sub get {
 	},
     );
 
+}
+
+=item put
+
+  $imap->put( $mailbox_name, $message ) or warn $imap->errstr;
+
+Save a message to the server under the folder named $mailbox_name.
+
+=cut
+
+sub put {
+    my ( $self, $mailbox_name, $msg ) = @_;
+
+    my $size = length $msg;
+
+    $self->_process_cmd(
+        cmd     => [APPEND => "$mailbox_name (\\Seen) {$size}"],
+        final   => sub { 1 },
+        process => sub {
+            if( $size ) {
+                my $sock = $self->_sock;
+                print $sock $msg;
+                $size = undef;
+                print $sock "\r\n";
+            }
+        },
+    );
 }
 
 =pod
@@ -898,7 +944,7 @@ sub _debug {
  $str =~ s/\r/\\r/g;
  $str =~ s/\cM/^M/g;
 
- my $line = "[$package :: $filename :: $line\@$dline -> $routine] $str\n";
+ $line = "[$package :: $filename :: $line\@$dline -> $routine] $str\n";
  if(ref($self->{debug}) eq 'GLOB'){
 	write($self->{debug}, $line);
  } else {
