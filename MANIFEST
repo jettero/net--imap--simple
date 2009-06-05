@@ -1,1 +1,12 @@
+Changes
+contrib/imap.pl
+Makefile.PL
+MANIFEST
+README
+Simple.pm
+Simple.pod
+t/01_load.t
+t/critic.t
 .todo
+t/pod_coverage.t
+t/pod.t
