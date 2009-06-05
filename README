@@ -1,0 +1,173 @@
+NAME
+    Net::IMAP::Simple - Perl extension for simple IMAP account handling.
+
+SYNOPSIS
+        use Net::IMAP::Simple;
+        use Email::Simple;
+
+        my $server = Net::IMAP::Simple->new( 'someserver' );
+        $server->login( 'someuser', 'somepassword' );
+    
+        my $nmessages = $server->select( 'somefolder' );
+
+        foreach my $msg ( 1 .. $number_of_messages ) {
+            print "This message has been read before...\n"
+              if $server->seen( $msg );
+
+            my $email = Email::Simple->new( join '', @{$server->get( $msg )} );
+        
+            print $email->header('Subject'), "\n";
+        }
+
+        $server->quit();
+
+DESCRIPTION
+    This module is a simple way to access IMAP accounts.
+
+  Methods
+    new
+          my $imap = Net::IMAP::Simple->new( $server );
+
+        This class method constructs a new "Net::IMAP::Simple" object. It
+        takes one required parameter, the server to connect to. The
+        parameter may specify just the server, or both the server and port
+        number. To specify an alternate port, seperate it from the server
+        with a colon (":"), "example.com:5143".
+
+        On success an object is returned. On failure, "undef" is returned.
+
+    login
+          my $inbox_msgs = $imap->login($user => $passwd);
+
+        This method takes two required parameters, a username and password.
+        This pair is authenticated against the server. If authentication is
+        successful the user's INBOX is selected.
+
+        On success, the number of messages in the INBOX is returned. "undef"
+        is returned on failure.
+
+    select
+            my $num_messages = $imap->select($folder);
+
+        Selects a folder named in the single required parameter. The number
+        of messages in that folder is returned on success. On failure,
+        "undef" is returned.
+
+    top
+            my $header = $imap->top( $message_number );
+            print for @{$header};
+
+        This method accepts a message number as its required parameter. That
+        message will be retrieved from the currently selected folder. On
+        success this method returns a list reference containing the lines of
+        the header. "undef" is returned on failure.
+
+    seen
+          print "Seen it!" if $imap->seen( $message_number );
+
+        A message number is the only required parameter for this method. The
+        message's "\Seen" flag will be examined and if the message has been
+        seen a true value is returned. All other failures return a false
+        value.
+
+    list
+          my $message_size  = $imap->list($message_number);
+          my $mailbox_sizes = $imap->list;
+
+        This method returns size information for a message, as indicated in
+        the single optional parameter, or all messages in a mailbox. When
+        querying a single message a scalar value is returned. When listing
+        the entire mailbox a hash is returned. On failure, "undef" is
+        returned.
+
+    get
+          my $message = $imap->get( $message_number );
+          print for @{$message};
+
+        This method fetches a message and returns its lines in a list
+        reference. On failure, "undef" is returned.
+
+    getfh
+          my $file = $imap->getfh( $message_number );
+          print <$file>;
+
+        On success this method returns a file handle pointing to the message
+        identified by the required parameter. On failure, "undef" is
+        returned.
+
+    quit
+          $item->quit;
+
+        This method logs out of the IMAP server, expunges the selected
+        mailbox, and closes the connection.
+
+    last
+          my $message_number = $imap->last;
+
+        This method retuns the message number of the last message in the
+        selected mailbox, since the last time the mailbox was selected. On
+        failure, "undef" is returned.
+
+    delete
+          print "Gone!" if $imap->delete( $message_number );
+
+        This method deletes a message from the selected mailbox. On success
+        it returns true. False on failure.
+
+    mailboxes
+          my @boxes   = $imap->mailboxes;
+          my @folders = $imap->mailboxes("Mail/%");
+          my @lists   = $imap->mailboxes("lists/perl/*", "/Mail/");
+
+        This method returns a list of mailboxes. When called with no
+        arguments it recurses from the IMAP root to get all mailboxes. The
+        first optional argument is a mailbox path and the second is the path
+        reference. RFC 3501 has more information.
+
+    create_mailbox
+          print "Created" if $imap->create_mailbox( "/Mail/lists/perl/advocacy" );
+
+        This method creates the mailbox named in the required argument.
+        Returns true on success, false on failure.
+
+    expunge_mailbox
+          print "Expunged" if $imap->expunge_mailbox( "/Mail/lists/perl/advocacy" );
+
+        This method removes all mail marked as deleted in the mailbox named
+        in the required argument. Returns true on success, false on failure.
+
+    delete_mailbox
+          print "Deleted" if $imap->delete_mailbox( "/Mail/lists/perl/advocacy" );
+
+        This method deletes the mailbox named in the required argument.
+        Returns true on success, false on failure.
+
+    rename_mailbox
+          print "Renamed" if $imap->rename_mailbox( $old => $new );
+
+        This method renames the mailbox in the first required argument to
+        the mailbox named in the second required argument. Returns true on
+        success, false on failure.
+
+    copy
+          print "copied" if $imap->copy( $message_number, $mailbox );
+
+        This method copies the message number in the currently seleted
+        mailbox to the fold specified in the second argument. Both arguments
+        are required. On success this method returns true. Returns false on
+        failure.
+
+AUTHOR
+    Casey West, <casey@geeknst.com>.
+
+    Joao Fonseca, <joao_g_fonseca@yahoo.com>.
+
+SEE ALSO
+    Net::IMAP, perl.
+
+COPYRIGHT
+    Copyright (c) 2004 Casey West. Copyright (c) 1999 Joao Fonseca.
+
+    All rights reserved. This program is free software; you can redistribute
+    it and/or modify it under the same terms as Perl itself.
+
