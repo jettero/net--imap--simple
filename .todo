@@ -1,0 +1,8 @@
+<todo version="0.1.19">
+    <note priority="high" time="1244225061">
+        I wish to write a proper suite of tests
+    </note>
+    <note priority="low" time="1244225040">
+        I want to refactor some things that have been bugging me...
+    </note>
+</todo>
