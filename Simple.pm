@@ -38,8 +38,13 @@ sub new {
         if ( $self->{sock} = $self->_connect ) {
             $c = 1;
             last;
+
         } elsif ( $i < $self->{retry} ) {
-            select( undef, undef, undef, $self->{retry_delay} );
+            sleep $self->{retry_delay};
+
+            # Critic NOTE: I'm not sure why this was done, but it was removed
+            # beucase the critic said it was bad and sleep makes more sense.
+            # select( undef, undef, undef, $self->{retry_delay} );
         }
     }
 
@@ -57,9 +62,10 @@ sub new {
 sub _connect {
     my ($self) = @_;
     my $sock;
+
     if ( $self->{use_v6} ) {
-        require 'IO::Socket::INET6';
-        import IO::Socket::INET6;
+        require IO::Socket::INET6;
+        import  IO::Socket::INET6;
     }
 
     $sock = $self->_sock_from->new(
