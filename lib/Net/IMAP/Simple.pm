@@ -330,7 +330,6 @@ sub unseen {
  return $self->{BOXES}{ $self->current_box }{oflags}{UNSEEN};
 }
 
-
 =pod
 
 =item current_box
@@ -454,24 +453,41 @@ sub get {
 
 =item put
 
-  $imap->put( $mailbox_name, $message ) or warn $imap->errstr;
+  $imap->put( $mailbox_name, $message, @flags ) or warn $imap->errstr;
 
-Save a message to the server under the folder named $mailbox_name.
+Save a message to the server under the folder named $mailbox_name.  You may
+optionally specify flags for the mail (e.g. \Seen, \Answered), but they must
+start with a slash.
+
+If $msg is an arrayref, the lines will be printed correctly.
 
 =cut
 
 sub put {
-    my ( $self, $mailbox_name, $msg ) = @_;
+    my ( $self, $mailbox_name, $msg, @flags ) = @_;
 
     my $size = length $msg;
+    if( ref $msg eq "ARRAY" ) {
+        $size = 0;
+        $size += length $_ for @$msg;
+    }
+
+    @flags = map {split(m/\s+/, $_)} @flags;
+    @flags = grep {m/^\\\w+\z/} @flags;
+  # @flags = ('\Seen') unless @flags;
 
     $self->_process_cmd(
-        cmd     => [APPEND => "$mailbox_name (\\Seen) {$size}"],
+        cmd     => [APPEND => "$mailbox_name (@flags) {$size}"],
         final   => sub { 1 },
         process => sub {
             if( $size ) {
                 my $sock = $self->_sock;
-                print $sock $msg;
+                if( ref $msg eq "ARRAY" ) {
+                    print $sock $_ for @$msg;
+
+                } else {
+                    print $sock $msg;
+                }
                 $size = undef;
                 print $sock "\r\n";
             }
@@ -480,6 +496,28 @@ sub put {
 }
 
 =pod
+
+=item msg_flags
+
+    my @flags = $imap->msg_flags( $message_number );
+    my $flags = $imap->msg_flags( $message_number );
+
+    # aught to come out roughly the same
+    print "Flags on message #$message_number: @flags\n";
+    print "Flags on message #$message_number: $flags\n";
+
+=cut
+
+sub msg_flags {
+    my ( $self, $number ) = @_;
+
+    my $lines = '';
+    $self->_process_cmd(
+        cmd     => [FETCH=> qq[$number (FLAGS)]],
+        final   => sub { my ($flags) = $lines =~ m/FLAGS \(([^()]+)\)/i; wantarray ? split(m/\s+/, $flags) : $flags },
+        process => sub { $lines .= $_[0] },
+    );
+}
 
 =item getfh
 
