@@ -1026,7 +1026,7 @@ sub _debug {
 
  $line = "[$package :: $filename :: $line\@$dline -> $routine] $str\n";
  if(ref($self->{debug}) eq 'GLOB'){
-	write($self->{debug}, $line);
+	print {$self->{debug}} $line;
  } else {
 	print STDOUT $line;
  }
