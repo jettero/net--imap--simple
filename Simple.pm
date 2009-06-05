@@ -115,7 +115,7 @@ sub starttls {
                 croak "Couldn't start TLS: " . IO::Socket::SSL::errstr() . "\n";
             }
 
-            $self->_debug( caller, __LINE__, 'starttls', "TLS initialization done" ) if $this->{debug};
+            $self->_debug( caller, __LINE__, 'starttls', "TLS initialization done" ) if $self->{debug};
         },
 
         # process => sub { push @lines, $_[0] if $_[0] =~ /^(?: \s+\S+ | [^:]+: )/x },
