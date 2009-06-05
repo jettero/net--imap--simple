@@ -1,5 +1,6 @@
 package Net::IMAP::Simple;
 use strict;
+use Carp;
 use IO::File;
 use IO::Socket;
 
@@ -186,6 +187,47 @@ sub _sock_from   { $_[0]->{use_v6} ? 'IO::Socket::INET6' : 'IO::Socket::INET' }
 =pod
 
 =head1 METHODS
+
+=item starttls
+
+    $imap->starttls;
+
+If you start an IMAP session and wish to upgrade to SSL later, you can use this
+function to start TLS.  This function will try to C<require> L<IO::Socket::SSL>
+and L<Net::SSLeay> at runtime.
+
+=cut
+
+sub starttls {
+    my ($self) = @_;
+
+    eval "use IO::Socket::SSL; 1" or croak $@;
+    eval "use Net::SSLeay; 1"     or croak $@;
+
+    $self->{debug} = 1;
+
+    warn "Processing STARTTLS command";
+    $self->_process_cmd(
+        cmd     => ['STARTTLS'],
+        final   => sub {
+            Net::SSLeay::load_error_strings();
+            Net::SSLeay::SSLeay_add_ssl_algorithms();
+            Net::SSLeay::randomize();
+
+            if(not IO::Socket::SSL->start_SSL($self->{sock},
+                SSL_version    =>    "SSLv3 TLSv1",
+                SSL_startHandshake => 0,
+            )) {
+                croak "Couldn't start TLS: " . IO::Socket::SSL::errstr() . "\n";
+            }
+
+            $self->_debug(caller,__LINE__,'starttls',"TLS initialization done")
+        },
+        #process => sub { push @lines, $_[0] if $_[0] =~ /^(?: \s+\S+ | [^:]+: )/x },
+    );
+};
+
+=pod
 
 =item login
 
