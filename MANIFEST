@@ -10,3 +10,7 @@ t/critic.t
 .todo
 t/pod_coverage.t
 t/pod.t
+certs/server-cert.csr
+certs/server-cert.pem
+certs/server-key.pem
+t/07_test_against_net-imap-server.t
