@@ -68,8 +68,8 @@ alarm 30; # this server lasts at most 30 seconds, except perhaps on windows (??)
 Net::IMAP::Server->new(
     port        => 7000,
     ssl_port    => 8000,
-  # auth_class  => "Your::Auth::Class",
-  # model_class => "Your::Model::Class",
+    auth_class  => "t7lib::Auth",
+    model_class => "t7lib::Model",
   # user        => "nobody",
   # group       => "nobody",
 )->run;

@@ -10,8 +10,8 @@ Simple.pm
 Simple.pod
 t/01_load.t
 t/07_test_against_net-imap-server.t
-t7lib/TestAuth.pm
-t7lib/TestModel.pm
+t7lib/Auth.pm
+t7lib/Model.pm
 t/critic.t
 .todo
 t/pod_coverage.t
