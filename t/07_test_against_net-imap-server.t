@@ -32,7 +32,14 @@ unless( $res ) {
 if( my $pid = fork ) {
     my $imapfh;
     my $retries = 7;
-    sleep 1 while (--$retries)>0 and not $imapfh = Net::TCP->new(localhost=>7000);
+    SIGCHILD_MEANS_DEATH: {
+        local $SIG{CHLD} = sub {
+            warn "Net::IMAP::Server died while starting, skipping all meaningful tests\n";
+            skip(1,1,1) for 1 .. $tests;
+            exit 0;
+        };
+        sleep 1 while (--$retries)>0 and not $imapfh = Net::TCP->new(localhost=>7000);
+    }
 
     eval q &
         END {
