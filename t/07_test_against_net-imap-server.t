@@ -1,7 +1,18 @@
 
 use Test;
 use Net::TCP;
+use Net::IMAP::Simple;
 plan tests => my $tests = 1;
+
+sub run_tests() {
+    my $imap = Net::IMAP::Simple->new('localhost:7000') or die "connect failed: $Net::IMAP::Simple::errstr";
+     # $imap->login($user=>$pass) or die "login failed: " . $imap->errstr;
+
+    # run tests here
+    ok(1);
+}
+
+# test support:
 
 SHHH: {
     # NOTE: the imap server emits various startup warnings on import
@@ -15,17 +26,28 @@ SHHH: {
 
 if( my $pid = fork ) {
     my $imapfh;
-    my $retries = 15;
+    my $retries = 7;
     sleep 1 while (--$retries)>0 and not $imapfh = Net::TCP->new(localhost=>7000);
+
+    eval q &
+        END {
+          # warn " murdering imap server (if necessary)\n";
+            kill 15, $pid;
+            waitpid $pid, 0;
+        }1;
+    & or die $@;
+
+    if( not $imapfh ) {
+        warn " unable to start Net::IMAP::Server, skipping all meaningful tests\n";
+        skip(1,1,1) for 1 .. $tests;
+        exit 0;
+    } 
+
     warn " imap server is up: " . <$imapfh> . "\n";
     close $imapfh;
 
-    # run tests here
-    ok(1);
+    run_tests();
 
-    # murder the imap server
-    kill 15, $pid;
-    waitpid $pid, 0;
     exit 0;
 }
 
@@ -43,4 +65,3 @@ Net::IMAP::Server->new(
   # user        => "nobody",
   # group       => "nobody",
 )->run;
-
