@@ -7,3 +7,5 @@ use warnings;
 use base 'Net::IMAP::Server::DefaultAuth';
 
 
+
+"Auth!";
