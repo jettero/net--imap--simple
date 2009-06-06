@@ -6,9 +6,15 @@ plan tests => 1;
 if( my $pid = fork ) {
     # run tests here
     ok(1);
-    waitpid $pid;
+    waitpid $pid, 0;
     exit 0;
 }
+
+no warnings;
+close STDOUT; close STDERR;
+open STDERR, ">>informal-imap-server-dump.log";
+open STDOUT, ">>informal-imap-server-dump.log";
+# (we don't really care if the above fails...)
 
 require Net::IMAP::Server;
 import  Net::IMAP::Server;

@@ -1,7 +1,8 @@
 ^blib$
-^.git
+^\.git
 ^Makefile$
-^MANIFEST.SKIP$
-^.pm-desc.html$
+^MANIFEST\.SKIP$
+^\.pm-desc\.html$
 ^pm_to_blib$
-^.st$
+^\.st$
+\.log$
