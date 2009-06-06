@@ -164,14 +164,19 @@ sub select {
         cmd => [ SELECT => _escape($t_mbox) ],
         final => sub { $self->{last} = $self->{BOXES}->{$mbox}->{messages} },
         process => sub {
+
             if ( $_[0] =~ /^\*\s+(\d+)\s+EXISTS/i ) {
                 $self->{BOXES}->{$mbox}->{messages} = $1;
+
             } elsif ( $_[0] =~ /^\*\s+FLAGS\s+\((.*?)\)/i ) {
                 $self->{BOXES}->{$mbox}->{flags} = [ split( /\s+/, $1 ) ];
+
             } elsif ( $_[0] =~ /^\*\s+(\d+)\s+RECENT/i ) {
                 $self->{BOXES}->{$mbox}->{recent} = $1;
+
             } elsif ( $_[0] =~ /^\*\s+OK\s+\[(.*?)\s+(.*?)\]/i ) {
                 my ( $flag, $value ) = ( $1, $2 );
+
                 if ( $value =~ /\((.*?)\)/ ) {
                     $self->{BOXES}->{$mbox}->{sflags}->{$flag} = [ split( /\s+/, $1 ) ];
 
@@ -187,6 +192,7 @@ sub select {
 
 sub messages {
     my ( $self, $folder ) = @_;
+
     return $self->select($folder);
 }
 
@@ -194,6 +200,7 @@ sub flags {
     my ( $self, $folder ) = @_;
 
     $self->select($folder);
+
     return @{ $self->{BOXES}->{ $self->current_box }->{flags} || [] };
 }
 
@@ -201,6 +208,7 @@ sub recent {
     my ( $self, $folder ) = @_;
 
     $self->select($folder);
+
     return $self->{BOXES}->{ $self->current_box }->{recent};
 }
 
@@ -208,11 +216,13 @@ sub unseen {
     my ( $self, $folder ) = @_;
 
     $self->select($folder);
+
     return $self->{BOXES}{ $self->current_box }{oflags}{UNSEEN};
 }
 
 sub current_box {
     my ($self) = @_;
+
     return ( $self->{working_box} ? $self->{working_box} : 'INBOX' );
 }
 
