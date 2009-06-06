@@ -2,11 +2,14 @@
 use Test;
 use Net::TCP;
 use Net::IMAP::Simple;
-plan tests => my $tests = 1;
+
+plan tests => my $tests = 3;
 
 sub run_tests() {
     my $imap = Net::IMAP::Simple->new('localhost:7000') or die "connect failed: $Net::IMAP::Simple::errstr";
-     # $imap->login($user=>$pass) or die "login failed: " . $imap->errstr;
+
+    ok( not $imap->login(qw(bad login)) );
+    ok( $imap->errstr, qr/disabled/ );
 
     # run tests here
     ok(1);
@@ -17,7 +20,7 @@ sub run_tests() {
 my $res = do {
     # NOTE: the imap server emits various startup warnings on import
     local $SIG{__WARN__} = sub {};
-    eval "use Coro; use EV; use Net::IMAP::Serveblr; 1";
+    eval "use Coro; use EV; use Net::IMAP::Server; 1";
 };
 
 unless( $res ) {
@@ -58,6 +61,9 @@ unlink "informal-imap-server-dump.log";
 open STDERR, ">>informal-imap-server-dump.log";
 open STDOUT, ">>informal-imap-server-dump.log";
 # (we don't really care if the above fails...)
+
+$SIG{ALRM} = sub { exit 0 };
+alarm 30; # this server lasts at most 30 seconds, except perhaps on windows (??)
 
 Net::IMAP::Server->new(
     port        => 7000,
