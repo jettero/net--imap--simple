@@ -14,14 +14,16 @@ sub run_tests() {
 
 # test support:
 
-SHHH: {
+my $res = do {
     # NOTE: the imap server emits various startup warnings on import
     local $SIG{__WARN__} = sub {};
-    unless( eval "use Coro; use EV; use Net::IMAP::Server; 1" ) {
-        warn " Net::IMAP::Server not found, skipping all meaningful tests\n";
-        skip(1,1,1) for 1 .. $tests;
-        exit 0;
-    }
+    eval "use Coro; use EV; use Net::IMAP::Serveblr; 1";
+};
+
+unless( $res ) {
+    warn "Net::IMAP::Server not found, skipping all meaningful tests\n";
+    skip(1,1,1) for 1 .. $tests;
+    exit 0;
 }
 
 if( my $pid = fork ) {
@@ -38,12 +40,12 @@ if( my $pid = fork ) {
     & or die $@;
 
     if( not $imapfh ) {
-        warn " unable to start Net::IMAP::Server, skipping all meaningful tests\n";
+        warn "unable to start Net::IMAP::Server, skipping all meaningful tests\n";
         skip(1,1,1) for 1 .. $tests;
         exit 0;
     } 
 
-    warn " imap server is up: " . <$imapfh> . "\n";
+    warn "imap server is up: " . <$imapfh>;
     close $imapfh;
 
     run_tests();
