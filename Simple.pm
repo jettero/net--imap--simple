@@ -551,7 +551,7 @@ sub _cmd_ok {
     my ( $self, $res ) = @_;
     my $id = $self->_count;
 
-    $self->_debug( caller, __LINE__, '_send_cmd', $res ) if $self->{debug};
+    $self->_debug( caller, __LINE__, '_cmd_ok', $res ) if $self->{debug};
 
     if ( $res =~ /^$id\s+OK/i ) {
         return 1;
