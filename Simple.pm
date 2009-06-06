@@ -174,6 +174,7 @@ sub select {
                 my ( $flag, $value ) = ( $1, $2 );
                 if ( $value =~ /\((.*?)\)/ ) {
                     $self->{BOXES}->{$mbox}->{sflags}->{$flag} = [ split( /\s+/, $1 ) ];
+
                 } else {
                     $self->{BOXES}->{$mbox}->{oflags}->{$flag} = $value;
                 }
@@ -336,6 +337,7 @@ sub quit {
 
     if ( !$hq ) {
         $self->_process_cmd( cmd => ['LOGOUT'], final => sub { }, process => sub { } );
+
     } else {
         $self->_send_cmd('LOGOUT');
     }
@@ -390,6 +392,7 @@ sub mailboxes {
             final => sub { _unescape($_) for @list; @list },
             process => sub { push @list, $self->_process_list( $_[0] ); },
         );
+
     } else {
         return $self->_process_cmd(
             cmd => [ LIST => qq[$ref $box] ],
@@ -413,6 +416,7 @@ sub mailboxes_subscribed {
             final => sub { _unescape($_) for @list; @list },
             process => sub { push @list, $self->_process_list( $_[0] ) },
         );
+
     } else {
         return $self->_process_cmd(
             cmd => [ LSUB => qq[$ref $box] ],
@@ -547,7 +551,7 @@ sub _cmd_ok {
         return 0;
 
     } else {
-        $self->_seterrstr("warning unknown return string: $res");
+        $self->_seterrstr("warning unknown return string (id=$id): $res");
         return;
     }
 }
@@ -583,12 +587,15 @@ sub _process_cmd {
         if ( $res =~ /^\*.*\{(\d+)\}$/ ) {
             $args{process}->($res);
             $args{process}->($_) foreach $self->_read_multiline( $sock, $1 );
+
         } else {
             my $ok = $self->_cmd_ok($res);
             if ( defined($ok) && $ok == 1 ) {
                 return $args{final}->($res);
+
             } elsif ( defined($ok) && !$ok ) {
                 return;
+
             } else {
                 $args{process}->($res);
             }
@@ -613,6 +620,7 @@ sub _debug {
     $line = "[$package :: $filename :: $line\@$dline -> $routine] $str\n";
     if ( ref( $self->{debug} ) eq 'GLOB' ) {
         print { $self->{debug} } $line;
+
     } else {
         print STDOUT $line;
     }
