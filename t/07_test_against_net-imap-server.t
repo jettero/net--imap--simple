@@ -1,4 +1,7 @@
 
+use strict;
+use warnings;
+
 use Test;
 use Net::TCP;
 use Net::IMAP::Simple;
@@ -11,22 +14,24 @@ sub run_tests() {
     ok( not $imap->login(qw(bad login)) );
     ok( $imap->errstr, qr/disabled/ );
 
-    # run tests here
-    ok(1);
+    $imap = Net::IMAP::Simple->new('localhost:8000', use_ssl=>1) or die "connect failed: $Net::IMAP::Simple::errstr";
+    ok( $imap->login(qw(working login)) );
 }
 
 # test support:
 
-my $res = do {
-    # NOTE: the imap server emits various startup warnings on import
-    local $SIG{__WARN__} = sub {};
-    eval "use Coro; use EV; use Net::IMAP::Server; 1";
-};
+for my $mod (qw(Coro::EV Net::IMAP::Server IO::Socket::SSL)) {
+    my $res = do {
+        # NOTE: the imap server emits various startup warnings on import
+        local $SIG{__WARN__} = sub {};
+        eval "use $mod; 1";
+    };
 
-unless( $res ) {
-    warn "Net::IMAP::Server not found, skipping all meaningful tests\n";
-    skip(1,1,1) for 1 .. $tests;
-    exit 0;
+    unless( $res ) {
+        warn "$mod not found, skipping all meaningful tests\n";
+        skip(1,1,1) for 1 .. $tests;
+        exit 0;
+    }
 }
 
 if( my $pid = fork ) {

@@ -12,10 +12,22 @@ our $VERSION = "1.1800";
 sub new {
     my ( $class, $server, %opts ) = @_;
 
+    warn "use of Net::IMAP::Simple::SSL is depricated, pass use_ssl to new() instead\n"
+        if $class =~ m/::SSL/;
+
     my $self = bless { count => -1, } => $class;
 
     my ( $srv, $prt ) = split( /:/, $server, 2 );
     $prt ||= ( $opts{port} ? $opts{port} : $self->_port );
+
+    if( $opts{use_ssl} ) {
+        eval {
+            require IO::Socket::SSL;
+            import IO::Socket::SSL;
+            "true";
+
+        } or croak "IO::Socket::SSL must be installed in order to use_ssl";
+    }
 
     $self->{server}           = $srv;
     $self->{port}             = $prt;
