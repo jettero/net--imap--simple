@@ -619,7 +619,13 @@ sub _debug {
     $str =~ s/\r/\\r/g;
     $str =~ s/\cM/^M/g;
 
-    $line = "[$package :: $filename :: $line\@$dline -> $routine] $str\n";
+    my $shortness = 30;
+    my $elipsissn = $shortness-3;
+    my $flen      = length $filename;
+
+    my $short_fname = ($flen > $shortness ? "..." . substr($filename, $flen - $elipsissn) : $filename);
+
+    $line = "[$short_fname line $line in sub $routine] $str\n";
 
     if ( ref( $self->{debug} ) eq 'GLOB' ) {
         print { $self->{debug} } $line;
