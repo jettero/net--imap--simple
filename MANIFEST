@@ -1,3 +1,6 @@
+certs/server-cert.csr
+certs/server-cert.pem
+certs/server-key.pem
 Changes
 contrib/imap.pl
 Makefile.PL
@@ -6,11 +9,10 @@ README
 Simple.pm
 Simple.pod
 t/01_load.t
+t/07_test_against_net-imap-server.t
+t7lib/TestAuth.pm
+t7lib/TestModel.pm
 t/critic.t
 .todo
 t/pod_coverage.t
 t/pod.t
-certs/server-cert.csr
-certs/server-cert.pem
-certs/server-key.pem
-t/07_test_against_net-imap-server.t
