@@ -164,16 +164,22 @@ sub select {
         cmd => [ SELECT => _escape($t_mbox) ],
         final => sub { $self->{last} = $self->{BOXES}->{$mbox}->{messages} },
         process => sub {
+
             if ( $_[0] =~ /^\*\s+(\d+)\s+EXISTS/i ) {
                 $self->{BOXES}->{$mbox}->{messages} = $1;
+
             } elsif ( $_[0] =~ /^\*\s+FLAGS\s+\((.*?)\)/i ) {
                 $self->{BOXES}->{$mbox}->{flags} = [ split( /\s+/, $1 ) ];
+
             } elsif ( $_[0] =~ /^\*\s+(\d+)\s+RECENT/i ) {
                 $self->{BOXES}->{$mbox}->{recent} = $1;
+
             } elsif ( $_[0] =~ /^\*\s+OK\s+\[(.*?)\s+(.*?)\]/i ) {
                 my ( $flag, $value ) = ( $1, $2 );
+
                 if ( $value =~ /\((.*?)\)/ ) {
                     $self->{BOXES}->{$mbox}->{sflags}->{$flag} = [ split( /\s+/, $1 ) ];
+
                 } else {
                     $self->{BOXES}->{$mbox}->{oflags}->{$flag} = $value;
                 }
@@ -186,6 +192,7 @@ sub select {
 
 sub messages {
     my ( $self, $folder ) = @_;
+
     return $self->select($folder);
 }
 
@@ -193,6 +200,7 @@ sub flags {
     my ( $self, $folder ) = @_;
 
     $self->select($folder);
+
     return @{ $self->{BOXES}->{ $self->current_box }->{flags} || [] };
 }
 
@@ -200,6 +208,7 @@ sub recent {
     my ( $self, $folder ) = @_;
 
     $self->select($folder);
+
     return $self->{BOXES}->{ $self->current_box }->{recent};
 }
 
@@ -207,11 +216,13 @@ sub unseen {
     my ( $self, $folder ) = @_;
 
     $self->select($folder);
+
     return $self->{BOXES}{ $self->current_box }{oflags}{UNSEEN};
 }
 
 sub current_box {
     my ($self) = @_;
+
     return ( $self->{working_box} ? $self->{working_box} : 'INBOX' );
 }
 
@@ -336,6 +347,7 @@ sub quit {
 
     if ( !$hq ) {
         $self->_process_cmd( cmd => ['LOGOUT'], final => sub { }, process => sub { } );
+
     } else {
         $self->_send_cmd('LOGOUT');
     }
@@ -390,6 +402,7 @@ sub mailboxes {
             final => sub { _unescape($_) for @list; @list },
             process => sub { push @list, $self->_process_list( $_[0] ); },
         );
+
     } else {
         return $self->_process_cmd(
             cmd => [ LIST => qq[$ref $box] ],
@@ -413,6 +426,7 @@ sub mailboxes_subscribed {
             final => sub { _unescape($_) for @list; @list },
             process => sub { push @list, $self->_process_list( $_[0] ) },
         );
+
     } else {
         return $self->_process_cmd(
             cmd => [ LSUB => qq[$ref $box] ],
@@ -541,11 +555,13 @@ sub _cmd_ok {
 
     if ( $res =~ /^$id\s+OK/i ) {
         return 1;
+
     } elsif ( $res =~ /^$id\s+(?:NO|BAD)(?:\s+(.+))?/i ) {
         $self->_seterrstr( $1 || 'unknown error' );
         return 0;
+
     } else {
-        $self->_seterrstr("warning unknown return string: $res");
+        $self->_seterrstr("warning unknown return string (id=$id): $res");
         return;
     }
 }
@@ -555,10 +571,12 @@ sub _read_multiline {
 
     my @lines;
     my $read_so_far = 0;
+
     while ( $read_so_far < $count ) {
         push @lines, $sock->getline;
         $read_so_far += length( $lines[-1] );
     }
+
     if ( $self->{debug} ) {
         for ( my $i = 0 ; $i < @lines ; $i++ ) {
             $self->_debug( caller, __LINE__, '_read_multiline', "[$i] $lines[$i]" );
@@ -579,12 +597,15 @@ sub _process_cmd {
         if ( $res =~ /^\*.*\{(\d+)\}$/ ) {
             $args{process}->($res);
             $args{process}->($_) foreach $self->_read_multiline( $sock, $1 );
+
         } else {
             my $ok = $self->_cmd_ok($res);
             if ( defined($ok) && $ok == 1 ) {
                 return $args{final}->($res);
+
             } elsif ( defined($ok) && !$ok ) {
                 return;
+
             } else {
                 $args{process}->($res);
             }
@@ -594,8 +615,10 @@ sub _process_cmd {
 
 sub _seterrstr {
     my ( $self, $err ) = @_;
+
     $self->{_errstr} = $err;
     $self->_debug( caller, __LINE__, '_seterrstr', $err ) if $self->{debug};
+
     return;
 }
 
@@ -607,8 +630,10 @@ sub _debug {
     $str =~ s/\cM/^M/g;
 
     $line = "[$package :: $filename :: $line\@$dline -> $routine] $str\n";
+
     if ( ref( $self->{debug} ) eq 'GLOB' ) {
         print { $self->{debug} } $line;
+
     } else {
         print STDOUT $line;
     }
