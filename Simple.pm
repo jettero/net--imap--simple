@@ -541,9 +541,11 @@ sub _cmd_ok {
 
     if ( $res =~ /^$id\s+OK/i ) {
         return 1;
+
     } elsif ( $res =~ /^$id\s+(?:NO|BAD)(?:\s+(.+))?/i ) {
         $self->_seterrstr( $1 || 'unknown error' );
         return 0;
+
     } else {
         $self->_seterrstr("warning unknown return string: $res");
         return;
@@ -555,10 +557,12 @@ sub _read_multiline {
 
     my @lines;
     my $read_so_far = 0;
+
     while ( $read_so_far < $count ) {
         push @lines, $sock->getline;
         $read_so_far += length( $lines[-1] );
     }
+
     if ( $self->{debug} ) {
         for ( my $i = 0 ; $i < @lines ; $i++ ) {
             $self->_debug( caller, __LINE__, '_read_multiline', "[$i] $lines[$i]" );
