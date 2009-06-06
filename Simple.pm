@@ -605,8 +605,10 @@ sub _process_cmd {
 
 sub _seterrstr {
     my ( $self, $err ) = @_;
+
     $self->{_errstr} = $err;
     $self->_debug( caller, __LINE__, '_seterrstr', $err ) if $self->{debug};
+
     return;
 }
 
@@ -618,6 +620,7 @@ sub _debug {
     $str =~ s/\cM/^M/g;
 
     $line = "[$package :: $filename :: $line\@$dline -> $routine] $str\n";
+
     if ( ref( $self->{debug} ) eq 'GLOB' ) {
         print { $self->{debug} } $line;
 
