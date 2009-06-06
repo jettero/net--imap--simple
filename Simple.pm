@@ -20,7 +20,8 @@ sub new {
     $self->{server}           = $srv;
     $self->{port}             = $prt;
     $self->{timeout}          = ( $opts{timeout} ? $opts{timeout} : $self->_timeout );
-    $self->{use_v6}           = ( $opts{use_v6} ? 1 : 0 );
+    $self->{use_v6}           = ( $opts{use_v6}  ? 1 : 0 );
+    $self->{use_ssl}          = ( $opts{use_ssl} ? 1 : 0 );
     $self->{retry}            = ( $opts{retry} ? $opts{retry} : $self->_retry );
     $self->{retry_delay}      = ( $opts{retry_delay} ? $opts{retry_delay} : $self->_retry_delay );
     $self->{bindaddr}         = $opts{bindaddr};
@@ -79,14 +80,14 @@ sub _connect {
     return $sock;
 }
 
-sub _port        { 143 }
+sub _port        { $_[0]->{use_ssl} ? 993 : 143 } 
 sub _sock        { $_[0]->{sock} }
 sub _count       { $_[0]->{count} }
 sub _last        { $_[0]->{last} }
 sub _timeout     { 90 }
 sub _retry       { 1 }
 sub _retry_delay { 5 }
-sub _sock_from   { $_[0]->{use_v6} ? 'IO::Socket::INET6' : 'IO::Socket::INET' }
+sub _sock_from   { $_[0]->{use_v6} ? 'IO::Socket::INET6' : $_[0]->{use_ssl} ? 'IO::Socket::SSL' : 'IO::Socket::INET' }
 
 sub starttls {
     my ($self) = @_;
