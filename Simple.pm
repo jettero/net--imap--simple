@@ -99,14 +99,14 @@ sub _connect {
     return $sock;
 }
 
-sub _port        { $_[0]->{use_ssl} ? 993 : 143 } 
-sub _sock        { $_[0]->{sock} }
-sub _count       { $_[0]->{count} }
-sub _last        { $_[0]->{last} }
-sub _timeout     { 90 }
-sub _retry       { 1 }
-sub _retry_delay { 5 }
-sub _sock_from   { $_[0]->{use_v6} ? 'IO::Socket::INET6' : $_[0]->{use_ssl} ? 'IO::Socket::SSL' : 'IO::Socket::INET' }
+sub _port        { return $_[0]->{use_ssl} ? 993 : 143 } 
+sub _sock        { return $_[0]->{sock} }
+sub _count       { return $_[0]->{count} }
+sub _last        { return $_[0]->{last} }
+sub _timeout     { return 90 }
+sub _retry       { return 1 }
+sub _retry_delay { return 5 }
+sub _sock_from   { return $_[0]->{use_v6} ? 'IO::Socket::INET6' : $_[0]->{use_ssl} ? 'IO::Socket::SSL' : 'IO::Socket::INET' }
 
 sub starttls {
     my ($self) = @_;
@@ -117,21 +117,20 @@ sub starttls {
     # $self->{debug} = 1;
     # warn "Processing STARTTLS command";
 
-    $self->_process_cmd(
+    return $self->_process_cmd(
         cmd   => ['STARTTLS'],
         final => sub {
             Net::SSLeay::load_error_strings();
             Net::SSLeay::SSLeay_add_ssl_algorithms();
             Net::SSLeay::randomize();
 
-            if (
-                not IO::Socket::SSL->start_SSL(
-                    $self->{sock},
-                    SSL_version        => "SSLv3 TLSv1",
-                    SSL_startHandshake => 0,
-                )
-              )
-            {
+            my $startres = IO::Socket::SSL->start_SSL(
+                $self->{sock},
+                SSL_version        => "SSLv3 TLSv1",
+                SSL_startHandshake => 0,
+            );
+
+            unless ( $startres ) {
                 croak "Couldn't start TLS: " . IO::Socket::SSL::errstr() . "\n";
             }
 
@@ -152,7 +151,8 @@ sub login {
     );
 }
 
-sub select {
+sub select { ## no critic -- too late to choose a different name now...
+
     my ( $self, $mbox ) = @_;
 
     $mbox = $self->current_box unless $mbox;
@@ -241,7 +241,8 @@ sub top {
     my ( $self, $number ) = @_;
 
     my @lines;
-    $self->_process_cmd(
+
+    return $self->_process_cmd(
         cmd   => [ FETCH => qq[$number rfc822.header] ],
         final => sub     { \@lines },
         process => sub { push @lines, $_[0] if $_[0] =~ /^(?: \s+\S+ | [^:]+: )/x },
@@ -252,7 +253,8 @@ sub seen {
     my ( $self, $number ) = @_;
 
     my $lines = '';
-    $self->_process_cmd(
+
+    return $self->_process_cmd(
         cmd => [ FETCH => qq[$number (FLAGS)] ],
         final => sub { $lines =~ /\\Seen/i },
         process => sub { $lines .= $_[0] },
@@ -264,7 +266,8 @@ sub list {
 
     my $messages = $number || '1:' . $self->_last;
     my %list;
-    $self->_process_cmd(
+
+    return $self->_process_cmd(
         cmd => [ FETCH => qq[$messages RFC822.SIZE] ],
         final => sub { $number ? $list{$number} : \%list },
         process => sub {
@@ -279,7 +282,8 @@ sub get {
     my ( $self, $number ) = @_;
 
     my @lines;
-    $self->_process_cmd(
+
+    return $self->_process_cmd(
         cmd => [ FETCH => qq[$number rfc822] ],
         final => sub { pop @lines; \@lines },
         process => sub {
@@ -307,9 +311,9 @@ sub put {
 
     # @flags = ('\Seen') unless @flags;
 
-    $self->_process_cmd(
+    return $self->_process_cmd(
         cmd     => [ APPEND => "$mailbox_name (@flags) {$size}" ],
-        final   => sub      { 1 },
+        final   => sub { 1 },
         process => sub {
             if ($size) {
                 my $sock = $self->_sock;
@@ -330,7 +334,8 @@ sub msg_flags {
     my ( $self, $number ) = @_;
 
     my $lines = '';
-    $self->_process_cmd(
+
+    return $self->_process_cmd(
         cmd => [ FETCH => qq[$number (FLAGS)] ],
         final => sub { my ($flags) = $lines =~ m/FLAGS \(([^()]+)\)/i; wantarray ? split( m/\s+/, $flags ) : $flags },
         process => sub { $lines .= $_[0] },
@@ -342,7 +347,8 @@ sub getfh {
 
     my $file = IO::File->new_tmpfile;
     my $buffer;
-    $self->_process_cmd(
+
+    return $self->_process_cmd(
         cmd => [ FETCH => qq[$number rfc822] ],
         final => sub { seek $file, 0, 0; $file },
         process => sub {
@@ -366,18 +372,21 @@ sub quit {
     }
 
     $self->_sock->close;
+
     return 1;
 }
 
-sub last { shift->_last }
+sub last { ## no critic -- too late to choose a different name now...
+    return shift->_last
+}
 
-sub delete {
+sub delete { ## no critic -- too late to choose a different name now...
     my ( $self, $number ) = @_;
 
-    $self->_process_cmd(
+    return $self->_process_cmd(
         cmd     => [ STORE => qq[$number +FLAGS (\\Deleted)] ],
-        final   => sub     { 1 },
-        process => sub     { },
+        final   => sub { 1 },
+        process => sub { },
     );
 }
 
@@ -388,17 +397,19 @@ sub _process_list {
     my @list;
     if ( $line =~ /^\*\s+(LIST|LSUB).*\s+\{\d+\}\s*$/i ) {
         chomp( my $res = $self->_sock->getline );
+
         $res =~ s/\r//;
         _escape($res);
+
         push @list, $res;
 
         $self->_debug( caller, __LINE__, '_process_list', $res ) if $self->{debug};
-    } elsif ( $line =~ /^\*\s+(LIST|LSUB).*\s+(\".*?\")\s*$/i
-        || $line =~ /^\*\s+(LIST|LSUB).*\s+(\S+)\s*$/i )
-    {
+
+    } elsif ( $line =~ /^\*\s+(LIST|LSUB).*\s+(\".*?\")\s*$/i || $line =~ /^\*\s+(LIST|LSUB).*\s+(\S+)\s*$/i ) {
         push @list, $2;
     }
-    @list;
+
+    return @list;
 }
 
 sub mailboxes {
@@ -416,19 +427,20 @@ sub mailboxes {
             process => sub { push @list, $self->_process_list( $_[0] ); },
         );
 
-    } else {
-        return $self->_process_cmd(
-            cmd => [ LIST => qq[$ref $box] ],
-            final => sub { _unescape($_) for @list; @list },
-            process => sub { push @list, $self->_process_list( $_[0] ) },
-        );
     }
+
+    return $self->_process_cmd(
+        cmd => [ LIST => qq[$ref $box] ],
+        final => sub { _unescape($_) for @list; @list },
+        process => sub { push @list, $self->_process_list( $_[0] ) },
+    );
 }
 
 sub mailboxes_subscribed {
     my ( $self, $box, $ref ) = @_;
 
     $ref ||= '""';
+
     my @list;
     if ( !defined $box ) {
 
@@ -440,13 +452,13 @@ sub mailboxes_subscribed {
             process => sub { push @list, $self->_process_list( $_[0] ) },
         );
 
-    } else {
-        return $self->_process_cmd(
-            cmd => [ LSUB => qq[$ref $box] ],
-            final => sub { _unescape($_) for @list; @list },
-            process => sub { push @list, $self->_process_list( $_[0] ) },
-        );
     }
+
+    return $self->_process_cmd(
+        cmd => [ LSUB => qq[$ref $box] ],
+        final => sub { _unescape($_) for @list; @list },
+        process => sub { push @list, $self->_process_list( $_[0] ) },
+    );
 }
 
 sub create_mailbox {
@@ -462,6 +474,7 @@ sub create_mailbox {
 
 sub expunge_mailbox {
     my ( $self, $box ) = @_;
+
     return if !$self->select($box);
 
     return $self->_process_cmd(
@@ -533,12 +546,14 @@ sub errstr {
     return $_[0]->{_errstr};
 }
 
-sub _nextid { ++$_[0]->{count} }
+sub _nextid { return ++$_[0]->{count} }
 
 sub _escape {
     $_[0] =~ s/\\/\\\\/g;
     $_[0] =~ s/\"/\\\"/g;
     $_[0] = "\"$_[0]\"";
+
+    return;
 }
 
 sub _unescape {
@@ -546,6 +561,8 @@ sub _unescape {
     $_[0] =~ s/"$//g;
     $_[0] =~ s/\\\"/\"/g;
     $_[0] =~ s/\\\\/\\/g;
+
+    return;
 }
 
 sub _send_cmd {
@@ -624,6 +641,8 @@ sub _process_cmd {
             }
         }
     }
+
+    return;
 }
 
 sub _seterrstr {
@@ -656,6 +675,8 @@ sub _debug {
     } else {
         print STDOUT $line;
     }
+
+    return;
 }
 
-"True";
+"True"; ## no critic -- pfft
