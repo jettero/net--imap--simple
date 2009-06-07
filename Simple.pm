@@ -169,7 +169,11 @@ sub select {
 
     $self->_process_cmd(
         cmd => [ SELECT => _escape($t_mbox) ],
-        final => sub { $self->{last} = $self->{BOXES}->{$mbox}->{messages} },
+        final => sub {
+            $self->{last} = my $n = $self->{BOXES}->{$mbox}->{messages};
+
+            $n ? $n : "0E0";
+        },
         process => sub {
 
             if ( $_[0] =~ /^\*\s+(\d+)\s+EXISTS/i ) {
