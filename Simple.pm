@@ -294,6 +294,8 @@ sub get {
 sub put {
     my ( $self, $mailbox_name, $msg, @flags ) = @_;
 
+    croak "usage: \$imap->put(mailbox, message, \@flags)" unless defined $msg and defined $mailbox_name;
+
     my $size = length $msg;
     if ( ref $msg eq "ARRAY" ) {
         $size = 0;
