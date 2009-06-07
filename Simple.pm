@@ -15,10 +15,7 @@ sub new {
     warn "use of Net::IMAP::Simple::SSL is depricated, pass use_ssl to new() instead\n"
         if $class =~ m/::SSL/;
 
-    my $self = bless { count => -1, } => $class;
-
-    my ( $srv, $prt ) = split( /:/, $server, 2 );
-    $prt ||= ( $opts{port} ? $opts{port} : $self->_port );
+    my $self = bless { count => -1 } => $class;
 
     if( $opts{use_ssl} ) {
         eval {
@@ -29,11 +26,21 @@ sub new {
         } or croak "IO::Socket::SSL must be installed in order to use_ssl";
     }
 
-    $self->{server}           = $srv;
-    $self->{port}             = $prt;
+    $self->{use_v6}  = ( $opts{use_v6}  ? 1 : 0 );
+    $self->{use_ssl} = ( $opts{use_ssl} ? 1 : 0 );
+
+    unless( $opts{shutup_about_v6ssl} ) {
+        carp "use_ssl with IPv6 is not yet supported"
+            if $opts{use_v6} and $opts{use_ssl};
+    }
+
+    my ( $srv, $prt ) = split( /:/, $server, 2 );
+    $prt ||= ( $opts{port} ? $opts{port} : $self->_port );
+
+    $self->{server} = $srv;
+    $self->{port}   = $prt;
+
     $self->{timeout}          = ( $opts{timeout} ? $opts{timeout} : $self->_timeout );
-    $self->{use_v6}           = ( $opts{use_v6}  ? 1 : 0 );
-    $self->{use_ssl}          = ( $opts{use_ssl} ? 1 : 0 );
     $self->{retry}            = ( $opts{retry} ? $opts{retry} : $self->_retry );
     $self->{retry_delay}      = ( $opts{retry_delay} ? $opts{retry_delay} : $self->_retry_delay );
     $self->{bindaddr}         = $opts{bindaddr};
