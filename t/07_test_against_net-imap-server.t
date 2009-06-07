@@ -25,7 +25,7 @@ sub run_tests() {
 
     my $nm = $imap->select("INBOX");
     ok( defined $nm )
-        or die " failure($nm) selecting testbox: " . $imap->errstr . "\n";
+        or die " failure($nm) selecting INBOX: " . $imap->errstr . "\n";
 
     ok( $imap->put( INBOX => "Subject: test!\n\ntest!" ) )
         or die " error putting test message: " . $imap->errstr . "\n";
