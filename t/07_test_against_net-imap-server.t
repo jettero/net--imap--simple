@@ -6,7 +6,7 @@ use Test;
 use Net::TCP;
 use Net::IMAP::Simple;
 
-plan tests => my $tests = 3;
+plan tests => my $tests = 4;
 
 sub run_tests() {
     my $imap = Net::IMAP::Simple->new('localhost:7000') or die "connect failed: $Net::IMAP::Simple::errstr";
@@ -14,8 +14,16 @@ sub run_tests() {
     ok( not $imap->login(qw(bad login)) );
     ok( $imap->errstr, qr/disabled/ );
 
-    $imap = Net::IMAP::Simple->new('localhost:8000', use_ssl=>1) or die "connect failed: $Net::IMAP::Simple::errstr";
+    unlink "informal-imap-client-dump.log";
+    open INFC, ">>informal-imap-client-dump.log";
+    # we don't care very much if the above two commands fail
+
+    $imap = Net::IMAP::Simple->new('localhost:8000', debug=>\*INFC, use_ssl=>1)
+        or die "connect failed: $Net::IMAP::Simple::errstr";
+
     ok( $imap->login(qw(working login)) );
+    my $nm = $imap->select("INBOX");
+    ok( defined $nm ) or warn " nm: $nm; errstr: " . $imap->errstr;
 }
 
 # test support:
