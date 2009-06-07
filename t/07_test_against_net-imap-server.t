@@ -6,7 +6,7 @@ use Test;
 use Net::TCP;
 use Net::IMAP::Simple;
 
-plan tests => my $tests = 4;
+plan tests => my $tests = 5;
 
 sub run_tests() {
     my $imap = Net::IMAP::Simple->new('localhost:7000') or die "connect failed: $Net::IMAP::Simple::errstr";
@@ -14,16 +14,21 @@ sub run_tests() {
     ok( not $imap->login(qw(bad login)) );
     ok( $imap->errstr, qr/disabled/ );
 
-    unlink "informal-imap-client-dump.log";
-    open INFC, ">>informal-imap-client-dump.log";
-    # we don't care very much if the above two commands fail
+    open INFC, ">informal-imap-client-dump.log";
+    # we don't care very much if the above command fails
 
     $imap = Net::IMAP::Simple->new('localhost:8000', debug=>\*INFC, use_ssl=>1)
-        or die "connect failed: $Net::IMAP::Simple::errstr";
+        or die "connect failed: $Net::IMAP::Simple::errstr\n";
 
-    ok( $imap->login(qw(working login)) );
+    ok( $imap->login(qw(working login)) )
+        or die " login failure: " . $imap->errstr . "\n";
+
     my $nm = $imap->select("INBOX");
-    ok( defined $nm ) or warn " nm: $nm; errstr: " . $imap->errstr;
+    ok( defined $nm )
+        or die " failure($nm) selecting testbox: " . $imap->errstr . "\n";
+
+    ok( $imap->put( INBOX => "Subject: test!\n\ntest!" ) )
+        or die " error putting test message: " . $imap->errstr . "\n";
 }
 
 # test support:
@@ -77,9 +82,8 @@ if( my $pid = fork ) {
 }
 
 close STDOUT; close STDERR;
-unlink "informal-imap-server-dump.log";
-open STDERR, ">>informal-imap-server-dump.log";
-open STDOUT, ">>informal-imap-server-dump.log";
+open STDERR, ">informal-imap-server-dump.log";
+open STDOUT, ">informal-imap-server-dump.log";
 # (we don't really care if the above fails...)
 
 $SIG{ALRM} = sub { exit 0 };
