@@ -1,3 +1,17 @@
+1.1810: Sat Jun  6 22:13:34 EDT 2009
+   - Started working on the tests.    Net::IMAP::Simple doesn't
+     seem to be able to handle the results of a select command as
+     returned by Net::IMAP::Server.  This may indicate other
+     problems with protocol compliance.  I can't say definitley
+     for sure that it's ::Simple, but that's the most likely
+     suspect.
+
+   - Made the module pull in IO::Socket::SSL without needing to
+     involve another module that probably shouldn't be a whole
+     separate distribution anyway.  Considering deprecating the
+     Net::IMAP::Simple::SSL for that reason, and because that
+     whole distribution is only 2 useful lines anyway.
+
 1.1800: Thu Jun  4 21:44:59 EDT 2009
    - jettero started pulling in his changes.
 
@@ -12,16 +26,17 @@
       - Added a few patches here and there
 
 1.16  2006-06-13
-    - Multiple bugs identified by nate@cs.wisc.edu. Patch provided by Nate.
-      Nate also provided new release tests - thanks man.
+    - Multiple bugs identified by nate@cs.wisc.edu. Patch
+      provided by Nate.  Nate also provided new release tests -
+      thanks man.
 
 1.15  2005-11-21
-    - Added mailboxes_subscribed() function introduced by John Cappiello.
-      This function provides a method for retreiving a list of mailboxes
-      which the user has subscribed to. This differs from the mailboxes()
-      function in that with the mailboxes() function all mailboxes are
-      returned, regardless ass to whether or not the user has subscribed
-      to them.
+    - Added mailboxes_subscribed() function introduced by John
+      Cappiello.  This function provides a method for retreiving
+      a list of mailboxes which the user has subscribed to. This
+      differs from the mailboxes() function in that with the
+      mailboxes() function all mailboxes are returned, regardless
+      ass to whether or not the user has subscribed to them.
 
 1.14  2005-10-01
     - Fixed error in sample code within the POD documentation
@@ -29,16 +44,18 @@
 
 1.13  2005-09-28
     - Versioning schema changed to use CVS versioning rather than
-      hard coded versioning. This is to address issues some people
-      are having with bug tracking and package management tools.
+      hard coded versioning. This is to address issues some
+      people are having with bug tracking and package management
+      tools.
 
 0.105 2005-09-28
     - Fixed syntax problem in the bindaddr option. Thanks
       Dagobert Michelsen for pointing this out.
 
 0.104 2005-08-06
-    - Fixed major bug discovered in get() and getfh() which caused
-      message lines to be dropped if they started with an "*"
+    - Fixed major bug discovered in get() and getfh() which
+      caused message lines to be dropped if they started with an
+      "*"
 
 0.103 2005-07-10
     - Fixed error in select() identified by Guido Kerkewitz and
@@ -47,8 +64,9 @@
       provided by Guido Kerkewitz.
 
 0.102 2005-06-25
-    - Fixed protocol error identified within the expunge_mailbox()
-      function. (Thanks alot to William Faulk for pointing this out)
+    - Fixed protocol error identified within the
+      expunge_mailbox() function. (Thanks alot to William Faulk
+      for pointing this out)
     - Fixed bugs in the sample imap.pl script provided.
     - Added flags() and recent() routines
     - Added current_box() function
@@ -57,18 +75,20 @@
       select() operations.
 
 0.101 2005-01-06
-    - Fixed bug which resulted in inconsistant results from login()
+    - Fixed bug which resulted in inconsistant results from
+      login()
 
 0.100 2005-14-05
     - Fixed dates in Changes file
     - Fixed IMAP protocol error identified by John A. Murphy
     - Changed behavior of login() to only return true or false.
-      This change means that to get the current number of messages
-      in a users INBOX folder you will need to preform a simple
-      $imap->select("INBOX") after successfully logging in.
+      This change means that to get the current number of
+      messages in a users INBOX folder you will need to preform a
+      simple $imap->select("INBOX") after successfully logging
+      in.
     - Added messages() function
-    - Added the frame work within select() to provide more detailed
-      information about the current IMAP framework
+    - Added the frame work within select() to provide more
+      detailed information about the current IMAP framework
 
 0.99  2005-28-04
     - Added multi-line header patch for bug discovered in top(),
@@ -84,11 +104,12 @@
 
 0.96  2005-26-04
     - Took over module development (Colin Faber)
-    - Fixed synopsis to provide a functional example (Colin Faber)
+    - Fixed synopsis to provide a functional example (Colin
+      Faber)
     - Added error handling (Colin Faber)
     - Added IPv6 support (Colin Faber)
-    - Added port, timeout, use_v6, retry, retry_delay and bindaddr
-      options to the object creation method.
+    - Added port, timeout, use_v6, retry, retry_delay and
+      bindaddr options to the object creation method.
 
 0.95  2004-06-09
     - Accept port configuration (Matt Bradford).
@@ -98,27 +119,27 @@
 
 0.94  Thu May 20 15:24:21 EDT 2004
     - Taken by Casey West.
-    - Quoted the password argument to login() when sending
-      to IMAP LOGIN command.
-    - Added arguments for searching in paths and for mailboxes
-      in the mailboxes() command.
+    - Quoted the password argument to login() when sending to
+      IMAP LOGIN command.
+    - Added arguments for searching in paths and for mailboxes in
+      the mailboxes() command.
     - Distribution clean up.
     
 
 0.93  Thu Dec 16 16:15:00 1999
-	- LIST ... {\d}\r\nmailbox parsing in mailboxes()
-        - better escaping of \" e \\
-          (Netscape server doesn't put the \\ in the mailbox name. Why?)
+    - LIST ... {\d}\r\nmailbox parsing in mailboxes()
+        - better escaping of \" e \\ (Netscape server doesn't put
+          the \\ in the mailbox name. Why?)
 
 0.92  Tue Dec 13 15:07:00 1999
-	- seen method
+    - seen method
         - \r\n as EOL. Thanks to Edward Chao!
         - \" escaping. Thanks to Edward Chao!
 
 0.91  Tue Nov  9 11:41:00 1999
-	- getfh method
+    - getfh method
         - fixed bugs in the documentation(!!!)
 
 0.90  Wed Nov  3 15:29:13 1999
-	- original version; created by h2xs 1.18
+    - original version; created by h2xs 1.18
 
