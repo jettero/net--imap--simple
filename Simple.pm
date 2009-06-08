@@ -12,8 +12,8 @@ our $VERSION = "1.1810";
 sub new {
     my ( $class, $server, %opts ) = @_;
 
-    warn "use of Net::IMAP::Simple::SSL is depricated, pass use_ssl to new() instead\n"
-        if $class =~ m/::SSL/;
+    ## warn "use of Net::IMAP::Simple::SSL is depricated, pass use_ssl to new() instead\n"
+    ##     if $class =~ m/::SSL/;
 
     my $self = bless { count => -1 } => $class;
 
@@ -146,13 +146,12 @@ sub login {
 
     return $self->_process_cmd(
         cmd     => [ LOGIN => qq[$user "$pass"] ],
-        final   => sub     { 1 },
-        process => sub     { },
+        final   => sub { 1 },
+        process => sub { },
     );
 }
 
 sub select { ## no critic -- too late to choose a different name now...
-
     my ( $self, $mbox ) = @_;
 
     $mbox = $self->current_box unless $mbox;
@@ -166,13 +165,12 @@ sub select { ## no critic -- too late to choose a different name now...
     $self->{BOXES}->{$mbox}->{proc_time} = time;
 
     my $t_mbox = $mbox;
-
-    $self->_process_cmd(
+    return $self->_process_cmd(
         cmd => [ SELECT => _escape($t_mbox) ],
         final => sub {
-            $self->{last} = my $n = $self->{BOXES}->{$mbox}->{messages};
+            my $nm = $self->{BOXES}->{$mbox}->{messages};
 
-            $n ? $n : "0E0";
+            $nm ? $nm : "0E0";
         },
         process => sub {
 
@@ -196,9 +194,7 @@ sub select { ## no critic -- too late to choose a different name now...
                 }
             }
         },
-    ) || return;
-
-    return $self->{last};
+    );
 }
 
 sub messages {
@@ -243,7 +239,7 @@ sub top {
     my @lines;
 
     return $self->_process_cmd(
-        cmd   => [ FETCH => qq[$number rfc822.header] ],
+        cmd   => [ FETCH => qq[$number RFC822.HEADER] ],
         final => sub     { \@lines },
         process => sub { push @lines, $_[0] if $_[0] =~ /^(?: \s+\S+ | [^:]+: )/x },
     );
@@ -284,7 +280,7 @@ sub get {
     my @lines;
 
     return $self->_process_cmd(
-        cmd => [ FETCH => qq[$number rfc822] ],
+        cmd => [ FETCH => qq[$number RFC822] ],
         final => sub { pop @lines; \@lines },
         process => sub {
             if ( $_[0] !~ /^\* \d+ FETCH/ ) {
@@ -349,7 +345,7 @@ sub getfh {
     my $buffer;
 
     return $self->_process_cmd(
-        cmd => [ FETCH => qq[$number rfc822] ],
+        cmd => [ FETCH => qq[$number RFC822] ],
         final => sub { seek $file, 0, 0; $file },
         process => sub {
             if ( $_[0] !~ /^\* \d+ FETCH/ ) {
@@ -553,7 +549,7 @@ sub _escape {
     $_[0] =~ s/\"/\\\"/g;
     $_[0] = "\"$_[0]\"";
 
-    return;
+    return $_[0];
 }
 
 sub _unescape {
@@ -562,7 +558,7 @@ sub _unescape {
     $_[0] =~ s/\\\"/\"/g;
     $_[0] =~ s/\\\\/\\/g;
 
-    return;
+    return $_[0];
 }
 
 sub _send_cmd {
@@ -574,6 +570,7 @@ sub _send_cmd {
     $self->_debug( caller, __LINE__, '_send_cmd', $cmd ) if $self->{debug};
 
     { local $\; print $sock $cmd; }
+
     return ( $sock => $id );
 }
 
