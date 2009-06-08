@@ -7,7 +7,7 @@ use Carp;
 use IO::File;
 use IO::Socket;
 
-our $VERSION = "1.1800";
+our $VERSION = "1.1801";
 
 sub new {
     my ( $class, $server, %opts ) = @_;
@@ -91,8 +91,8 @@ sub _sock_from   { $_[0]->{use_v6} ? 'IO::Socket::INET6' : 'IO::Socket::INET' }
 sub starttls {
     my ($self) = @_;
 
-    use IO::Socket::SSL; import IO::Socket::SSL;
-    use Net::SSLeay;     import Net::SSLeay;
+    require IO::Socket::SSL; import IO::Socket::SSL;
+    require Net::SSLeay;     import Net::SSLeay;
 
     # $self->{debug} = 1;
     # warn "Processing STARTTLS command";
