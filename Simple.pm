@@ -111,8 +111,8 @@ sub _sock_from   { return $_[0]->{use_v6} ? 'IO::Socket::INET6' : $_[0]->{use_ss
 sub starttls {
     my ($self) = @_;
 
-    use IO::Socket::SSL; import IO::Socket::SSL;
-    use Net::SSLeay;     import Net::SSLeay;
+    require IO::Socket::SSL; import IO::Socket::SSL;
+    require Net::SSLeay;     import Net::SSLeay;
 
     # $self->{debug} = 1;
     # warn "Processing STARTTLS command";
