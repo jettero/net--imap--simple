@@ -1,3 +1,7 @@
+1.1900: Wed Jun 10 18:19:53 EDT 2009
+   - It took me forever to figure out why the append command
+     wouldn't work.  Bug submitted to Net::IMAP::Server
+
 1.1810: Sun Jun  7 10:52:30 EDT 2009
    - made $imap->select return "0E0" when 0 messages are found
      after an otherwise successful select.
