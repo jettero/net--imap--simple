@@ -1,3 +1,6 @@
+1.1900: Thu Jun 11 07:17:13 EDT 2009
+   - fixed a bug I created in select
+
 1.1900: Wed Jun 10 22:01:53 EDT 2009
    - It took me forever to figure out why the append command
      wouldn't work.  Bug submitted to Net::IMAP::Server
