@@ -6,7 +6,7 @@ use Test;
 use Net::TCP;
 use Net::IMAP::Simple;
 
-plan tests => my $tests = 5;
+plan tests => my $tests = 7;
 
 if( -f "imap_server.pid" ) {
     my $imap = Net::IMAP::Simple->new('localhost:7000') or die "connect failed: $Net::IMAP::Simple::errstr";
@@ -30,6 +30,12 @@ if( -f "imap_server.pid" ) {
     ok( $imap->put( INBOX => "Subject: test!\n\ntest!" ) )
         or die " error putting test message: " . $imap->errstr . "\n";
 
+    my $c1 = [ $imap->select("fake"),  $imap->unseen, $imap->last, $imap->recent ]; ok( not $c1->[0] );
+    my $c2 = [ $imap->select("INBOX"), $imap->unseen, $imap->last, $imap->recent ];
+    my $c3 = [ $imap->select("fake"),  $imap->unseen, $imap->last, $imap->recent ];
+    my $c4 = [ $imap->select("INBOX"), $imap->unseen, $imap->last, $imap->recent ];
+
 } else {
+    warn "skipping $0\n";
     skip(1,1,1) for 1 .. $tests;
 }

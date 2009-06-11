@@ -10,7 +10,7 @@ plan tests => my $tests = 1;
 
 # test support:
 
-END { unlink "imap_server.pid" }
+die "there's already a server running, something might be wrong?" if -f "imap_server.pid";
 
 for my $mod (qw(Coro::EV Net::IMAP::Server IO::Socket::SSL)) {
     my $res = do {
@@ -51,6 +51,8 @@ if( my $pid = fork ) {
     ok print $fh "$pid\n";
     exit 0;
 }
+
+eval q | END { unlink "imap_server.pid" } |;
 
 close STDOUT; close STDERR;
 open STDERR, ">informal-imap-server-dump.log";
