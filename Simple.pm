@@ -156,8 +156,6 @@ sub select { ## no critic -- too late to choose a different name now...
 
     $mbox = $self->current_box unless $mbox;
 
-    $self->{working_box} = $mbox;
-
     if ( $self->{use_select_cache} && ( time - $self->{BOXES}->{$mbox}->{proc_time} ) <= $self->{select_cache_ttl} ) {
         return $self->{BOXES}->{$mbox}->{messages};
     }
@@ -169,6 +167,8 @@ sub select { ## no critic -- too late to choose a different name now...
         cmd => [ SELECT => _escape($t_mbox) ],
         final => sub {
             my $nm = $self->{BOXES}->{$mbox}->{messages};
+
+            $self->{working_box} = $mbox;
 
             $nm ? $nm : "0E0";
         },
