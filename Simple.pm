@@ -187,6 +187,7 @@ sub select { ## no critic -- too late to choose a different name now...
                 my ( $flag, $value ) = ( $1, $2 );
 
                 if ( $value =~ /\((.*?)\)/ ) {
+                    # NOTE: the sflags really aren't used anywhere, should they be?
                     $self->{BOXES}->{$mbox}->{sflags}->{$flag} = [ split( /\s+/, $1 ) ];
 
                 } else {
