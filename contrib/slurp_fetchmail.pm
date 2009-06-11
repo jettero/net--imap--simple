@@ -5,6 +5,7 @@ use strict;
 use warnings;
 use Carp;
 use File::Slurp qw(slurp);
+use Net::IMAP::Simple;
 
 sub login {
     my $class = shift;
