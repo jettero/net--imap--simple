@@ -16,6 +16,7 @@ t/07_start_server.t
 t/09_select_tests.t
 t7lib/Auth.pm
 t7lib/Model.pm
+t/99_end_server.t
 t/critic.t
 .todo
 t/pod_coverage.t
