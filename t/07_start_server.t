@@ -6,32 +6,11 @@ use Test;
 use Net::TCP;
 use Net::IMAP::Simple;
 
-plan tests => my $tests = 5;
-
-sub run_tests() {
-    my $imap = Net::IMAP::Simple->new('localhost:7000') or die "connect failed: $Net::IMAP::Simple::errstr";
-
-    ok( not $imap->login(qw(bad login)) );
-    ok( $imap->errstr, qr/disabled/ );
-
-    open INFC, ">informal-imap-client-dump.log";
-    # we don't care very much if the above command fails
-
-    $imap = Net::IMAP::Simple->new('localhost:8000', debug=>\*INFC, use_ssl=>1)
-        or die "connect failed: $Net::IMAP::Simple::errstr\n";
-
-    ok( $imap->login(qw(working login)) )
-        or die " login failure: " . $imap->errstr . "\n";
-
-    my $nm = $imap->select("INBOX");
-    ok( defined $nm )
-        or die " failure($nm) selecting INBOX: " . $imap->errstr . "\n";
-
-    ok( $imap->put( INBOX => "Subject: test!\n\ntest!" ) )
-        or die " error putting test message: " . $imap->errstr . "\n";
-}
+plan tests => my $tests = 1;
 
 # test support:
+
+END { unlink "imap_server.pid" }
 
 for my $mod (qw(Coro::EV Net::IMAP::Server IO::Socket::SSL)) {
     my $res = do {
@@ -59,14 +38,6 @@ if( my $pid = fork ) {
         sleep 1 while (--$retries)>0 and not $imapfh = Net::TCP->new(localhost=>7000);
     }
 
-    eval q &
-        END {
-          # warn " murdering imap server (if necessary)\n";
-            kill 15, $pid;
-            waitpid $pid, 0;
-        }1;
-    & or die $@;
-
     if( not $imapfh ) {
         warn "unable to start Net::IMAP::Server, skipping all meaningful tests\n";
         skip(1,1,1) for 1 .. $tests;
@@ -76,8 +47,8 @@ if( my $pid = fork ) {
     warn "imap server is up: " . <$imapfh>;
     close $imapfh;
 
-    run_tests();
-
+    open my $fh, ">imap_server.pid" or die $!;
+    ok print $fh "$pid\n";
     exit 0;
 }
 
@@ -87,7 +58,7 @@ open STDOUT, ">informal-imap-server-dump.log";
 # (we don't really care if the above fails...)
 
 $SIG{ALRM} = sub { exit 0 };
-alarm 30; # this server lasts at most 30 seconds, except perhaps on windows (??)
+alarm 60; # this server lasts at most 60 seconds, except perhaps on windows (??)
 
 Net::IMAP::Server->new(
     port        => 7000,
