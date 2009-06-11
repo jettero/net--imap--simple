@@ -20,3 +20,5 @@ sub login {
 
     return $imap;
 }
+
+"True";
