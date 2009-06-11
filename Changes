@@ -1,5 +1,7 @@
 1.1900: Thu Jun 11 07:17:13 EDT 2009
    - fixed a bug I created in select
+   - moved the tests around a little, getting ready for a whole
+     suite
 
 1.1900: Wed Jun 10 22:01:53 EDT 2009
    - It took me forever to figure out why the append command
