@@ -1,5 +1,5 @@
 
-package slurp_fetchmail
+package slurp_fetchmail;
 
 use strict;
 use warnings;
