@@ -8,10 +8,10 @@ use File::Slurp qw(slurp);
 
 sub login {
     my $class = shift;
-    my $fetchmailrc; slurp("$ENV{HOME}/.fetchmailrc");
-    my ($server) = $fetchmailrc =~ m/server\s+(.+)/m;
-    my ($user)   = $fetchmailrc =~ m/user\s+(.+)/m;
-    my ($pass)   = $fetchmailrc =~ m/pass\s+(.+)/m;
+    my $fetchmailrc = slurp("$ENV{HOME}/.fetchmailrc");
+    my ($server)    = $fetchmailrc =~ m/server\s+(.+)/m;
+    my ($user)      = $fetchmailrc =~ m/user\s+(.+)/m;
+    my ($pass)      = $fetchmailrc =~ m/pass\s+(.+)/m;
 
     croak "server, user and pass must be in the $ENV{HOME}/.fetchmailrc for this to work"
         unless $server and $user and $pass;
