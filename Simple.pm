@@ -166,7 +166,7 @@ sub select { ## no critic -- too late to choose a different name now...
     return $self->_process_cmd(
         cmd => [ SELECT => _escape($t_mbox) ],
         final => sub {
-            my $nm = $self->{BOXES}->{$mbox}->{messages};
+            my $nm = $self->{last} = $self->{BOXES}->{$mbox}->{messages};
 
             $self->{working_box} = $mbox;
 
