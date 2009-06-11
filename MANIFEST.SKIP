@@ -1,9 +1,10 @@
 ^blib$
 ^\.git
+^go$
+^imap_server\.pid$
+\.log$
 ^Makefile$
 ^MANIFEST\.SKIP$
 ^\.pm-desc\.html$
 ^pm_to_blib$
 ^\.st$
-\.log$
-^imap_server\.pid$
