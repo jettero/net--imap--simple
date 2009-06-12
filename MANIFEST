@@ -18,3 +18,4 @@ t/critic.t
 .todo
 t/pod_coverage.t
 t/pod.t
+t/test_server.pm
