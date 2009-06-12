@@ -16,17 +16,19 @@ for my $mod (qw(Coro::EV Net::IMAP::Server IO::Socket::SSL)) {
     }
 }
 
+$SIG{CHLD} = sub {
+    warn "Net::IMAP::Server died while starting, skipping all meaningful tests\n";
+    skip(1,1,1) for 1 .. $tests;
+    exit 0;
+};
+
 if( my $pid = fork ) {
     my $imapfh;
     my $retries = 7;
-    SIGCHILD_MEANS_DEATH: {
-        local $SIG{CHLD} = sub {
-            warn "Net::IMAP::Server died while starting, skipping all meaningful tests\n";
-            skip(1,1,1) for 1 .. $tests;
-            exit 0;
-        };
-        sleep 1 while (--$retries)>0 and not $imapfh = Net::TCP->new(localhost=>7000);
-    }
+
+    sleep 1 while (--$retries)>0 and not $imapfh = Net::TCP->new(localhost=>7000);
+
+    $SIG{CHLD} = $SIG{PIPE} = sub {};
 
     eval q &
         END {
@@ -47,23 +49,25 @@ if( my $pid = fork ) {
 
     run_tests();
 
-    kill $_, $pid for (15, 2, 11, 9);
-    waitpid $pid, 0;
+    kill 15, $pid;
+    while(1) {
+        print "$$ waiting for $pid\n";
+        last unless waitpid($pid, 0) > 0;
+    }
 
-    exit 0;
+} else {
+    close STDOUT; close STDERR;
+    unlink "informal-imap-server-dump.log";
+    open STDERR, ">>informal-imap-server-dump.log";
+    open STDOUT, ">>informal-imap-server-dump.log";
+    # (we don't really care if the above fails...)
+
+    Net::IMAP::Server->new(
+        port        => 7000,
+        ssl_port    => 8000,
+        auth_class  => "t7lib::Auth",
+        model_class => "t7lib::Model",
+      # user        => "nobody",
+      # group       => "nobody",
+    )->run;
 }
-
-close STDOUT; close STDERR;
-open STDERR, ">informal-imap-server-dump.log";
-open STDOUT, ">informal-imap-server-dump.log";
-# (we don't really care if the above fails...)
-
-$0 = "Test Net::IMAP::Server service on 7000/8000";
-Net::IMAP::Server->new(
-    port        => 7000,
-    ssl_port    => 8000,
-    auth_class  => "t7lib::Auth",
-    model_class => "t7lib::Model",
-  # user        => "nobody",
-  # group       => "nobody",
-)->run;
