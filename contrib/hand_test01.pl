@@ -13,8 +13,8 @@ use slurp_fetchmail;
 
 my $imap = slurp_fetchmail->login(use_ssl=>1, debug=>1);
 
-my $c1 = [ $imap->select("jet"),         $imap->unseen, $imap->last, $imap->recent ];
-my $c2 = [ $imap->select("bct"),         $imap->unseen, $imap->last, $imap->recent ];
-my $c3 = [ $imap->select("fakemailbox"), $imap->unseen, $imap->last, $imap->recent ];
+my $c1 = [ $imap->select("jet"),         $imap->current_box, $imap->unseen, $imap->last, $imap->recent ];
+my $c2 = [ $imap->select("bct"),         $imap->current_box, $imap->unseen, $imap->last, $imap->recent ];
+my $c3 = [ $imap->select("fakemailbox"), $imap->current_box, $imap->unseen, $imap->last, $imap->recent ];
 
 die "c1=(@$c1); c2=(@$c2); c3=(@$c3)\n";
