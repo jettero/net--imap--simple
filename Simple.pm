@@ -173,7 +173,6 @@ sub select { ## no critic -- too late to choose a different name now...
             $nm ? $nm : "0E0";
         },
         process => sub {
-
             if ( $_[0] =~ /^\*\s+(\d+)\s+EXISTS/i ) {
                 $self->{BOXES}->{$mbox}->{messages} = $1;
 
