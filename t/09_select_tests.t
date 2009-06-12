@@ -6,9 +6,9 @@ use Test;
 use Net::TCP;
 use Net::IMAP::Simple;
 
-plan tests => my $tests = 7;
+plan tests => my $tests = 9;
 
-if( -f "imap_server.pid" ) {
+TOP: if( -f "imap_server.pid" ) {
     my $imap = Net::IMAP::Simple->new('localhost:7000') or die "connect failed: $Net::IMAP::Simple::errstr";
 
     ok( not $imap->login(qw(bad login)) );
@@ -31,11 +31,24 @@ if( -f "imap_server.pid" ) {
         or die " error putting test message: " . $imap->errstr . "\n";
 
     my $c1 = [ $imap->select("fake"),  $imap->unseen, $imap->last, $imap->recent ]; ok( not $c1->[0] );
-    my $c2 = [ $imap->select("INBOX"), $imap->unseen, $imap->last, $imap->recent ];
-    my $c3 = [ $imap->select("fake"),  $imap->unseen, $imap->last, $imap->recent ];
-    my $c4 = [ $imap->select("INBOX"), $imap->unseen, $imap->last, $imap->recent ];
+    my $c2 = [ $imap->select("INBOX"), $imap->unseen, $imap->last, $imap->recent ]; ok( $c1->[0] );
+    my $c3 = [ $imap->select("fake"),  $imap->unseen, $imap->last, $imap->recent ]; ok( not $c1->[0] );
+    my $c4 = [ $imap->select("INBOX"), $imap->unseen, $imap->last, $imap->recent ]; ok( $c1->[0] );
 
 } else {
-    warn "skipping $0\n";
-    skip(1,1,1) for 1 .. $tests;
+    if( $ENV{TEST_AUTHOR} ) {
+        if( my $pid = fork ) {
+            waitpid $pid, 0;
+
+        } else {
+            system($^X, "t/07_start_server.t");
+            exit 0;
+        }
+        sleep 1;
+        goto TOP;
+
+    } else {
+        warn "skipping $0\n";
+        skip(1,1,1) for 1 .. $tests;
+    }
 }

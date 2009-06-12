@@ -5,6 +5,7 @@ use warnings;
 use Test;
 use Net::TCP;
 use Net::IMAP::Simple;
+use Cwd;
 
 plan tests => my $tests = 1;
 
@@ -52,14 +53,14 @@ if( my $pid = fork ) {
     exit 0;
 }
 
-eval q | END { unlink "imap_server.pid" } |;
-
 close STDOUT; close STDERR;
 open STDERR, ">informal-imap-server-dump.log";
 open STDOUT, ">informal-imap-server-dump.log";
 # (we don't really care if the above fails...)
 
-$SIG{ALRM} = sub { exit 0 };
+my $dir = getcwd();
+eval q | END { unlink "$dir/imap_server.pid" } |;
+$SIG{ALRM} = sub { unlink "$dir/imap_server.pid"; exit 0 };
 alarm 60; # this server lasts at most 60 seconds, except perhaps on windows (??)
 
 Net::IMAP::Server->new(
