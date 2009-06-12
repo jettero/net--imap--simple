@@ -16,27 +16,13 @@ for my $mod (qw(Coro::EV Net::IMAP::Server IO::Socket::SSL)) {
     }
 }
 
-$SIG{CHLD} = sub {
-    warn "Net::IMAP::Server died while starting, skipping all meaningful tests\n";
-    skip(1,1,1) for 1 .. $tests;
-    exit 0;
-};
+END { warn " $$ END" }
+$SIG{CHLD} = $SIG{PIPE} = sub {};
 
 if( my $pid = fork ) {
     my $imapfh;
     my $retries = 7;
-
     sleep 1 while (--$retries)>0 and not $imapfh = Net::TCP->new(localhost=>7000);
-
-    $SIG{CHLD} = $SIG{PIPE} = sub {};
-
-    eval q &
-        END {
-          # warn " murdering imap server (if necessary)\n";
-            kill $_, $pid for (15, 2, 11, 9);
-            waitpid $pid, 0;
-        }1;
-    & or die $@;
 
     if( not $imapfh ) {
         warn "unable to start Net::IMAP::Server, skipping all meaningful tests\n";
@@ -47,15 +33,20 @@ if( my $pid = fork ) {
     warn "imap server is up: " . <$imapfh>;
     close $imapfh;
 
+    $0 = "Net::IMAP::Simple($$)";
+    warn " $0";
+
     run_tests();
 
-    kill 15, $pid;
-    while(1) {
-        print "$$ waiting for $pid\n";
-        last unless waitpid($pid, 0) > 0;
-    }
-
 } else {
+    use POSIX qw(setsid); setsid();
+    exit if fork; # setsid() can't save us, Coro hates exit(0) I guess
+
+    $0 = "Net::IMAP::Server($$)";
+    warn " $0";
+    $SIG{ALRM} = sub { kill 15, $$ };
+    alarm 20;
+
     close STDOUT; close STDERR;
     unlink "informal-imap-server-dump.log";
     open STDERR, ">>informal-imap-server-dump.log";
@@ -65,6 +56,7 @@ if( my $pid = fork ) {
     Net::IMAP::Server->new(
         port        => 7000,
         ssl_port    => 8000,
+        pid_file    => "imap_server.pid",
         auth_class  => "t7lib::Auth",
         model_class => "t7lib::Model",
       # user        => "nobody",
