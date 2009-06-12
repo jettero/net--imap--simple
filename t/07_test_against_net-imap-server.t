@@ -1,4 +1,3 @@
-
 use strict;
 use warnings;
 
@@ -6,9 +5,9 @@ use Test;
 use Net::TCP;
 use Net::IMAP::Simple;
 
-plan tests => our $tests = 5;
+plan tests => our $tests = 13;
 
-sub run_tests() {
+sub run_tests {
     my $imap = Net::IMAP::Simple->new('localhost:7000') or die "\nconnect failed: $Net::IMAP::Simple::errstr";
 
     ok( not $imap->login(qw(bad login)) );
@@ -30,10 +29,19 @@ sub run_tests() {
     ok( $imap->put( INBOX => "Subject: test!\n\ntest!" ) )
         or die " error putting test message: " . $imap->errstr . "\n";
 
-    my $c1 = [ $imap->select("fake"),  $imap->unseen, $imap->last, $imap->recent ]; ok( $c1->[0], undef );
-    my $c2 = [ $imap->select("INBOX"), $imap->unseen, $imap->last, $imap->recent ]; ok( $c1->[0], 1 );
-    my $c3 = [ $imap->select("fake"),  $imap->unseen, $imap->last, $imap->recent ]; ok( $c1->[0], undef );
-    my $c4 = [ $imap->select("INBOX"), $imap->unseen, $imap->last, $imap->recent ]; ok( $c1->[0], 1 );
+    my @c = (
+        [ scalar $imap->select("fake"),  $imap->current_box, $imap->unseen, $imap->last, $imap->recent ],
+        [ scalar $imap->select("INBOX"), $imap->current_box, $imap->unseen, $imap->last, $imap->recent ],
+        [ scalar $imap->select("fake"),  $imap->current_box, $imap->unseen, $imap->last, $imap->recent ],
+        [ scalar $imap->select("INBOX"), $imap->current_box, $imap->unseen, $imap->last, $imap->recent ],
+    );
+
+    ok( $c[$_][1], "INBOX" ) for 0 .. $#c;
+
+    ok( $c[0][0], undef );
+    ok( $c[1][0], 1 );
+    ok( $c[2][0], undef );
+    ok( $c[3][0], 1 );
 }
 
 do "t/test_server.pm";
