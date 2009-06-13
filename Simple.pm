@@ -135,6 +135,7 @@ sub starttls {
             }
 
             $self->_debug( caller, __LINE__, 'starttls', "TLS initialization done" ) if $self->{debug};
+            1;
         },
 
         # process => sub { push @lines, $_[0] if $_[0] =~ /^(?: \s+\S+ | [^:]+: )/x },
@@ -239,8 +240,8 @@ sub top {
     my @lines;
 
     return $self->_process_cmd(
-        cmd   => [ FETCH => qq[$number RFC822.HEADER] ],
-        final => sub     { \@lines },
+        cmd     => [ FETCH => qq[$number RFC822.HEADER] ],
+        final   => sub { \@lines },
         process => sub { push @lines, $_[0] if $_[0] =~ /^(?: \s+\S+ | [^:]+: )/x },
     );
 }
@@ -361,7 +362,7 @@ sub quit {
     $self->_send_cmd('EXPUNGE');
 
     if ( !$hq ) {
-        $self->_process_cmd( cmd => ['LOGOUT'], final => sub { }, process => sub { } );
+        $self->_process_cmd( cmd => ['LOGOUT'], final => sub { 1 }, process => sub { } );
 
     } else {
         $self->_send_cmd('LOGOUT');
@@ -463,8 +464,8 @@ sub create_mailbox {
 
     return $self->_process_cmd(
         cmd     => [ CREATE => $box ],
-        final   => sub      { 1 },
-        process => sub      { },
+        final   => sub { 1 },
+        process => sub { },
     );
 }
 
@@ -486,8 +487,8 @@ sub delete_mailbox {
 
     return $self->_process_cmd(
         cmd     => [ DELETE => $box ],
-        final   => sub      { 1 },
-        process => sub      { },
+        final   => sub { 1 },
+        process => sub { },
     );
 }
 
@@ -498,8 +499,8 @@ sub rename_mailbox {
 
     return $self->_process_cmd(
         cmd     => [ RENAME => qq[$old_box $new_box] ],
-        final   => sub      { 1 },
-        process => sub      { },
+        final   => sub { 1 },
+        process => sub { },
     );
 }
 
@@ -510,8 +511,8 @@ sub folder_subscribe {
 
     return $self->_process_cmd(
         cmd     => [ SUBSCRIBE => $box ],
-        final   => sub         { 1 },
-        process => sub         { },
+        final   => sub { 1 },
+        process => sub { },
     );
 }
 
@@ -522,8 +523,8 @@ sub folder_unsubscribe {
 
     return $self->_process_cmd(
         cmd     => [ UNSUBSCRIBE => $box ],
-        final   => sub           { 1 },
-        process => sub           { },
+        final   => sub { 1 },
+        process => sub { },
     );
 }
 
@@ -533,8 +534,8 @@ sub copy {
 
     return $self->_process_cmd(
         cmd     => [ COPY => qq[$number $box] ],
-        final   => sub    { 1 },
-        process => sub    { },
+        final   => sub { 1 },
+        process => sub { },
     );
 }
 
