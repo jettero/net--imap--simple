@@ -7,7 +7,7 @@ use Carp;
 use IO::File;
 use IO::Socket;
 
-our $VERSION = "1.1900";
+our $VERSION = "1.1899_01";
 
 sub new {
     my ( $class, $server, %opts ) = @_;
