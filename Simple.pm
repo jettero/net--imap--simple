@@ -53,9 +53,10 @@ sub new {
         $self->{port} = $1;
     }
 
+    my $sock;
     my $c;
     for ( my $i = 0 ; $i <= $self->{retry} ; $i++ ) {
-        if ( $self->{sock} = $self->_connect ) {
+        if ( $sock = $self->{sock} = $self->_connect ) {
             $c = 1;
             last;
 
@@ -74,7 +75,9 @@ sub new {
         return;
     }
 
-    $self->_sock->getline();
+    if( $sock ) {
+        return unless $sock->connected or $sock->eof;
+    }
 
     return $self;
 }

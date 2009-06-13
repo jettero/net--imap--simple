@@ -19,5 +19,6 @@ t/pod.t
 t/pod_coverage.t
 t/test_server.pm
 t7lib/Auth.pm
+t7lib/Connection.pm
 t7lib/Model.pm
 t7lib/Shutdown.pm
