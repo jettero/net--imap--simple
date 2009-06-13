@@ -153,23 +153,30 @@ sub login {
 }
 
 sub select { ## no critic -- too late to choose a different name now...
-    my ( $self, $mbox ) = @_;
+    my ( $self, $mbox, $examine_mode ) = @_;
+    $examine_mode = $examine_mode ? 1:0;
+    $self->{examine_mode} = 0 unless exists $self->{examine_mode};
 
     $mbox = $self->current_box unless $mbox;
 
-    if ( $self->{use_select_cache} && ( time - $self->{BOXES}->{$mbox}->{proc_time} ) <= $self->{select_cache_ttl} ) {
-        return $self->{BOXES}->{$mbox}->{messages};
+    if( $examine_mode == $self->{examine_mode} ) {
+        if ( $self->{use_select_cache} && ( time - $self->{BOXES}->{$mbox}->{proc_time} ) <= $self->{select_cache_ttl} ) {
+            return $self->{BOXES}->{$mbox}->{messages};
+        }
     }
 
     $self->{BOXES}->{$mbox}->{proc_time} = time;
 
+    my $cmd = $examine_mode ? 'EXAMINE' : 'SELECT';
+
     my $t_mbox = $mbox;
     return $self->_process_cmd(
-        cmd => [ SELECT => _escape($t_mbox) ],
+        cmd => [ $cmd => _escape($t_mbox) ],
         final => sub {
             my $nm = $self->{last} = $self->{BOXES}->{$mbox}->{messages};
 
-            $self->{working_box} = $mbox;
+            $self->{working_box}  = $mbox;
+            $self->{examine_mode} = $examine_mode;
 
             $nm ? $nm : "0E0";
         },
@@ -196,6 +203,12 @@ sub select { ## no critic -- too late to choose a different name now...
             }
         },
     );
+}
+
+sub examine {
+    my $self = shift;
+
+    return $self->select($_[0], 1);
 }
 
 sub messages {
