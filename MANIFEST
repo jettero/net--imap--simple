@@ -9,9 +9,12 @@ Simple.pod
 certs/server-cert.csr
 certs/server-cert.pem
 certs/server-key.pem
+contrib/connectalot.pl
 contrib/hand_test01.pl
 contrib/imap.pl
 contrib/slurp_fetchmail.pm
+start_server.sh
+stop_server.sh
 t/01_load.t
 t/07_select_and_examine.t
 t/critic.t
@@ -22,5 +25,3 @@ t7lib/Auth.pm
 t7lib/Connection.pm
 t7lib/Model.pm
 t7lib/Shutdown.pm
-start_server.sh
-stop_server.sh
