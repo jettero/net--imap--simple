@@ -53,7 +53,14 @@ if( my $pid = fork ) {
 
     $0 = "Net::IMAP::Simple($$)";
 
-    run_tests();
+    if( __PACKAGE__->can('run_tests') ) {
+        run_tests()
+
+    } else {
+        warn "server started in standalone testing mode...\n";
+        warn "if this isn't what you wanted, provide a run_tests() function.\n";
+        exit 0;
+    }
 
     if( $imapfh = Net::TCP->new(localhost=>7000) ) {
         print $imapfh "1 Shutdown\n";
@@ -73,7 +80,7 @@ if( my $pid = fork ) {
         warn " $0, part of Net::IMAP::Simple tests, is comitting suicide ";
         kill_imap_server($$);
     };
-    alarm 60;
+    alarm $ENV{SUICIDE_SECONDS} || 60;
 
     open my $pidfile, ">", "imap_server.pid" or die $!;
     print $pidfile "$$\n"; # the pid_file option for the server doesn't seem to work...
