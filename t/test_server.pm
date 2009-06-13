@@ -87,10 +87,11 @@ if( my $pid = fork ) {
 
     use t7lib::Shutdown;
     Net::IMAP::Server->new(
-        port        => 7000,
-        ssl_port    => 8000,
-        auth_class  => "t7lib::Auth",
-        model_class => "t7lib::Model",
+        port             => 7000,
+        ssl_port         => 8000,
+        auth_class       => "t7lib::Auth",
+        model_class      => "t7lib::Model",
+        connection_class => "t7lib::Connection",
     )->run;
 }
 
