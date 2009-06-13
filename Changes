@@ -1,3 +1,6 @@
+1.1899_02: Sat Jun 13 07:39:29 EDT 2009
+   - moved some tests around and fixed the manifests
+
 1.1899_01: Fri Jun 12 22:06:36 EDT 2009
    - man Coro is disaggreable in the shutdown epoch, it took a
      fork, a setsid and another fork to disssociate the test from
