@@ -94,6 +94,10 @@ sub new {
         if( my $line = $sock->getline ) {
             $greeting_ok = 1 if $line =~ m/^\*\s+OK/i;
             return if $line =~ /^\*\s+(?:NO|BAD)(?:\s+(.+))?/i;
+
+        } else {
+            # the server hung up on us, otherwise we'd get a line after can_read
+            return;
         }
     }
 

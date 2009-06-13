@@ -20,6 +20,18 @@ for my $mod (qw(Coro::EV Net::IMAP::Server IO::Socket::SSL)) {
 
 $SIG{CHLD} = $SIG{PIPE} = sub {};
 
+sub shutdown_imap_server {
+    if( my $imapfh = Net::TCP->new(localhost=>7000) ) {
+        print $imapfh "1 Shutdown\n";
+    }
+}
+
+my $retries = 10;
+while( -f "imap_server.pid" ) {
+    shutdown_imap_server();
+    last if ( -- $retries ) < 1;
+}
+
 sub kill_imap_server {
     my $pid = shift;
 
@@ -32,7 +44,8 @@ sub kill_imap_server {
 
 if( my $pid = fork ) {
     my $imapfh;
-    my $retries = 10;
+
+    $retries = 10;
 
     my $line; {
         sleep 1 while (--$retries)>0 and not $imapfh = Net::TCP->new(localhost=>7000);
@@ -62,9 +75,7 @@ if( my $pid = fork ) {
         exit 0;
     }
 
-    if( $imapfh = Net::TCP->new(localhost=>7000) ) {
-        print $imapfh "1 Shutdown\n";
-    }
+    shutdown_imap_server();
 
     exit(0); # doesn't help, see below
 
