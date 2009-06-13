@@ -47,7 +47,8 @@ if( my $pid = fork ) {
         redo unless $line =~ m/OK/;
     };
 
-    warn " imap server is up: $line";
+    chomp $line;
+    print STDERR "              $line ";
     close $imapfh;
 
     $0 = "Net::IMAP::Simple($$)";
