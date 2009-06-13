@@ -210,6 +210,16 @@ C<\Seen> flag will be examined and if the message has been seen a true value is
 returned. All other failures return a false value and the C<errstr()> error
 handler is set with the error message.
 
+=item deleted
+
+    print "Deleted!" if $imap->deleted( $message_number );
+
+A message number is the only required parameter for this method. The message's
+C<\Deleted> flag will be examined and if the message has been deleted a true
+value is returned. All other failures return a false value and the errstr()
+error handler is set with the error message.
+
+
 =item list
 
     my $message_size  = $imap->list($message_number);

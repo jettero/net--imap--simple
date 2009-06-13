@@ -299,6 +299,17 @@ sub seen {
     );
 }
 
+sub deleted {
+    my ( $self, $number ) = @_;
+
+    my $lines = '';
+    $self->_process_cmd(
+        cmd     => [FETCH=> qq[$number (FLAGS)]],
+        final   => sub { $lines =~ /\\Deleted/i },
+        process => sub { $lines .= $_[0] },
+    );
+}
+
 sub list {
     my ( $self, $number ) = @_;
 
