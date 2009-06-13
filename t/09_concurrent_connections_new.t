@@ -7,7 +7,7 @@ use Net::IMAP::Simple;
 plan tests => our $tests = 1;
 
 sub run_tests {
-    my @works = grep {$_} map { Net::IMAP::Simple->new('localhost:8000', use_ssl=>1) } 1 .. 5;
+    my @works = grep {$_} map {warn "making #$_"; Net::IMAP::Simple->new('localhost:8000', use_ssl=>1) } 1 .. 5;
     ok( int @works, 4 );
 }
 

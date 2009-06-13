@@ -1,6 +1,7 @@
-1.1899_03: Sat Jun 13 08:37:55 EDT 2009
+1.1899_03: Sat Jun 13 17:05:55 EDT 2009
    - added a connection class so we might reject connections
      after the 4th, or whatever, and possibly solve ticket 30229
+   - banged my head on the IO::Socket::SSL wall for a while
 
 1.1899_02: Sat Jun 13 07:39:29 EDT 2009
    - moved some tests around and fixed the manifests

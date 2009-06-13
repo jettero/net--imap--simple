@@ -6,6 +6,7 @@ use warnings;
 use Carp;
 use IO::File;
 use IO::Socket;
+use IO::Select;
 
 our $VERSION = "1.1899_03";
 
@@ -17,6 +18,14 @@ sub new {
 
     my $self = bless { count => -1 } => $class;
 
+    $self->{use_v6}  = ( $opts{use_v6}  ? 1 : 0 );
+    $self->{use_ssl} = ( $opts{use_ssl} ? 1 : 0 );
+
+    unless( $opts{shutup_about_v6ssl} ) {
+        carp "use_ssl with IPv6 is not yet supported"
+            if $opts{use_v6} and $opts{use_ssl};
+    }
+
     if( $opts{use_ssl} ) {
         eval {
             require IO::Socket::SSL;
@@ -26,12 +35,13 @@ sub new {
         } or croak "IO::Socket::SSL must be installed in order to use_ssl";
     }
 
-    $self->{use_v6}  = ( $opts{use_v6}  ? 1 : 0 );
-    $self->{use_ssl} = ( $opts{use_ssl} ? 1 : 0 );
+    if ( $opts{use_v6} ) {
+        eval {
+            require IO::Socket::INET6;
+            import  IO::Socket::INET6;
+            "true";
 
-    unless( $opts{shutup_about_v6ssl} ) {
-        carp "use_ssl with IPv6 is not yet supported"
-            if $opts{use_v6} and $opts{use_ssl};
+        } or croak "IO::Socket::INET6 must be installed in order to use_v6";
     }
 
     my ( $srv, $prt ) = split( /:/, $server, 2 );
@@ -75,21 +85,25 @@ sub new {
         return;
     }
 
-    if( $sock ) {
-        return unless $sock->connected or $sock->eof;
+    return unless $sock;
+
+    my $select = $self->{sel} = IO::Select->new($sock);
+
+    my $greeting_ok = 0;
+    while( $select->can_read(1) ) {
+        if( my $line = $sock->getline ) {
+            $greeting_ok = 1 if $line =~ m/^\*\s+OK/i;
+            return if $line =~ /^\*\s+(?:NO|BAD)(?:\s+(.+))?/i;
+        }
     }
 
+    return unless $greeting_ok;
     return $self;
 }
 
 sub _connect {
     my ($self) = @_;
     my $sock;
-
-    if ( $self->{use_v6} ) {
-        require IO::Socket::INET6;
-        import  IO::Socket::INET6;
-    }
 
     $sock = $self->_sock_from->new(
         PeerAddr => $self->{server},

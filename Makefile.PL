@@ -5,6 +5,11 @@ WriteMakefile(
     'VERSION_FROM' => 'Simple.pm',
     AUTHOR         => 'Paul Miller <jettero@cpan.org>',
 
+    PREREQ_PM => {
+        'IO::Socket' => 0,
+        'IO::Select' => 0,
+    },
+
     ($ExtUtils::MakeMaker::VERSION ge '6.48'? 
         (MIN_PERL_VERSION => 5.008,
             META_MERGE => {
