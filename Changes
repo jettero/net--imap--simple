@@ -1,3 +1,7 @@
+1.1899_04: Sat Jun 13 18:33:46 EDT 2009
+   - added deleted() from JIK <jik@kamens.brookline.ma.us>'s
+     patch.
+
 1.1899_03: Sat Jun 13 17:05:55 EDT 2009
    - added a connection class so we might reject connections
      after the 4th, or whatever, and possibly solve ticket 30229

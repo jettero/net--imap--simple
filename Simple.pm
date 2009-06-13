@@ -8,7 +8,7 @@ use IO::File;
 use IO::Socket;
 use IO::Select;
 
-our $VERSION = "1.1899_03";
+our $VERSION = "1.1899_04";
 
 sub new {
     my ( $class, $server, %opts ) = @_;
