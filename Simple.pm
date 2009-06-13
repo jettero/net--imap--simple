@@ -92,11 +92,18 @@ sub new {
     my $greeting_ok = 0;
     while( $select->can_read(1) ) {
         if( my $line = $sock->getline ) {
+            # Cool, we got a line, check to see if it's a
+            # greeting.
+
             $greeting_ok = 1 if $line =~ m/^\*\s+OK/i;
+
+            # Also, check to see if we failed before we sent any
+            # commands.
             return if $line =~ /^\*\s+(?:NO|BAD)(?:\s+(.+))?/i;
 
         } else {
-            # the server hung up on us, otherwise we'd get a line after can_read
+            # The server hung up on us, otherwise we'd get a line
+            # after can_read.
             return;
         }
     }
