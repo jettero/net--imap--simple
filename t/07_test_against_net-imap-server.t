@@ -2,7 +2,6 @@ use strict;
 use warnings;
 
 use Test;
-use Net::TCP;
 use Net::IMAP::Simple;
 
 plan tests => our $tests = 13;
@@ -44,4 +43,4 @@ sub run_tests {
     ok( $c[3][0], 1 );
 }
 
-do "t/test_server.pm";
+do "t/test_server.pm" or die "error starting imap server: $!$@";
