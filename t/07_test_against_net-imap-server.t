@@ -29,10 +29,10 @@ sub run_tests {
         or die " error putting test message: " . $imap->errstr . "\n";
 
     my @c = (
-        [ $imap->select("fake"),  $imap->current_box, $imap->unseen, $imap->last, $imap->recent ],
-        [ $imap->select("INBOX"), $imap->current_box, $imap->unseen, $imap->last, $imap->recent ],
-        [ $imap->select("fake"),  $imap->current_box, $imap->unseen, $imap->last, $imap->recent ],
-        [ $imap->select("INBOX"), $imap->current_box, $imap->unseen, $imap->last, $imap->recent ],
+        [ scalar $imap->select("fake"),  $imap->current_box, $imap->unseen, $imap->last, $imap->recent ],
+        [ scalar $imap->select("INBOX"), $imap->current_box, $imap->unseen, $imap->last, $imap->recent ],
+        [ scalar $imap->select("fake"),  $imap->current_box, $imap->unseen, $imap->last, $imap->recent ],
+        [ scalar $imap->select("INBOX"), $imap->current_box, $imap->unseen, $imap->last, $imap->recent ],
     );
 
     ok( $c[$_][1], "INBOX" ) for 0 .. $#c;

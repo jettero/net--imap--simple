@@ -632,7 +632,7 @@ sub _process_cmd {
                 return $args{final}->($res);
 
             } elsif ( defined($ok) && !$ok ) {
-                return undef; ## no critic
+                return;
 
             } else {
                 $args{process}->($res);
@@ -640,7 +640,7 @@ sub _process_cmd {
         }
     }
 
-    return undef; ## no critic
+    return;
 }
 
 sub _seterrstr {
