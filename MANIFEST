@@ -22,3 +22,5 @@ t7lib/Auth.pm
 t7lib/Connection.pm
 t7lib/Model.pm
 t7lib/Shutdown.pm
+start_server.sh
+stop_server.sh
