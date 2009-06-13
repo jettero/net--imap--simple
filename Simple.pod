@@ -144,6 +144,12 @@ Selects a folder named in the single required parameter. The number of messages
 in that folder is returned on success. On failure, nothing is returned  and the
 C<errstr()> error handler is set with the error message.
 
+=item examine
+
+This is very nearly a synonym for C<select()>.  The only real difference is that
+the EXAMINE command is sent to the server instead of SELECT.
+L<Net::IMAP::Simple> is otherwise unaware of the read-only-ness of the mailbox.
+
 =item messages
 
     print "Messages in Junk Mail -- " . $imap->messages("INBOX.Junk Mail") .  "\n";

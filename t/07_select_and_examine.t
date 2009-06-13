@@ -4,7 +4,7 @@ use warnings;
 use Test;
 use Net::IMAP::Simple;
 
-plan tests => our $tests = 13;
+plan tests => our $tests = 23;
 
 sub run_tests {
     my $imap = Net::IMAP::Simple->new('localhost:7000') or die "\nconnect failed: $Net::IMAP::Simple::errstr";
@@ -41,6 +41,19 @@ sub run_tests {
     ok( $c[1][0], 1 );
     ok( $c[2][0], undef );
     ok( $c[3][0], 1 );
+
+    ok( "@{ $c[$_] }[2,3,4]", "1 1 1" ) for 0 .. $#c;
+
+    ## Test EXMAINE
+
+    ok( $imap->examine('INBOX') );
+    ok( not $imap->put( INBOX => "Subject: test!\n\ntest!" ) );
+    ok( $imap->errstr, qr/read.*only/ );
+
+    ok( $imap->select('INBOX') );
+    ok( $imap->put( INBOX => "Subject: test!\n\ntest!" ) )
+        or die " error putting test message: " . $imap->errstr . "\n";
+    ok( $imap->select('INBOX'), 2 );
 }
 
 do "t/test_server.pm" or die "error starting imap server: $!$@";
