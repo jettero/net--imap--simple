@@ -180,6 +180,15 @@ sub login {
     );
 }
 
+sub _reselect {
+    my $self = shift;
+    my $mbox = delete $self->{working_box} || "INBOX";
+
+    warn "\e[31mreselecting $mbox\e[m";
+
+    return $self->select($mbox, $self->{examine_mode});
+}
+
 sub select { ## no critic -- too late to choose a different name now...
     my ( $self, $mbox, $examine_mode ) = @_;
     $examine_mode = $examine_mode ? 1:0;
@@ -344,6 +353,14 @@ sub get {
 
 }
 
+sub _process_flags {
+    my $self = shift;
+
+    return grep { m/^\\\w+\z/ }
+            map { split m/\s+/, $_ }
+            @_;
+}
+
 sub put {
     my ( $self, $mailbox_name, $msg, @flags ) = @_;
 
@@ -355,10 +372,9 @@ sub put {
         $size += length $_ for @$msg;
     }
 
-    @flags = map { split( m/\s+/, $_ ) } @flags;
-    @flags = grep { m/^\\\w+\z/ } @flags;
+    @flags = $self->_process_flags(@flags);
 
-    # @flags = ('\Seen') unless @flags;
+    warn "\e[35mputting\e[m";
 
     return $self->_process_cmd(
         cmd     => [ APPEND => "$mailbox_name (@flags) {$size}" ],
@@ -376,7 +392,8 @@ sub put {
                 print $sock "\r\n";
             }
         },
-    );
+
+    ) and (($self->current_box ne $mailbox_name) or $self->_reselect);
 }
 
 sub msg_flags {
@@ -429,14 +446,50 @@ sub last { ## no critic -- too late to choose a different name now...
     return shift->_last
 }
 
+sub add_flags {
+    my ( $self, $number, @flags ) = @_;
+
+    @flags = $self->_process_flags(@flags);
+    return unless @flags;
+
+    return $self->_process_cmd(
+        cmd     => [ STORE => qq[$number +FLAGS (@flags)] ],
+        final   => sub { 1 },
+        process => sub { },
+
+    ) and $self->_reselect;
+}
+
+sub sub_flags {
+    my ( $self, $number, @flags ) = @_;
+
+    @flags = $self->_process_flags(@flags);
+    return unless @flags;
+
+    return $self->_process_cmd(
+        cmd     => [ STORE => qq[$number -FLAGS (@flags)] ],
+        final   => sub { 1 },
+        process => sub { },
+
+    ) and $self->_reselect;
+}
+
 sub delete { ## no critic -- too late to choose a different name now...
     my ( $self, $number ) = @_;
 
-    return $self->_process_cmd(
-        cmd     => [ STORE => qq[$number +FLAGS (\\Deleted)] ],
-        final   => sub { 1 },
-        process => sub { },
-    );
+    return $self->add_flags( $number, '\Deleted' );
+}
+
+sub see {
+    my ( $self, $number ) = @_;
+
+    return $self->add_flags( $number, '\Seen' );
+}
+
+sub unsee {
+    my ( $self, $number ) = @_;
+
+    return $self->sub_flags( $number, '\Seen' );
 }
 
 sub _process_list {

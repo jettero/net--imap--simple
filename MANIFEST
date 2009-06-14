@@ -18,6 +18,7 @@ stop_server.sh
 t/01_load.t
 t/07_select_and_examine.t
 t/09_concurrent_connections_new.t
+t/15_flags.t
 t/critic.t
 t/pod.t
 t/pod_coverage.t

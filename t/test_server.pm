@@ -93,9 +93,9 @@ if( my $pid = fork ) {
     };
     alarm $ENV{SUICIDE_SECONDS} || 60;
 
-    open my $pidfile, ">", "imap_server.pid" or die $!;
-    print $pidfile "$$\n"; # the pid_file option for the server doesn't seem to work...
-    close $pidfile;
+    open PIDFILE, ">", "imap_server.pid" or die $!;
+    print PIDFILE "$$\n"; # the pid_file option for the server doesn't seem to work...
+    close PIDFILE;
 
     close STDOUT; close STDERR;
     unlink "informal-imap-server-dump.log";
