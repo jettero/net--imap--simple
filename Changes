@@ -1,3 +1,6 @@
+1.1899_05: Sun Jun 14 07:14:54 EDT 2009
+   - fixed t/test_server.pm (use IO::Socket::INET, not Net::TCP)
+
 1.1899_04: Sat Jun 13 18:33:46 EDT 2009
    - added deleted() from JIK <jik@kamens.brookline.ma.us>'s
      patch.
