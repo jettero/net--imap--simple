@@ -12,8 +12,13 @@ sub run_tests {
     my $imap = Net::IMAP::Simple->new('localhost:8000', debug=>\*INFC, use_ssl=>1)
         or die "\nconnect failed: $Net::IMAP::Simple::errstr\n";
 
-    for(1 .. 10) {
+    $imap->login(qw(working login));
+    $imap->select('INBOX')
+        or die " failure selecting INBOX: " . $imap->errstr . "\n";
+
+    for(1 .. 3) {
         $imap->put( INBOX => "Subject: test-$_\n\ntest-$_" );
+        # ok( $imap->last,   $_ );
         ok( $imap->unseen, $_ );
     }
 }

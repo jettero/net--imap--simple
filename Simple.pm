@@ -274,12 +274,15 @@ sub unseen {
     my ( $self, $folder ) = @_;
 
     $self->select($folder);
+    warn "\e[36munseening\e[m";
 
     return $self->{BOXES}{ $self->current_box }{oflags}{UNSEEN};
 }
 
 sub current_box {
     my ($self) = @_;
+
+    warn "\e[36mcurrent_box\e[m";
 
     return ( $self->{working_box} ? $self->{working_box} : 'INBOX' );
 }
@@ -376,7 +379,7 @@ sub put {
 
     warn "\e[35mputting\e[m";
 
-    return $self->_process_cmd(
+    my $putres = $self->_process_cmd(
         cmd     => [ APPEND => "$mailbox_name (@flags) {$size}" ],
         final   => sub { 1 },
         process => sub {
@@ -392,8 +395,10 @@ sub put {
                 print $sock "\r\n";
             }
         },
+    );
 
-    ) and (($self->current_box ne $mailbox_name) or $self->_reselect);
+    return $self->_reselect if $self->current_box eq $mailbox_name;
+    return $putres;
 }
 
 sub msg_flags {
