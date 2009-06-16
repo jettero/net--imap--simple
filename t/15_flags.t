@@ -4,7 +4,7 @@ use warnings;
 use Test;
 use Net::IMAP::Simple;
 
-plan tests => our $tests = 10;
+plan tests => our $tests = ((my $puts = 0)+1)*3;
 
 sub run_tests {
     open INFC, ">>", "informal-imap-client-dump.log" or die $!;
@@ -13,13 +13,19 @@ sub run_tests {
         or die "\nconnect failed: $Net::IMAP::Simple::errstr\n";
 
     $imap->login(qw(working login));
-    $imap->select('INBOX')
+    my $nm = $imap->select('INBOX')
         or die " failure selecting INBOX: " . $imap->errstr . "\n";
 
-    for(1 .. 3) {
+    ok( 0+$nm, 0 );
+    ok( 0+$imap->last, 0 );
+    ok( 0+$imap->unseen, 0 );
+
+    for(1 .. $puts) {
         $imap->put( INBOX => "Subject: test-$_\n\ntest-$_" );
-        # ok( $imap->last,   $_ );
-        ok( $imap->unseen, $_ );
+
+        ok( 0+$nm, $_ );
+        ok( 0+$imap->last, $_ );
+        ok( 0+$imap->unseen, 0 );
     }
 }
 

@@ -184,8 +184,6 @@ sub _reselect {
     my $self = shift;
     my $mbox = delete $self->{working_box} || "INBOX";
 
-    warn "\e[31mreselecting $mbox\e[m";
-
     return $self->select($mbox, $self->{examine_mode});
 }
 
@@ -274,15 +272,12 @@ sub unseen {
     my ( $self, $folder ) = @_;
 
     $self->select($folder);
-    warn "\e[36munseening\e[m";
 
     return $self->{BOXES}{ $self->current_box }{oflags}{UNSEEN};
 }
 
 sub current_box {
     my ($self) = @_;
-
-    warn "\e[36mcurrent_box\e[m";
 
     return ( $self->{working_box} ? $self->{working_box} : 'INBOX' );
 }
@@ -376,8 +371,6 @@ sub put {
     }
 
     @flags = $self->_process_flags(@flags);
-
-    warn "\e[35mputting\e[m";
 
     my $putres = $self->_process_cmd(
         cmd     => [ APPEND => "$mailbox_name (@flags) {$size}" ],
