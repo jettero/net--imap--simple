@@ -25,7 +25,7 @@ sub run_tests {
     ok( defined $nm )
         or die " failure($nm) selecting INBOX: " . $imap->errstr . "\n";
 
-    ok( $imap->put( INBOX => "Subject: test!\n\ntest!" ) )
+    ok( $imap->put( INBOX => "Subject: test!\n\ntest!" ), $nm +1 )
         or die " error putting test message: " . $imap->errstr . "\n";
 
     my @c = (
@@ -50,8 +50,8 @@ sub run_tests {
     ok( not $imap->put( INBOX => "Subject: test!\n\ntest!" ) );
     ok( $imap->errstr, qr/read.*only/ );
 
-    ok( $imap->select('INBOX') );
-    ok( $imap->put( INBOX => "Subject: test!\n\ntest!" ) )
+    ok( $nm = $imap->select('INBOX') );
+    ok( $imap->put( INBOX => "Subject: test!\n\ntest!" ), $nm +1 )
         or die " error putting test message: " . $imap->errstr . "\n";
     ok( $imap->select('INBOX'), 2 );
 }

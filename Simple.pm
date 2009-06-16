@@ -372,7 +372,7 @@ sub put {
 
     @flags = $self->_process_flags(@flags);
 
-    my $putres = $self->_process_cmd(
+    $self->_process_cmd(
         cmd     => [ APPEND => "$mailbox_name (@flags) {$size}" ],
         final   => sub { 1 },
         process => sub {
@@ -388,10 +388,11 @@ sub put {
                 print $sock "\r\n";
             }
         },
-    );
+
+    ) or return;
 
     return $self->_reselect if $self->current_box eq $mailbox_name;
-    return $putres;
+    return 1;
 }
 
 sub msg_flags {

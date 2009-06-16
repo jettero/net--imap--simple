@@ -61,7 +61,7 @@ if( my $pid = fork ) {
     };
 
     chomp $line;
-    print STDERR (" " x 30, "$line ");
+    print STDERR (" " x 40, "$line ");
     close $imapfh;
 
     $0 = "Net::IMAP::Simple($$)";
