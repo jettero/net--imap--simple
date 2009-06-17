@@ -188,8 +188,8 @@ This method uses caching.
 
 NOTE: The UNSEEN value varies from server to server, but according to the IMAP
 specification, it should be the I<number of the first unseen message>, in the
-case the flag is provided.  If the flag is not provided, users would have to
-SEARCH for it.
+case the flag is provided.  (If the flag is not provided, users would have to
+use the SEARCH command to find it -- not implemented.)
 
 =item current_box
 
@@ -302,6 +302,14 @@ returned and the C<errstr()> error handler is set with the error message.
 This method sets the C<\Deleted> flag on the given message. On success it
 returns true, false on failure and the C<errstr()> error handler is set with the
 error message.  If the flag was already there, no error is produced.
+
+=item undelete
+
+  print "Resurrected!" if $imap->undelete( $message_number );
+
+This method removes the C<\Deleted> flag on the given message. On success it
+returns true, false on failure and the C<errstr()> error handler is set with the
+error message.  If the flag wasn't there, no error is produced.
 
 =item see
 

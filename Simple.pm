@@ -479,6 +479,12 @@ sub delete { ## no critic -- too late to choose a different name now...
     return $self->add_flags( $number, '\Deleted' );
 }
 
+sub undelete {
+    my ( $self, $number ) = @_;
+
+    return $self->sub_flags( $number, '\Deleted' );
+}
+
 sub see {
     my ( $self, $number ) = @_;
 
