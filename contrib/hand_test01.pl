@@ -17,4 +17,4 @@ for my $box (map {split m/\s+/} (@ARGV ? @ARGV : ("INBOX"))) {
     };
 }
 
-warn dump(@c);
+warn dump(@c) . "\n";
