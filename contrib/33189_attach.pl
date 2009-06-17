@@ -8,24 +8,12 @@ use warnings;
 use Net::IMAP::Simple;
 use Email::Simple;
 
-my $show_subjects = 0;
+my $show_subjects = $ENV{SHOW_SUBJECTS};
 
-my $server = "XXXeditedXXX";
-my $user   = "XXXeditedXXX";
-my $pass   = "XXXeditedXXX";
-my $folder = shift;
-$folder = "INBOX" unless $folder;
-
-my $imap = Net::IMAP::Simple->new( $server, debug => 1 )
-  || die "Unable to connect to IMAP: $Net::IMAP::Simple::errstr\n";
+my $imap = slurp_fetchmail->login(use_ssl=>1, debug=>1);
+my $folder = shift || 'INBOX';
 
 my ( $newmsg, $unseenmsg, $oldmsg, $flags );
-
-# Log on
-if ( !$imap->login( $user => $pass ) ) {
-    print STDERR "Login failed: " . $imap->errstr . "\n";
-    exit(64);
-}
 
 my $nm = $imap->select($folder);
 
