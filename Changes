@@ -1,3 +1,12 @@
+1.1899_05: Wed Jun 17 06:25:39 EDT 2009
+   - documented see, unsee, add_flags, and sub_flags
+   - used the IMAP RFC to show that gmail is wrong,
+     Net::IMAP::Server is right.  google apps for domains
+     apparently selects an unseen message willy nilly (or which
+     ever is last) for the OK [UNSEEN #] message.  It should be
+     the *first* unseen message.  Their IMAP is notoriously
+     un-IMAP though.  I shouldn't be so surprised.
+
 1.1899_05: Tue Jun 16 06:42:16 EDT 2009
    - I started working on ticket 45953,
    - created sub_flags() and add_flags()
