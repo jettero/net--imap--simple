@@ -12,12 +12,14 @@ use lib 'contrib', "blib/lib", "blib/arch";
 use slurp_fetchmail;
 use Data::Dump qw(dump);
 
-my $imap = slurp_fetchmail->login(use_ssl=>1, debug=>1);
+my $imap = slurp_fetchmail->login(use_ssl=>1, debug=>$ENV{DEBUG});
 
-my $c1 = [ selectres=>dump($imap->select("jet")),         box=>$imap->current_box, first_unseen=>$imap->unseen, recent=>$imap->recent ];
-my $c2 = [ selectres=>dump($imap->select("fakemailbox")), box=>$imap->current_box, first_unseen=>$imap->unseen, recent=>$imap->recent ];
-my $c3 = [ selectres=>dump($imap->select("bct")),         box=>$imap->current_box, first_unseen=>$imap->unseen, recent=>$imap->recent ];
+my @c;
+for my $box (split m/\s+/, (shift||"INBOX")) {
+    push @c, [
+        selectres => dump($imap->select("jet")), 
+        box => $imap->current_box, first_unseen=>$imap->unseen, recent=>$imap->recent,
+    ];
+}
 
-die "c1=(@$c1); c2=(@$c2); c3=(@$c3)\n";
-# c1=(212 jet  212 0); c2=(() jet  212 0); c3=(287 bct 3 287 0)
-
+warn dump(@c);

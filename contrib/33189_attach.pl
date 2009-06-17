@@ -11,7 +11,7 @@ use Net::IMAP::Simple;
 
 my $show_subjects = $ENV{SHOW_SUBJECTS};
 
-my $imap = slurp_fetchmail->login(use_ssl=>1, debug=>0);
+my $imap = slurp_fetchmail->login(use_ssl=>1, debug=>$ENV{DEBUG});
 my $folder = shift || 'INBOX';
 
 my ( $newmsg, $unseenmsg, $oldmsg, $flags );
