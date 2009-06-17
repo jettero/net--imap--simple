@@ -19,3 +19,5 @@ my $c2 = [ dump($imap->select("fakemailbox")), $imap->current_box, $imap->unseen
 my $c3 = [ dump($imap->select("bct")),         $imap->current_box, $imap->unseen, $imap->last, $imap->recent ];
 
 die "c1=(@$c1); c2=(@$c2); c3=(@$c3)\n";
+# c1=(212 jet  212 0); c2=(() jet  212 0); c3=(287 bct 3 287 0)
+

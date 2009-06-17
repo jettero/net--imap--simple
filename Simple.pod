@@ -181,10 +181,15 @@ This method uses caching.
     print "Unseen messages value: " . $imap->unseen . "\n";
 
 This method accepts an optional folder name and returns the 'UNSEEN' value
-provided durning a SELECT result set. If no folder name is provided the last
+provided darning a SELECT result set. If no folder name is provided the last
 folder C<< $imap->select >>'ed will be used.
 
 This method uses caching.
+
+NOTE: The UNSEEN value varies from server to server, but according to the IMAP
+specification, it should be the I<number of the first unseen message>, in the
+case the flag is provided.  If the flag is not provided, users would have to
+SEARCH for it.
 
 =item current_box
 
@@ -294,9 +299,38 @@ returned and the C<errstr()> error handler is set with the error message.
 
   print "Gone!" if $imap->delete( $message_number );
 
-This method deletes a message from the selected mailbox. On success it returns
-true. False on failure and the C<errstr()> error handler is set with the error
-message.
+This method sets the C<\Deleted> flag on the given message. On success it
+returns true, false on failure and the C<errstr()> error handler is set with the
+error message.  If the flag was already there, no error is produced.
+
+=item see
+
+  print "You've seen message #$msgno" if $imap->see( $messageno );
+
+This method sets the C<\Seen> flag on the given message. On success it returns
+true, false on failure and the C<errstr()> error handler is set with the error
+message.  If the flag was already there, no error is produced.
+
+=item unsee
+
+  print "You've not seen message #$msgno" if $imap->unsee( $messageno );
+
+This method removes the C<\Seen> flag on the given message. On success it
+returns true, false on failure and the C<errstr()> error handler is set with the
+error message.  If the flag wasn't there, no error is produced.
+
+=item add_flags
+
+L<delete> and L<see> above really just call this function for those flags.
+
+   $imap->add_flags( $msgno, qw(\Seen \Deleted) )
+        or die $imap->errstr;
+
+=item sub_flags
+
+L<unsee> above really just calls this function for that flag.
+
+   $imap->sub_flags( $msgno, '\Seen' ) or die $imap->errstr;
 
 =item mailboxes
 
