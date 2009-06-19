@@ -21,11 +21,11 @@ sub init {
         # fix a bug in Net::IMAP::Server::Mailbox 1.18
         no warnings;
         die $@ unless
-        eval qq [
-        sub Net::IMAP::Server::Mailbox::unseen {
-            my $self = shift;
-            return scalar grep { not $_->has_flag('\Seen') } @{ $self->messages };
-        }
+        eval q [
+            sub Net::IMAP::Server::Mailbox::unseen {
+                my $self = shift;
+                return scalar grep { not $_->has_flag('\Seen') } @{ $self->messages };
+            }
         1];
     }
 
