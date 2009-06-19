@@ -232,7 +232,7 @@ sub select { ## no critic -- too late to choose a different name now...
         final => sub {
             my $nm = $self->{last} = $self->{BOXES}->{$mbox}->{messages};
 
-            $self->{working_box}  = $mbox;
+            $self->{working_box}  = _unescape($mbox);
             $self->{examine_mode} = $examine_mode;
 
             $nm ? $nm : "0E0";
