@@ -103,13 +103,13 @@ if( my $pid = fork ) {
     open STDOUT, ">>informal-imap-server-dump.log";
     # (we don't really care if the above fails...)
 
-    use t7lib::Shutdown;
+    use t::Shutdown;
     Net::IMAP::Server->new(
         port             => 7000,
         ssl_port         => 8000,
-        auth_class       => "t7lib::Auth",
-        model_class      => "t7lib::Model",
-        connection_class => "t7lib::Connection",
+        auth_class       => "t::Auth",
+        model_class      => "t::Model",
+        connection_class => "t::Connection",
     )->run;
 }
 

@@ -1,5 +1,5 @@
 
-package t7lib::Connection;
+package t::Connection;
 
 use strict;
 use warnings;

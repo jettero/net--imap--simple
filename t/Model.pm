@@ -1,5 +1,5 @@
 
-package t7lib::Model;
+package t::Model;
 
 use strict;
 use warnings;

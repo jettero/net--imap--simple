@@ -1,5 +1,5 @@
 
-package t7lib::Auth;
+package t::Auth;
 
 use strict;
 use warnings;
