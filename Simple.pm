@@ -199,7 +199,7 @@ sub status {
 
     return $self->_process_cmd(
         cmd     => [ STATUS => _escape($mbox) . " (UNSEEN RECENT MESSAGES)" ],
-        final   => sub { return unless defined $messages; $unseen, $recent, $messages },
+        final   => sub { return unless defined $messages; ($unseen, $recent, $messages) },
         process => sub {
             if( my ($status) = $_[0] =~ m/\* STATUS.+?$mbox.+?\((.+?)\)/i ) {
                 $unseen   = $1 if $status =~ m/UNSEEN (\d+)/i;
