@@ -7,6 +7,7 @@
      Net::IMAP::Server
    - moved a bunch of contrib and t7lib modules around to keep
      pause from indexing them.
+   - worked on the docs for seen and unseen
 
 1.1899_05: Wed Jun 17 06:25:39 EDT 2009
    - documented see, unsee, add_flags, and sub_flags
