@@ -29,7 +29,7 @@ sub init {
         1];
     }
 
-    return wantarray @ret : $ret;
+    return wantarray ? @ret : $ret;
 }
 
 1;
