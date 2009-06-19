@@ -25,10 +25,11 @@ sub run_tests {
     ok( "recent $recent", "recent 10" );
     ok( "total  $total",  "total  10" );
 
-    ok( "funseen " . $imap->unseen, 'funseen 1' );
+    $imap->unsee($_) for 5,7;
+    ok( "funseen " . $imap->unseen, 'funseen 5' );
 
     ($unseen, $recent, $total) = $imap->status;
-    ok( "unseen $unseen", "unseen 6" );
+    ok( "unseen $unseen", "unseen 2" );
     ok( "recent $recent", "recent 10" );
     ok( "total  $total",  "total  10" );
 }
