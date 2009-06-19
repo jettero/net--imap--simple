@@ -13,9 +13,9 @@ contrib/33189_attach.pl
 contrib/connectalot.pl
 contrib/hand_test01.pl
 contrib/imap.pl
-contrib/rebuild_iff_necessary.pm
-contrib/slurp_fetchmail.pm
 contrib/status.pl
+inc/rebuild_iff_necessary.pm
+inc/slurp_fetchmail.pm
 start_server.sh
 stop_server.sh
 t/01_load.t
@@ -23,11 +23,11 @@ t/07_select_and_examine.t
 t/09_concurrent_connections_new.t
 t/15_flags.t
 t/17_status_and_select.t
+t/Auth.pm
+t/Connection.pm
+t/Model.pm
+t/Shutdown.pm
 t/critic.t
 t/pod.t
 t/pod_coverage.t
 t/test_server.pm
-t7lib/Auth.pm
-t7lib/Connection.pm
-t7lib/Model.pm
-t7lib/Shutdown.pm
