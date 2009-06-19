@@ -232,7 +232,7 @@ sub select { ## no critic -- too late to choose a different name now...
         final => sub {
             my $nm = $self->{last} = $self->{BOXES}->{$mbox}->{messages};
 
-            $self->{working_box}  = _unescape($mbox);
+            $self->{working_box}  = $mbox;
             $self->{examine_mode} = $examine_mode;
 
             $nm ? $nm : "0E0";
@@ -678,20 +678,22 @@ sub errstr {
 sub _nextid { return ++$_[0]->{count} }
 
 sub _escape {
-    $_[0] =~ s/\\/\\\\/g;
-    $_[0] =~ s/\"/\\\"/g;
-    $_[0] = "\"$_[0]\"";
+    my $val = shift;
+       $val =~ s/\\/\\\\/g;
+       $val =~ s/\"/\\\"/g;
+       $val = "\"$val\"";
 
-    return $_[0];
+    return $val;
 }
 
 sub _unescape {
-    $_[0] =~ s/^"//g;
-    $_[0] =~ s/"$//g;
-    $_[0] =~ s/\\\"/\"/g;
-    $_[0] =~ s/\\\\/\\/g;
+    my $val = shift;
+       $val =~ s/^"//g;
+       $val =~ s/"$//g;
+       $val =~ s/\\\"/\"/g;
+       $val =~ s/\\\\/\\/g;
 
-    return $_[0];
+    return $val;
 }
 
 sub _send_cmd {
