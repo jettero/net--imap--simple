@@ -187,6 +187,18 @@ sub _reselect {
     return $self->select($mbox, $self->{examine_mode});
 }
 
+sub status {
+    my $self = shift;
+    my $mbox = shift;
+       $mbox = $self->current_box unless $mbox;
+
+    return $self->_process_cmd(
+        cmd     => [ STATUS => _escape($mbox) ],
+        final   => sub { 1 },
+        process => sub { warn $_ },
+    );
+}
+
 sub select { ## no critic -- too late to choose a different name now...
     my ( $self, $mbox, $examine_mode ) = @_;
     $examine_mode = $examine_mode ? 1:0;
