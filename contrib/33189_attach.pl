@@ -5,7 +5,7 @@
 use strict;
 use warnings;
 use Email::Simple;
-use lib 'contrib', "blib/lib", "blib/arch";
+use lib 'inc', "blib/lib", "blib/arch";
 use rebuild_iff_necessary;
 use slurp_fetchmail;
 use Net::IMAP::Simple;
