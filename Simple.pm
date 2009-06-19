@@ -216,9 +216,8 @@ sub select { ## no critic -- too late to choose a different name now...
 
     my $cmd = $examine_mode ? 'EXAMINE' : 'SELECT';
 
-    my $t_mbox = $mbox;
     return $self->_process_cmd(
-        cmd => [ $cmd => _escape($t_mbox) ],
+        cmd => [ $cmd => _escape($mbox) ],
         final => sub {
             my $nm = $self->{last} = $self->{BOXES}->{$mbox}->{messages};
 
