@@ -9,10 +9,13 @@ Simple.pod
 certs/server-cert.csr
 certs/server-cert.pem
 certs/server-key.pem
+contrib/33189_attach.pl
 contrib/connectalot.pl
 contrib/hand_test01.pl
 contrib/imap.pl
+contrib/rebuild_iff_necessary.pm
 contrib/slurp_fetchmail.pm
+contrib/status.pl
 start_server.sh
 stop_server.sh
 t/01_load.t
