@@ -1,3 +1,6 @@
+1.1899_06: Fri Jun 19 08:54:07 EDT 2009
+   - added a status() sub for the STATUS command
+
 1.1899_05: Wed Jun 17 06:25:39 EDT 2009
    - documented see, unsee, add_flags, and sub_flags
    - used the IMAP RFC to show that gmail is wrong,

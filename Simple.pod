@@ -136,6 +136,21 @@ be returned
 Nothing is returned on failure and the C<errstr()> error handler is set with the
 error message.
 
+=item status
+
+    my $num_messages                     = $imap->status($folder);
+    my ($unseen, $recent, $num_messages) = $imap->status($folder);
+
+Issue a C<STATUS> command.  The C<STATUS> command counts messages without
+altering the state of the named (optionally) mailbox.  It returns either the
+number of messages, or the number of unseen messages, recent, and the total
+number of messages.
+
+C<$folder> is an optional argument.  C<status()> will use the current mailbox or
+C<INBOX> if the C<$folder> argument is not provided.
+
+This method does not use caching.
+
 =item select
 
     my $num_messages = $imap->select($folder);

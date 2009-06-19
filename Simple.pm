@@ -189,13 +189,24 @@ sub _reselect {
 
 sub status {
     my $self = shift;
-    my $mbox = shift;
-       $mbox = $self->current_box unless $mbox;
+    my $mbox = shift || $self->current_box || "INBOX";
+
+    # Example: C: A042 STATUS blurdybloop (UIDNEXT MESSAGES)
+    #          S: * STATUS blurdybloop (MESSAGES 231 UIDNEXT 44292)
+    #          S: A042 OK STATUS completed
+
+    my ($unseen, $recent, $messages);
 
     return $self->_process_cmd(
-        cmd     => [ STATUS => _escape($mbox) ],
-        final   => sub { 1 },
-        process => sub { warn $_ },
+        cmd     => [ STATUS => _escape($mbox) . " (UNSEEN RECENT MESSAGES)" ],
+        final   => sub { return unless defined $messages; $unseen, $recent, $messages },
+        process => sub {
+            if( my ($status) = $_[0] =~ m/\* STATUS $mbox \((.+?)\)/i ) {
+                $unseen   = $1 if $status =~ m/MESSAGES (\d+)/i;
+                $recent   = $1 if $status =~ m/RECENT (\d+)/i;
+                $messages = $1 if $status =~ m/UNSEEN (\d+)/i;
+            }
+        },
     );
 }
 
