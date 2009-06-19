@@ -201,7 +201,7 @@ sub status {
         cmd     => [ STATUS => _escape($mbox) . " (UNSEEN RECENT MESSAGES)" ],
         final   => sub { return unless defined $messages; $unseen, $recent, $messages },
         process => sub {
-            if( my ($status) = $_[0] =~ m/\* STATUS $mbox \((.+?)\)/i ) {
+            if( my ($status) = $_[0] =~ m/\* STATUS.+?$mbox.+?\((.+?)\)/i ) {
                 $unseen   = $1 if $status =~ m/UNSEEN (\d+)/i;
                 $recent   = $1 if $status =~ m/RECENT (\d+)/i;
                 $messages = $1 if $status =~ m/MESSAGES (\d+)/i;
