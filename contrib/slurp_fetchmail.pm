@@ -17,8 +17,11 @@ sub login {
     croak "server, user and pass must be in the $ENV{HOME}/.fetchmailrc for this to work"
         unless $server and $user and $pass;
 
-    my $imap = Net::IMAP::Simple->new($server, @_) or croak "connect failed: $Net::IMAP::Simple::errstr";
-       $imap->login($user=>$pass) or croak "login failed: " . $imap->errstr;
+    my $imap = Net::IMAP::Simple->new($server,
+        ($ENV{DEBUG} ? (debug=>do { open my $x, ">>", $ENV{DEBUG} or die $!; $x}) : ()),
+        @_) or croak "connect failed: $Net::IMAP::Simple::errstr";
+
+    $imap->login($user=>$pass) or croak "login failed: " . $imap->errstr;
 
     return $imap;
 }
