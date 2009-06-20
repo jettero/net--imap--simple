@@ -1,5 +1,7 @@
 .perlcriticrc
 .todo
+33189.log.gz
+33189.txt
 Changes
 MANIFEST
 Makefile.PL
@@ -24,6 +26,7 @@ t/08_selectalot.t
 t/09_concurrent_connections_new.t
 t/15_flags.t
 t/17_status_and_select.t
+t/22_delete_multiple.t
 t/Auth.pm
 t/Connection.pm
 t/Model.pm
@@ -32,5 +35,3 @@ t/critic.t
 t/pod.t
 t/pod_coverage.t
 t/test_server.pm
-33189.log.gz
-33189.txt
