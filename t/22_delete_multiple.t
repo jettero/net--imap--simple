@@ -4,7 +4,7 @@ use warnings;
 use Test;
 use Net::IMAP::Simple;
 
-plan tests => our $tests = 4;
+plan tests => our $tests = 6;
 
 sub run_tests {
     open INFC, ">>", "informal-imap-client-dump.log" or die $!;
@@ -23,8 +23,13 @@ sub run_tests {
     my @e = $imap->expunge_mailbox;
     ok( not $imap->waserr );
     ok( "@e", "3 4 5" );
+     
+    $imap->delete( "6:7" ) or die $imap->errstr;
+    my $e = $imap->expunge_mailbox;
+    ok( not $imap->waserr );
+    ok( $e, "2" );
 
-    ok( $imap->last, 7 );
+    ok( $imap->last, 5 );
 }   
 
 do "t/test_server.pm" or die "error starting imap server: $!$@";
