@@ -345,9 +345,12 @@ returned and the C<errstr()> error handler is set with the error message.
 
   print "Gone!" if $imap->delete( $message_number );
 
-This method sets the C<\Deleted> flag on the given message. On success it
-returns true, false on failure and the C<errstr()> error handler is set with the
-error message.  If the flag was already there, no error is produced.
+This method sets the C<\Deleted> flag on the given message (or messages). On
+success it returns true, false on failure and the C<errstr()> error handler is
+set with the error message.  If the flag was already there, no error is
+produced.  I takes either a message number or L<sequence set> as the only
+argument.  Note that messages aren't actually deleted until they are expunged
+(see L<expunge_mailbox>).
 
 =item undelete
 
@@ -424,11 +427,22 @@ message.
 
 =item expunge_mailbox
 
-  print "Expunged" if $imap->expunge_mailbox( "/Mail/lists/perl/advocacy" );
+  my @expunged = $imap->expunge_mailbox( "/Mail/lists/perl/advocacy" );
+  die $imap->errstr if $imap->waserr;
+
+  my $expunged = $imap->expunge_mailbox( "/Mail/lists/perl/advocacy" )
+      or die $imap->errstr;
 
 This method removes all mail marked as deleted in the mailbox named in the
-required argument. Returns true on success, false on failure and the C<errstr()>
-error handler is set with the error message.
+required argument. Returns either the number of messages that were expunged, or
+the indexes of those messages -- which has a questionable usefulness since it
+tends to return numbers that don't relate to the message numbers marked with the
+C<\Deleted> flags.
+
+If 0 messages were expunged without error, the function will return C<0E0> so it
+will still test true, but also evaluate to 0.
+
+In list context, you must call L<waserr>() to test for success.
 
 =item delete_mailbox
 
@@ -464,10 +478,10 @@ failure and the C<errstr()> error handler is set with the error message.
 
   print "copied" if $imap->copy( $message_number, $mailbox );
 
-This method copies the message number in the currently selected mailbox to the
-fold specified in the second argument. Both arguments are required. On success
-this method returns true. Returns false on failure and the C<errstr()> error
-handler is set with the error message.
+This method copies the message number (or L<sequence set>) in the currently
+selected mailbox to the fold specified in the second argument.  Both arguments
+are required.  On success this method returns true. Returns false on failure and
+the C<errstr()> error handler is set with the error message.
 
 =item errstr
 
@@ -486,6 +500,21 @@ wish to detect errors.
 
 Few of the L<Net::IMAP::Simple> methods actually use C<waserr()>.  The ones that
 do will mention it.
+
+=back
+
+=head1 OTHER NOTES
+
+=over 4
+
+=item sequence set
+
+Message numbers are never checked before being passed to the IMAP server (this
+is a "simple" module afteral), so in most places where a message number is
+required, you can instead use so-called I<sequence sets>.  Examples:
+
+    $imap->copy(   "3,4,9:22", "ANOTHERBOX" ) or die $imap->errstr;
+    $imap->delete( "3,4,9:22", "ANOTHERBOX" ) or die $imap->errstr;
 
 =back
 
