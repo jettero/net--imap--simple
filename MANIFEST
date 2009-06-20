@@ -26,6 +26,7 @@ t/08_selectalot.t
 t/09_concurrent_connections_new.t
 t/15_flags.t
 t/17_status_and_select.t
+t/22_copy_multiple.t
 t/22_delete_multiple.t
 t/Auth.pm
 t/Connection.pm
