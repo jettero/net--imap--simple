@@ -180,11 +180,19 @@ sub login {
     );
 }
 
-sub _reselect {
+sub _clear_cache {
     my $self = shift;
-    my $mbox = delete $self->{working_box} || "INBOX";
 
-    return $self->select($mbox, $self->{examine_mode});
+    push @_, $self->{working_box} if exists $self->{working_box} and not @_;
+    return unless @_;
+
+    for my $box (@_) {
+        delete $self->{BOXES}{$box};
+    }
+
+    delete $self->{last};
+
+    return 1;
 }
 
 sub status {
@@ -218,19 +226,19 @@ sub select { ## no critic -- too late to choose a different name now...
     $mbox = $self->current_box unless $mbox;
 
     if( $examine_mode == $self->{examine_mode} ) {
-        if ( $self->{use_select_cache} && ( time - $self->{BOXES}->{$mbox}->{proc_time} ) <= $self->{select_cache_ttl} ) {
-            return $self->{BOXES}->{$mbox}->{messages};
+        if ( $self->{use_select_cache} && ( time - $self->{BOXES}{$mbox}{proc_time} ) <= $self->{select_cache_ttl} ) {
+            return $self->{BOXES}{$mbox}{messages};
         }
     }
 
-    $self->{BOXES}->{$mbox}->{proc_time} = time;
+    $self->{BOXES}{$mbox}{proc_time} = time;
 
     my $cmd = $examine_mode ? 'EXAMINE' : 'SELECT';
 
     return $self->_process_cmd(
         cmd => [ $cmd => _escape($mbox) ],
         final => sub {
-            my $nm = $self->{last} = $self->{BOXES}->{$mbox}->{messages};
+            my $nm = $self->{last} = $self->{BOXES}{$mbox}{messages};
 
             $self->{working_box}  = $mbox;
             $self->{examine_mode} = $examine_mode;
@@ -239,23 +247,23 @@ sub select { ## no critic -- too late to choose a different name now...
         },
         process => sub {
             if ( $_[0] =~ /^\*\s+(\d+)\s+EXISTS/i ) {
-                $self->{BOXES}->{$mbox}->{messages} = $1;
+                $self->{BOXES}{$mbox}{messages} = $1;
 
             } elsif ( $_[0] =~ /^\*\s+FLAGS\s+\((.*?)\)/i ) {
-                $self->{BOXES}->{$mbox}->{flags} = [ split( /\s+/, $1 ) ];
+                $self->{BOXES}{$mbox}{flags} = [ split( /\s+/, $1 ) ];
 
             } elsif ( $_[0] =~ /^\*\s+(\d+)\s+RECENT/i ) {
-                $self->{BOXES}->{$mbox}->{recent} = $1;
+                $self->{BOXES}{$mbox}{recent} = $1;
 
             } elsif ( $_[0] =~ /^\*\s+OK\s+\[(.*?)\s+(.*?)\]/i ) {
                 my ( $flag, $value ) = ( $1, $2 );
 
                 if ( $value =~ /\((.*?)\)/ ) {
                     # NOTE: the sflags really aren't used anywhere, should they be?
-                    $self->{BOXES}->{$mbox}->{sflags}->{$flag} = [ split( /\s+/, $1 ) ];
+                    $self->{BOXES}{$mbox}{sflags}{$flag} = [ split( /\s+/, $1 ) ];
 
                 } else {
-                    $self->{BOXES}->{$mbox}->{oflags}->{$flag} = $value;
+                    $self->{BOXES}{$mbox}{oflags}{$flag} = $value;
                 }
             }
         },
@@ -279,7 +287,7 @@ sub flags {
 
     $self->select($folder);
 
-    return @{ $self->{BOXES}->{ $self->current_box }->{flags} || [] };
+    return @{ $self->{BOXES}{ $self->current_box }{flags} || [] };
 }
 
 sub recent {
@@ -287,7 +295,7 @@ sub recent {
 
     $self->select($folder);
 
-    return $self->{BOXES}->{ $self->current_box }->{recent};
+    return $self->{BOXES}{ $self->current_box }{recent};
 }
 
 sub unseen {
@@ -389,9 +397,9 @@ sub put {
 
     @flags = $self->_process_flags(@flags);
 
-    $self->_process_cmd(
-        cmd     => [ APPEND => "$mailbox_name (@flags) {$size}" ],
-        final   => sub { 1 },
+    return $self->_process_cmd(
+        cmd   => [ APPEND => "$mailbox_name (@flags) {$size}" ],
+        final => sub { $self->_clear_cache },
         process => sub {
             if ($size) {
                 my $sock = $self->_sock;
@@ -406,10 +414,7 @@ sub put {
             }
         },
 
-    ) or return;
-
-    return $self->_reselect if $self->current_box eq $mailbox_name;
-    return 1;
+    );
 }
 
 sub msg_flags {
@@ -474,7 +479,15 @@ sub quit {
 }
 
 sub last { ## no critic -- too late to choose a different name now...
-    return shift->_last
+    my $self = shift;
+    my $last = $self->_last;
+
+    if( not defined $last ) {
+        $self->select or return;
+        $last = $self->_last;
+    }
+
+    return $last;
 }
 
 sub add_flags {
@@ -485,10 +498,9 @@ sub add_flags {
 
     return $self->_process_cmd(
         cmd     => [ STORE => qq[$number +FLAGS (@flags)] ],
-        final   => sub { 1 },
+        final   => sub { $self->_clear_cache },
         process => sub { },
-
-    ) and $self->_reselect;
+    );
 }
 
 sub sub_flags {
@@ -499,10 +511,9 @@ sub sub_flags {
 
     return $self->_process_cmd(
         cmd     => [ STORE => qq[$number -FLAGS (@flags)] ],
-        final   => sub { 1 },
+        final   => sub { $self->_clear_cache },
         process => sub { },
-
-    ) and $self->_reselect;
+    );
 }
 
 sub delete { ## no critic -- too late to choose a different name now...
@@ -602,10 +613,9 @@ sub mailboxes_subscribed {
 
 sub create_mailbox {
     my ( $self, $box ) = @_;
-    _escape($box);
 
     return $self->_process_cmd(
-        cmd     => [ CREATE => $box ],
+        cmd     => [ CREATE => _escape($box) ],
         final   => sub { 1 },
         process => sub { },
     );
@@ -616,19 +626,39 @@ sub expunge_mailbox {
 
     return if !$self->select($box);
 
+    # C: A202 EXPUNGE
+    # S: * 3 EXPUNGE
+    # S: * 3 EXPUNGE
+    # S: * 5 EXPUNGE
+    # S: * 8 EXPUNGE
+    # S: A202 OK EXPUNGE completed
+
+    $self->{_waserr} = 1;
+
+    my @expunged;
     return $self->_process_cmd(
-        cmd     => ['EXPUNGE'],
-        final   => sub { 1 },
-        process => sub { },
+        cmd   => ['EXPUNGE'],
+        final => sub {
+            $self->_clear_cache;
+            return if $self->{_waserr};
+            return @expunged if wantarray;
+            return "0E0" unless @expunged;
+            return @expunged;
+        },
+        process => sub {
+            if( $_[0] =~ m/^\s*\*\s+(\d+)\s+EXPUNGE[\r\n]*$/i ) {
+                push @expunged, $1;
+                delete $self->{_waserr};
+            }
+        },
     );
 }
 
 sub delete_mailbox {
     my ( $self, $box ) = @_;
-    _escape($box);
 
     return $self->_process_cmd(
-        cmd     => [ DELETE => $box ],
+        cmd     => [ DELETE => _escape($box) ],
         final   => sub { 1 },
         process => sub { },
     );
@@ -636,11 +666,11 @@ sub delete_mailbox {
 
 sub rename_mailbox {
     my ( $self, $old_box, $new_box ) = @_;
-    _escape($old_box);
-    _escape($new_box);
+    my $o = _escape($old_box);
+    my $n = _escape($new_box);
 
     return $self->_process_cmd(
-        cmd     => [ RENAME => qq[$old_box $new_box] ],
+        cmd     => [ RENAME => qq[$o $n] ],
         final   => sub { 1 },
         process => sub { },
     );
@@ -648,11 +678,10 @@ sub rename_mailbox {
 
 sub folder_subscribe {
     my ( $self, $box ) = @_;
-    $self->select($box);    # XXX does it matter if this fails?
-    _escape($box);
+    $self->select($box);
 
     return $self->_process_cmd(
-        cmd     => [ SUBSCRIBE => $box ],
+        cmd     => [ SUBSCRIBE => _escape($box) ],
         final   => sub { 1 },
         process => sub { },
     );
@@ -661,10 +690,9 @@ sub folder_subscribe {
 sub folder_unsubscribe {
     my ( $self, $box ) = @_;
     $self->select($box);
-    _escape($box);
 
     return $self->_process_cmd(
-        cmd     => [ UNSUBSCRIBE => $box ],
+        cmd     => [ UNSUBSCRIBE => _escape($box) ],
         final   => sub { 1 },
         process => sub { },
     );
@@ -672,10 +700,10 @@ sub folder_unsubscribe {
 
 sub copy {
     my ( $self, $number, $box ) = @_;
-    _escape($box);
+    my $b = _escape($box);
 
     return $self->_process_cmd(
-        cmd     => [ COPY => qq[$number $box] ],
+        cmd     => [ COPY => qq[$number $b] ],
         final   => sub { 1 },
         process => sub { },
     );
