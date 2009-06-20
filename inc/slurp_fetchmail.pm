@@ -6,6 +6,7 @@ use warnings;
 use Carp;
 use File::Slurp qw(slurp);
 use Net::IMAP::Simple;
+use File::Basename;
 
 sub login {
     my $class = shift;
@@ -16,6 +17,13 @@ sub login {
 
     croak "server, user and pass must be in the $ENV{HOME}/.fetchmailrc for this to work"
         unless $server and $user and $pass;
+
+    if( exists $ENV{DEBUG} ) {
+        if( $ENV{DEBUG} eq "1" ) {
+            $ENV{DEBUG} = basename($0);
+            $ENV{DEBUG} .= ".log";
+        }
+    }
 
     my $imap = Net::IMAP::Simple->new($server,
         ($ENV{DEBUG} ? (debug=>do { open my $x, ">>", $ENV{DEBUG} or die $!; $x}) : ()),
