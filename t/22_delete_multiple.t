@@ -24,7 +24,7 @@ sub run_tests {
     ok( not $imap->waserr );
     ok( "@e", "3 4 5" );
      
-    $imap->delete( "6,9" ) or die $imap->errstr;
+    $imap->delete( "3,4" ) or die $imap->errstr;
     my $e = $imap->expunge_mailbox;
     ok( not $imap->waserr );
     ok( $e, "2" );
