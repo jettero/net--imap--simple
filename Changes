@@ -7,7 +7,8 @@
    - my delete tests do show that ranges like 3:5 really do work,
      which makes me think RT#40203 may turn out to be spurious.
      I'll let the tests prove it out before I close it though.
-
+   - I refactored the _reselect() stuff away, it was poorly
+     thought out.  There's a _clear_cache() instead.
 
 1.1899_06: Fri Jun 19 08:54:07 EDT 2009
    - added a status() sub for the STATUS command
