@@ -1,0 +1,25 @@
+
+Hi Paul,
+
+sorry for the late reply. I was on vacation during pentecoast.
+
+> If you can still reproduce this, I'd like to see a debug log.
+Yes, I can. I'll attach my test program and the debug log
+to this mail.
+
+Here is what I did:
+
+lama:~>imap-simple-info sub/amavis
+Warning: the returned message numbers are not always correct!
+folder sub/amavis: 3798 total, 0 new, 3778 unseen, 3778 old
+
+But the IMAP STATUS command says for this mail folder:
+14 status sub/amavis (messages recent unseen)
+* STATUS sub/amavis (MESSAGES 3798 RECENT 0 UNSEEN 3709)
+14 OK Completed
+
+And that's exactly what mutt says also: 3798 new, 3709 old
+
+Thanks,
+Andy.
+

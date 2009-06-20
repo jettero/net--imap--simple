@@ -32,3 +32,5 @@ t/critic.t
 t/pod.t
 t/pod_coverage.t
 t/test_server.pm
+33189.log.gz
+33189.txt
