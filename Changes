@@ -1,3 +1,14 @@
+1.1899_07: Sat Jun 20 15:26:13 EDT 2009
+   - while trying to get some delete and copy tests I ended up
+     working on expunge_mailbox() a little
+   - found another bug in Net::IMAP::Server::Mailbox... It's
+     clearly just a demo, but since I'm using it for my tests,
+     it's worth fixing.
+   - my delete tests do show that ranges like 3:5 really do work,
+     which makes me think RT#40203 may turn out to be spurious.
+     I'll let the tests prove it out before I close it though.
+
+
 1.1899_06: Fri Jun 19 08:54:07 EDT 2009
    - added a status() sub for the STATUS command
    - added a status() test, with some unseen() flag tests
