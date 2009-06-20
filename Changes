@@ -8,6 +8,13 @@
    - moved a bunch of contrib and t7lib modules around to keep
      pause from indexing them.
    - worked on the docs for seen and unseen
+   - created a method for error-checking when using msg_flags(),
+     seen() and unseen() -- which I think solves ticket 33189.
+     Basically, if Cyrus-imap is returning different values for
+     FETCH (FLAGS) than for STATUS, what can I really do to fix
+     it?  However, the log provided by Mr Spiegl seems to suggest
+     he was counting errors as unseen messages... so this may
+     just fix it.
 
 1.1899_05: Wed Jun 17 06:25:39 EDT 2009
    - documented see, unsee, add_flags, and sub_flags
