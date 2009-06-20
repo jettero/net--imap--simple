@@ -225,25 +225,34 @@ on failure and the C<errstr()> error handler is set with the error message.
 
 =item seen
 
-    print "Seen it!" if $imap->seen( $message_number );
+    defined( my $seen = $imap->seen( $message_number ) )
+        or warn "problem testing for \Seen: "
+              . $imap->errstr;
 
-A message number is the only required parameter for this method. The message's
+    print "msg #$message_number has been \Seen!" if $seen;
+
+A message number is the only required parameter for this method.  The message's
 C<\Seen> flag will be examined and if the message has been seen a true value is
-returned. All other failures return a false value and the C<errstr()> error
-handler is set with the error message.
+returned.  A defined false value is returned if the message does not have the
+C<\Seen> flag set.  The undefined value is returned when an error has occurred
+while checking the flag status.
 
 B<NOTE>: This is not the opposite of L<unseen> above.  This issues a C<FETCH>
 command and checks to see if the given message has been C<\Seen> before.
 
 =item deleted
 
-    print "Deleted!" if $imap->deleted( $message_number );
+    defined( my $deleted = $imap->deleted( $message_number ) )
+        or warn "problem testing for \Deleted: "
+              . $imap->errstr;
 
-A message number is the only required parameter for this method. The message's
+    print "msg #$message_number has been \Deleted!" if $deleted;
+
+A message number is the only required parameter for this method.  The message's
 C<\Deleted> flag will be examined and if the message has been deleted a true
-value is returned. All other failures return a false value and the errstr()
-error handler is set with the error message.
-
+value is returned.  A defined false value is returned if the message does not
+have the C<\Deleted> flag set.  The undefined value is returned when an error
+has occurred while checking the flag status.
 
 =item list
 
@@ -282,6 +291,23 @@ If C<$msg> is an arrayref, the lines will be printed correctly.
     # aught to come out roughly the same
     print "Flags on message #$message_number: @flags\n";
     print "Flags on message #$message_number: $flags\n";
+
+Detecting errors with this member functions is usually desirable.  In the scalar
+context, detecting an error is synonymous with testing for defined.
+
+    if( defined( my $flags = $imap->msg_flags($num) ) ) {
+        # it has $flags!
+
+    } else {
+        warn "problem listing flags for message #$num: " 
+           . $imap->errstr;
+    }
+
+In list context, you must call L<waserr>() to test for success.
+
+    my @flags = $imap->msg_flags($num);
+    warn "problem listing flags for msg #$num: "
+       . $imap->errstr if $imap->waserr;
 
 =item getfh
 
@@ -448,6 +474,18 @@ handler is set with the error message.
  print "Login ERROR: " . $imap->errstr . "\n" if !$imap->login($user, $pass);
 
 Return the last error string captured for the last operation which failed.
+
+=item waserr
+
+ my @flags = $imap->msg_flags(14);
+ die $imap->errstr if $imap->waserr;
+
+Because C<msg_flags()> can optionally return a list, it's not really possible to
+detect failure in list context.  Therefore, you must call C<waserr()> if you
+wish to detect errors.
+
+Few of the L<Net::IMAP::Simple> methods actually use C<waserr()>.  The ones that
+do will mention it.
 
 =back
 
