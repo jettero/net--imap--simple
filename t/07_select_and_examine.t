@@ -51,7 +51,7 @@ sub run_tests {
     ok( $imap->errstr, qr/read.*only/ );
 
     ok( $nm = $imap->select('INBOX') );
-    ok( $imap->put( INBOX => "Subject: test!\n\ntest!" ), $nm +1 )
+    ok( $imap->put( INBOX => "Subject: test!\n\ntest!" ), 1 )
         or die " error putting test message: " . $imap->errstr . "\n";
     ok( $imap->select('INBOX'), 2 );
 }

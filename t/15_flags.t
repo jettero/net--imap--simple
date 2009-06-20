@@ -5,7 +5,7 @@ use Test;
 use Net::IMAP::Simple;
 
 plan tests => our $tests =
-    ((my $puts = 5)+1)*5 # the put lines
+    ((my $puts = 5)+1)*5 -2 # the put lines
     + 8 # some arbitrary flag tests on message 4
     + 8 # some msg_flags return values
     + 8 # grab flags for some nonexistnat messages, and for some existant ones
@@ -21,16 +21,13 @@ sub run_tests {
     my $nm = $imap->select('INBOX')
         or die " failure selecting INBOX: " . $imap->errstr . "\n";
 
-    ok( 0+$nm, 0 );
     ok( 0+$imap->last, 0 );
     ok( 0+$imap->unseen, 0 );
     ok( 0+$imap->recent, 0 );
-    ok(1);
 
     for(1 .. $puts) {
-        $nm = $imap->put( INBOX => "Subject: test-$_\n\ntest-$_" );
+        ok( $imap->put( INBOX => "Subject: test-$_\n\ntest-$_" ) );
 
-        ok( 0+$nm, $_ );
         ok( 0+$imap->last, $_ );
         ok( 0+$imap->recent, $_ );
 
