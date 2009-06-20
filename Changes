@@ -8,7 +8,11 @@
      which makes me think RT#40203 may turn out to be spurious.
      I'll let the tests prove it out before I close it though.
    - I refactored the _reselect() stuff away, it was poorly
-     thought out.  There's a _clear_cache() instead.
+     thought out.  There's a _clear_cache() instead.  Yeah, 40203
+     appears to be bogus because the client doesn't really parse
+     the sequence-set numbers.  I have confirmed for sure that
+     you can $imap->delete("3:5,7,10") and it'll work just like
+     you called delete 5 times.
 
 1.1899_06: Fri Jun 19 08:54:07 EDT 2009
    - added a status() sub for the STATUS command
