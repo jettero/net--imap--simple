@@ -7,6 +7,7 @@ use Net::IMAP::Simple;
 plan tests => our $tests =
     ((my $puts = 5)+1)*5 # the put lines
     + 8 # some arbitrary flag tests on message 4
+    + 8 # some msg_flags return values
     ;
 
 sub run_tests {
@@ -59,6 +60,19 @@ sub run_tests {
 
     ok( not $imap->seen(5) );
     ok( not $imap->deleted(5) );
+
+    $imap->sub_flags( 4, qw(\Seen \Deleted \Answered) );
+    $imap->add_flags( 5, qw(\Seen \Deleted \Answered) );
+
+    my @flags4 = $imap->msg_flags(4); ok( not $imap->waserr );
+    my $flags4 = $imap->msg_flags(4); ok( not $imap->waserr );
+    my @flags5 = $imap->msg_flags(5); ok( not $imap->waserr );
+    my $flags5 = $imap->msg_flags(5); ok( not $imap->waserr );
+
+    ok( 0+@flags4, 1 ); # \Recent
+    ok( 0+@flags5, 4 ); # \Recent \Seen \Answered \Deleted
+    ok( defined $flags4 );
+    ok( defined $flags5 );
 }
 
 do "t/test_server.pm" or die "error starting imap server: $!$@";

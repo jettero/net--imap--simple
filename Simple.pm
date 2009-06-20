@@ -319,24 +319,19 @@ sub top {
 sub seen {
     my ( $self, $number ) = @_;
 
-    my $lines = '';
-
-    return $self->_process_cmd(
-        cmd => [ FETCH => qq[$number (FLAGS)] ],
-        final => sub { $lines =~ /\\Seen/i },
-        process => sub { $lines .= $_[0] },
-    );
+    my @flags = $self->msg_flags($number);
+    return if $self->waserr;
+    return 1 if grep {$_ eq '\Seen'} @flags;
+    return 0;
 }
 
 sub deleted {
     my ( $self, $number ) = @_;
 
-    my $lines = '';
-    return $self->_process_cmd(
-        cmd     => [FETCH=> qq[$number (FLAGS)]],
-        final   => sub { $lines =~ /\\Deleted/i },
-        process => sub { $lines .= $_[0] },
-    );
+    my @flags = $self->msg_flags($number);
+    return if $self->waserr;
+    return 1 if grep {$_ eq '\Deleted'} @flags;
+    return 0;
 }
 
 sub list {
@@ -420,12 +415,27 @@ sub put {
 sub msg_flags {
     my ( $self, $number ) = @_;
 
-    my $lines = '';
+    my @flags;
+    $self->{_waserr} = 1; # assume something went wrong.
+
+    #  _send_cmd] 15 FETCH 12 (FLAGS)\r\n
+    #  _process_cmd] * 12 FETCH (FLAGS (\Seen))\r\n
+    #  _cmd_ok] * 12 FETCH (FLAGS (\Seen))\r\n
+    #  _seterrstr] warning unknown return string (id=15): * 12 FETCH (FLAGS (\Seen))\r\n
+    #  _process_cmd] 15 OK Success\r\n
 
     return $self->_process_cmd(
         cmd => [ FETCH => qq[$number (FLAGS)] ],
-        final => sub { my ($flags) = $lines =~ m/FLAGS \(([^()]+)\)/i; wantarray ? split( m/\s+/, $flags ) : $flags },
-        process => sub { $lines .= $_[0] },
+        final => sub {
+            return if $self->{_waserr};
+            wantarray ? @flags : "@flags";
+        },
+        process => sub {
+            if( $_[0] =~ m/\* $number FETCH \(FLAGS \(([^()]+?)\)\)/i ) {
+                @flags = $self->_process_flags($1);
+                delete $self->{_waserr};
+            }
+        },
     );
 }
 
@@ -669,6 +679,10 @@ sub copy {
         final   => sub { 1 },
         process => sub { },
     );
+}
+
+sub waserr {
+    return $_[0]->{_waserr};
 }
 
 sub errstr {
