@@ -19,10 +19,10 @@ sub run_tests {
     ok( $imap->select("INBOX")+0, 0 );
 
     $imap->put( INBOX => "Subject: test-$_\n\ntest-$_", '\Seen' ) for 1 .. 10;
-    $imap->delete( "3:5" ) or die $imap->errstr;
+    $imap->delete( "3:4,6" ) or die $imap->errstr;
     my @e = $imap->expunge_mailbox;
     ok( not $imap->waserr );
-    ok( "@e", "3 4 5" );
+    ok( "@e", "3 3 4" );
      
     $imap->delete( "3,4" ) or die $imap->errstr;
     my $e = $imap->expunge_mailbox;
@@ -30,9 +30,9 @@ sub run_tests {
     ok( $e, "2" );
 
     $imap->delete( "4:7,9,10" ) or die $imap->errstr;
-    $e = $imap->expunge_mailbox;
+    @e = $imap->expunge_mailbox;
     ok( not $imap->waserr );
-    ok( $e, "2" );
+    ok( "@e", "4 4" );
 
     ok( $imap->last, 3 );
 }   
