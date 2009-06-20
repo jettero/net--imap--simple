@@ -13,6 +13,8 @@
      the sequence-set numbers.  I have confirmed for sure that
      you can $imap->delete("3:5,7,10") and it'll work just like
      you called delete 5 times.
+   - Copies seem to work fine too.  I'm going to close the
+     ticket.
 
 1.1899_06: Fri Jun 19 08:54:07 EDT 2009
    - added a status() sub for the STATUS command
