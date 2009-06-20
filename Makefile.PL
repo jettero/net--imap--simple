@@ -20,5 +20,12 @@ WriteMakefile(
             },
 
         LICENSE	=> 'Perl Artistic',
+
+        CONFIGURE_REQUIRES => {
+            ( $ENV{TEST_AUTHOR}
+                || $ENV{AUTOMATED_TESTING} ? # thank you BinGOs
+                'Net::IMAP::Server' : ())
+        },
+
     ) : ()),
 );
