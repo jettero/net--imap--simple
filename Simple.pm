@@ -806,7 +806,7 @@ sub _process_cmd {
     while ( $res = $sock->getline ) {
         $self->_debug( caller, __LINE__, '_process_cmd', $res ) if $self->{debug};
 
-        if ( $res =~ /^\*.*\{(\d+)\}\r\n/ ) {
+        if ( $res =~ /^\*.*\{(\d+)\}[\r\n]*$/ ) {
             $args{process}->($res);
             $args{process}->($_) foreach $self->_read_multiline( $sock, $1 );
 
