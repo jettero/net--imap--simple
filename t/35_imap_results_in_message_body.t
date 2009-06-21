@@ -11,8 +11,14 @@ From: me
 To: you
 Subject: supz!
 
+1 OK FETCH COMPLETED\r
+2 OK FETCH COMPLETED\r
+3 OK FETCH COMPLETED\r
+4 OK FETCH COMPLETED\r
+5 OK FETCH COMPLETED\r
 
 Hi, this is a message, do you like it?
+
 HERE
 
 sub run_tests {
