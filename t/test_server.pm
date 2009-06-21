@@ -61,7 +61,8 @@ if( my $pid = fork ) {
     };
 
     chomp $line;
-    print STDERR (" " x 40, "$line ");
+    my $len = length $line; $len ++;
+    print STDERR "\e7\e[5000C\e[${len}D$line\e8";
     close $imapfh;
 
     $0 = "Net::IMAP::Simple($$)";
