@@ -36,3 +36,4 @@ t/critic.t
 t/pod.t
 t/pod_coverage.t
 t/test_server.pm
+t/35_imap_results_in_message_body.t
