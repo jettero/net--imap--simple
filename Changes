@@ -3,6 +3,7 @@
      blessing the arrayref and overloading '""'.
    - I tought the t/35 test to prove that _process_command fails
      just as Jonathan Kamens says.
+   - applied JIK's patch.
 
 1.1899_07: Sat Jun 20 22:12:00 EDT 2009
    - I want to change the way get() works.  I don't think I
