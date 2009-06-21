@@ -274,6 +274,19 @@ This method fetches a message and returns its lines as an array or, the actual
 message.  On failure, either an empty list is returned and the C<errstr()> error
 handler is set with the error message.
 
+Historically, C<get()> returned the array of lines as a reference to the array
+instead of returning the message or the array itself.  Please note that it still
+does this, although it may be deprecated in the future.
+
+The scalar result returned is actually a blessed arrayref with the stringify
+member overloaded.  If you're intending to use the resulting message as a string
+more than once, it I<may> make sense to force the stringification first.
+
+    my $message = $imap->get(1);
+       $message = "$message"; # force stringification
+
+It is not normally necessary to do this.
+
 =item put
 
   $imap->put( $mailbox_name, $message, @flags ) or warn $imap->errstr;

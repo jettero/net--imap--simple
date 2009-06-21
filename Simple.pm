@@ -10,6 +10,14 @@ use IO::Select;
 
 our $VERSION = "1.1899_07";
 
+BEGIN {
+    # I'd really rather the pause/cpan indexers miss this "package"
+    eval ## no critic
+    q( package Net::IMAP::Simple::_message;
+       use overload fallback=>1, '""' => sub { local $"=""; "@{$_[0]}" };
+       sub new { bless $_[1] })
+}
+
 sub new {
     my ( $class, $server, %opts ) = @_;
 
@@ -366,7 +374,7 @@ sub get {
 
     return $self->_process_cmd(
         cmd => [ FETCH => qq[$number RFC822] ],
-        final => sub { pop @lines; wantarray ? @lines : do {local $"=""; "@lines"} },
+        final => sub { pop @lines; wantarray ? @lines : Net::IMAP::Simple::_message->new(\@lines) },
         process => sub {
             if ( $_[0] !~ /^\* \d+ FETCH/ ) {
                 push @lines, join( ' ', @_ );
