@@ -366,7 +366,7 @@ sub get {
 
     return $self->_process_cmd(
         cmd => [ FETCH => qq[$number RFC822] ],
-        final => sub { pop @lines; \@lines },
+        final => sub { pop @lines; wantarray ? @lines : do {local $"=""; "@lines"} },
         process => sub {
             if ( $_[0] !~ /^\* \d+ FETCH/ ) {
                 push @lines, join( ' ', @_ );

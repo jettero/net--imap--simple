@@ -1,3 +1,9 @@
+1.1899_07: Sat Jun 20 22:12:00 EDT 2009
+   - I want to change the way get() works.  I don't think I
+     should, but I'd like to return the actual message in scalar
+     context and the lines in list context.  Returning the lines
+     as an arrayref makes no sense to me.
+
 1.1899_07: Sat Jun 20 15:26:13 EDT 2009
    - while trying to get some delete and copy tests I ended up
      working on expunge_mailbox() a little

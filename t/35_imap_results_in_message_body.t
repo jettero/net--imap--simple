@@ -4,7 +4,7 @@ use warnings;
 use Test;
 use Net::IMAP::Simple;
 
-plan tests => our $tests = 5;
+plan tests => our $tests = 1;
 
 my $special_message = <<"HERE";
 From: me
@@ -14,8 +14,6 @@ Subject: supz!
 
 Hi, this is a message, do you like it?
 HERE
-
-my $digest = digest($special_message);
 
 sub run_tests {
     open INFC, ">>", "informal-imap-client-dump.log" or die $!;
@@ -28,27 +26,9 @@ sub run_tests {
         or die " failure selecting INBOX: " . $imap->errstr . "\n";
 
     $imap->put( INBOX => $special_message );
-    ok( digest($imap->get(1)), $digest );
 
+    ok( $imap->get(1), $special_message );
 }   
-
-sub sum(&@) {
-    my $code = shift;
-    my $sum  = 0;
-       $sum += $code->($_) for @_;
-
-    $sum;
-}
-
-sub digest {
-    use bytes;
-    my @sums = map {sum {ord $_} $_[0] =~ m/(.{$_})/sg} 1 .. 16;
-    my @hash = map {sprintf '%02x', $_ % 256} @sums;
-
-    # (If anyone happens to read this, it's not intended to be cryptographically secure.)
-
-    $"=""; "@hash";
-}
 
 do "t/test_server.pm" or die "error starting imap server: $!$@";
 

@@ -267,11 +267,12 @@ error message.
 
 =item get
 
-  my $message = $imap->get( $message_number ); print for @{$message};
+  my $message = $imap->get( $message_number ) or die $imap->errstr;
+  my @message_lines = $map->get( $message_number ) or die $imap->errstr;
 
-This method fetches a message and returns its lines in a list reference.  On
-failure, nothing is returned and the C<errstr()> error handler is set with the
-error message.
+This method fetches a message and returns its lines as an array or, the actual
+message.  On failure, either an empty list is returned and the C<errstr()> error
+handler is set with the error message.
 
 =item put
 
