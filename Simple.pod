@@ -512,8 +512,8 @@ Because C<msg_flags()> can optionally return a list, it's not really possible to
 detect failure in list context.  Therefore, you must call C<waserr()> if you
 wish to detect errors.
 
-Few of the L<Net::IMAP::Simple> methods actually use C<waserr()>.  The ones that
-do will mention it.
+Few of the L<Net::IMAP::Simple> methods use C<waserr()>.  The ones that do will
+mention it.
 
 =back
 
@@ -572,4 +572,4 @@ L<https://rt.cpan.org/Dist/Display.html?Queue=Net-IMAP-Simple>
 
 =head1 SEE ALSO
 
-L<perl>, L<Net::IMAP>, L<Net::IMAP::Server>, L<IO::Socket::SSL>, L<IO::Socket::INET6>
+L<perl>, L<Net::IMAP::Server>, L<IO::Socket::SSL>, L<IO::Socket::INET6>
