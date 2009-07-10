@@ -8,7 +8,7 @@ use IO::File;
 use IO::Socket;
 use IO::Select;
 
-our $VERSION = "1.1899_07";
+our $VERSION = "1.1900";
 
 BEGIN {
     # I'd really rather the pause/cpan indexers miss this "package"

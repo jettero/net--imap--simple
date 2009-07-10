@@ -1,3 +1,10 @@
+1.1900: Fri Jul 10 2009
+   - I really thought I released this already.  Lawl.
+
+1.1900: Fri Jun 26 16:03:16 EDT 2009
+   - prolly going to release this, it seems to test fine all over
+     the place.
+
 1.1899_07: Sun Jun 21 07:16:36 EDT 2009
    - I decided to do get() my way, without ruining everything, by
      blessing the arrayref and overloading '""'.
