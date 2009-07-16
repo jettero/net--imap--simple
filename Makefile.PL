@@ -24,7 +24,7 @@ WriteMakefile(
         CONFIGURE_REQUIRES => {
             ( $ENV{TEST_AUTHOR}
                 || $ENV{AUTOMATED_TESTING} ? # thank you BinGOs
-                (qw(IO::Socket::SSL Net::IMAP::Server Coro Coro::EV)) : ())
+                (map {($_=>0)} qw(DateTime IO::Socket::SSL Net::IMAP::Server Coro Coro::EV)) : ())
         },
 
     ) : ()),
