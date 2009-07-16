@@ -1,3 +1,7 @@
+1.1902: Thu Jul 16 2009
+   - There's apparently 5.10 problems with the tests (probably
+     not with the module).  The tests are kinda hinky anyway.
+
 1.1900: Fri Jul 10 2009
    - I really thought I released this already.  Lawl.
 
