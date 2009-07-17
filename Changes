@@ -1,3 +1,6 @@
+1.1904: Fri Jul 17 2009
+   - bestpractical's patch makes more sense than mine does
+
 1.1903: Fri Jul 17 2009
    - actually use the inc/ copy of net-imap-server
 
