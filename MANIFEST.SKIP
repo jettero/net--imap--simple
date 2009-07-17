@@ -8,3 +8,4 @@
 ^\.pm-desc\.html$
 ^pm_to_blib$
 ^\.st$
+slurp_net_imap_server.sh
