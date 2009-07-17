@@ -65,7 +65,12 @@ if( my $pid = fork ) {
         redo unless $line =~ m/OK/;
     };
 
+    my $file = $INC{'Net/IMAP/Server.pm'};
+    my $ver  = $Net::IMAP::Server::VERSION;
+
     chomp $line;
+    $line =~ s/(\* OK).*/$1 $file ($ver)/;
+
     my $len = length $line; $len ++;
     print STDERR "\e7\e[5000C\e[${len}D$line\e8";
     close $imapfh;
