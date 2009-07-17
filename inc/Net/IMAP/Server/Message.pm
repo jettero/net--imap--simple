@@ -10,6 +10,11 @@ use Email::MIME::ContentType;
 use Regexp::Common qw/balanced/;
 use DateTime;
 
+use DateTime::Format::Strptime;
+use DateTime::Format::Mail;
+use constant INTERNALDATE_PARSER => DateTime::Format::Strptime->new(pattern => "%e-%b-%Y %T %z");
+use constant HEADERDATE_PARSER => DateTime::Format::Mail->new->loose;
+
 # Canonical capitalization
 my %FLAGS;
 $FLAGS{ lc $_ } = $_ for qw(\Answered \Flagged \Deleted \Seen \Draft);
@@ -17,7 +22,7 @@ $FLAGS{ lc $_ } = $_ for qw(\Answered \Flagged \Deleted \Seen \Draft);
 use base 'Class::Accessor';
 
 __PACKAGE__->mk_accessors(
-    qw(sequence mailbox uid _flags mime internaldate expunged));
+    qw(sequence mailbox uid _flags mime expunged));
 
 =head1 NAME
 
@@ -35,7 +40,7 @@ sub new {
     my $class = shift;
     my $self = bless {}, $class;
     $self->mime( Email::MIME->new(@_) ) if @_;
-    $self->internaldate( DateTime->now->strftime("%e-%b-%Y %T %z") );
+    $self->internaldate( DateTime->now( time_zone => 'local' ) );
     $self->_flags( {} );
     return $self;
 }
@@ -60,11 +65,82 @@ L<Net::IMAP::Server::Connection/sequence>.
 Gets or sets the UID of the message.  This, paired with the name and
 UIDVALIDITY of its mailbox, is a unique designator of the message.
 
-=head2 internaldate [STRING]
+=head2 internaldate [STRING or DATETIME]
 
 Gets or sets the string representing when the message was received by
 the server.  According to RFC specification, this must be formatted as
-C<01-Jan-2008 15:42 -0500>.
+C<01-Jan-2008 15:42:00 -0500> if it is a C<STRING>.
+
+=cut
+
+sub internaldate {
+    my $self = shift;
+    return $self->{internaldate} unless @_;
+    my $value = shift;
+
+    if (ref $value) {
+        $self->{internaldate} = $value->strftime("%e-%b-%Y %T %z");
+    } else {
+        $self->{internaldate} = $value;
+        $value = $self->INTERNALDATE_PARSER->parse_datetime($value);
+    }
+    $value->truncate( to => "day" );
+    $value->set_time_zone( "floating" );
+    $value->set_time_zone( "UTC" );
+    $self->{epoch_day_utc} = $value->epoch;
+    return $self->{internaldate};
+}
+
+=head2 epoch_day_utc
+
+Returns the epoch time of the L</internaldate>, ignoring times and
+time zones.  This is almost certainly only useful for C<SEARCH BEFORE>
+and friends.
+
+=cut
+
+sub epoch_day_utc {
+    my $self = shift;
+    return $self->{epoch_day_utc};
+}
+
+=head2 date
+
+Returns the Date header of the message, as a L<DateTime> object.
+Returns undef if the date cannot be parsed.
+
+=cut
+
+sub date {
+    my $self = shift;
+    my $date = $self->mime_header->header("Date");
+    return unless $date;
+
+    return eval {
+        $self->HEADERDATE_PARSER->parse_datetime(
+            $date
+        )
+    };
+}
+
+=head2 date_day_utc
+
+Similar to L</epoch_day_utc>, but for the L</date> header.  That is,
+it returns the Date header, having stripped off the timezone and time.
+Returns undef if the Date header cannot be parsed.
+
+=cut
+
+sub date_day_utc {
+    my $self = shift;
+    my $date = $self->date;
+    return unless $date;
+
+    $date->truncate( to => "day" );
+    $date->set_time_zone( "floating" );
+    $date->set_time_zone( "UTC" );
+    return $date;
+}
 
 =head2 expunge
 
@@ -81,7 +157,8 @@ sub expunge {
 
 =head2 expunged
 
-=cut
+Returns true if the message has been marked as "to be expunged" by
+L</expunge>.
 
 =head2 copy_allowed MAILBOX
 
@@ -121,7 +198,8 @@ sub copy {
 
 =head2 session_flags
 
-Returns the list of flags that are stored per-session.
+Returns the names of flags that are stored per-session.  Defaults to
+only the C<\Recent> flag.
 
 =cut
 
@@ -133,7 +211,7 @@ sub _session_flags {
     my $self = shift;
     my $conn = Net::IMAP::Server->connection;
     return {} unless $conn;
-    return $conn->session_flags($self) || {};
+    return $conn->_session_flags->{$self} ||= {};
 }
 
 =head2 set_flag FLAG [, SILENT]
@@ -162,7 +240,7 @@ sub set_flag {
             )
             )
         {
-            $c->untagged_fetch->{ $c->sequence($self) }{FLAGS}++
+            $c->_unsent_fetch->{ $c->sequence($self) }{FLAGS}++
                 unless $c->ignore_flags;
         }
     }
@@ -196,7 +274,7 @@ sub clear_flag {
             )
             )
         {
-            $c->untagged_fetch->{ $c->sequence($self) }{FLAGS}++
+            $c->_unsent_fetch->{ $c->sequence($self) }{FLAGS}++
                 unless $c->ignore_flags;
         }
     }
@@ -393,6 +471,7 @@ sub mime_select {
     }
 
     return $result unless defined $start;
+    return "" if $start > length $result;
     return substr( $result, $start ) unless defined $end;
     return substr( $result, $start, $end );
 }

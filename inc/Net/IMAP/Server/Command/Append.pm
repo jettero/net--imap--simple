@@ -36,10 +36,10 @@ sub run {
         }
         if (@options and grep {not ref $_} @options) {
             my ($time) = grep {not ref $_} @options;
-            my $parser = DateTime::Format::Strptime->new(pattern => "%e-%b-%Y %T %z");
+            my $parser = $msg->INTERNALDATE_PARSER;
             my $dt = $parser->parse_datetime($time);
             return $self->bad_command("Invalid date") unless $dt;
-            $msg->internaldate( $parser->format_datetime($dt) );
+            $msg->internaldate( $dt );
         }
 
         $self->connection->previous_exists( $self->connection->previous_exists + 1 )

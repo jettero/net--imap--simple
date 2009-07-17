@@ -74,7 +74,7 @@ sub store {
     $self->connection->ignore_flags(1) if $what =~ /\.SILENT$/i;
     for my $m (@messages) {
         $m->store( $what => $flags );
-        $self->connection->untagged_fetch->{$self->connection->sequence($m)}{UID}++
+        $self->connection->_unsent_fetch->{$self->connection->sequence($m)}{UID}++
           unless $what =~ /\.SILENT$/i;
         cede;
     }

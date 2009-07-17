@@ -5,6 +5,7 @@ use strict;
 use bytes;
 
 use base qw/Net::IMAP::Server::Command/;
+use DateTime::Format::Strptime;
 
 sub validate {
     my $self = shift;
@@ -27,6 +28,8 @@ sub run {
     $self->ok_completed;
 }
 
+my $arg_parser = DateTime::Format::Strptime->new(pattern => "%e-%b-%Y");
+
 sub filter {
     my $self = shift;
     my @tokens = [@_]; # This ref is intentional!  It gets us the top-level AND
@@ -43,7 +46,12 @@ sub filter {
             return $self->bad_command("Parse error") unless @tokens;
             my $bcc = shift @tokens;
             push @{$filters}, sub {$_[0]->mime->header("Bcc")||"" =~ /\Q$bcc\E/i};
-        # BEFORE
+        } elsif ($token eq "BEFORE") {
+            return $self->bad_command("Parse error") unless @tokens;
+            my $date = shift @tokens;
+            my $parsed = $arg_parser->parse_datetime($date);
+            return $self->bad_command("Bad date: $date") unless $parsed;
+            push @{$filters}, sub {$_[0]->epoch_day_utc < $parsed->epoch };
         } elsif ($token eq "BODY") {
             return $self->bad_command("Parse error") unless @tokens;
             my $str = shift @tokens;
@@ -83,7 +91,12 @@ sub filter {
             $filters = $negation;
         } elsif ($token eq "OLD") {
             push @{$filters}, sub {not $_[0]->has_flag('\Recent')};
-        # ON
+        } elsif ($token eq "ON") {
+            return $self->bad_command("Parse error") unless @tokens;
+            my $date = shift @tokens;
+            my $parsed = $arg_parser->parse_datetime($date);
+            return $self->bad_command("Bad date: $date") unless $parsed;
+            push @{$filters}, sub {$_[0]->epoch_day_utc >= $parsed->epoch and $_[0]->epoch_day_utc < $parsed->epoch + 60*60*24 };
         } elsif ($token eq "OR") {
             unshift @stack, [OR => 2 => $filters];
             my $union = [];
@@ -93,10 +106,30 @@ sub filter {
             push @{$filters}, sub {$_[0]->has_flag('\Recent')};
         } elsif ($token eq "SEEN") {
             push @{$filters}, sub {$_[0]->has_flag('\Seen')};
-        # SENTBEFORE
-        # SENTON
-        # SENTSINCE
-        # SINCE
+        } elsif ($token eq "SENTBEFORE") {
+            return $self->bad_command("Parse error") unless @tokens;
+            my $date = shift @tokens;
+            my $parsed = $arg_parser->parse_datetime($date);
+            return $self->bad_command("Bad date: $date") unless $parsed;
+            push @{$filters}, sub {my $e = $_[0]->date_day_utc; defined $e and $e->epoch < $parsed->epoch; };
+        } elsif ($token eq "SENTON") {
+            return $self->bad_command("Parse error") unless @tokens;
+            my $date = shift @tokens;
+            my $parsed = $arg_parser->parse_datetime($date);
+            return $self->bad_command("Bad date: $date") unless $parsed;
+            push @{$filters}, sub {my $e = $_[0]->date_day_utc; defined $e and $e->epoch >= $parsed->epoch and $e->epoch < $parsed->epoch + 60*60*24 };
+        } elsif ($token eq "SENTSINCE") {
+            return $self->bad_command("Parse error") unless @tokens;
+            my $date = shift @tokens;
+            my $parsed = $arg_parser->parse_datetime($date);
+            return $self->bad_command("Bad date: $date") unless $parsed;
+            push @{$filters}, sub {my $e = $_[0]->date_day_utc; defined $e and $e->epoch >= $parsed->epoch };
+        } elsif ($token eq "SINCE") {
+            return $self->bad_command("Parse error") unless @tokens;
+            my $date = shift @tokens;
+            my $parsed = $arg_parser->parse_datetime($date);
+            return $self->bad_command("Bad date: $date") unless $parsed;
+            push @{$filters}, sub {$_[0]->epoch_day_utc >= $parsed->epoch }
         } elsif ($token eq "SMALLER") {
             return $self->bad_command("Parse error") unless @tokens;
             my $size = shift @tokens;
@@ -149,7 +182,7 @@ sub filter {
             };
             $filters = $intersection;
         } else {
-            return $self->bad_command("Unknown command: $token");
+            return $self->bad_command("Unknown search token: $token");
         }
 
         while (@stack and (@{$filters} == $stack[0][1] or ($stack[0][3] and not @tokens))) {

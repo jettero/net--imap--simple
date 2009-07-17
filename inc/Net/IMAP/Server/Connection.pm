@@ -12,7 +12,18 @@ use Net::IMAP::Server::Error;
 use Net::IMAP::Server::Command;
 
 __PACKAGE__->mk_accessors(
-    qw(server io_handle _selected selected_read_only model pending temporary_messages temporary_sequence_map previous_exists untagged_expunge untagged_fetch ignore_flags last_poll in_poll commands timer coro _session_flags)
+    qw(server coro io_handle model auth
+       timer commands pending
+       selected_read_only
+       _selected
+
+       temporary_messages temporary_sequence_map
+       ignore_flags
+       _session_flags
+
+       last_poll previous_exists in_poll
+       _unsent_expunge _unsent_fetch
+       )
 );
 
 =head1 NAME
@@ -35,13 +46,13 @@ sub new {
     my $class = shift;
     my $self  = $class->SUPER::new(
         {   @_,
-            state            => "unauth",
-            untagged_expunge => [],
-            untagged_fetch   => {},
-            last_poll        => time,
-            commands         => 0,
-            coro             => $Coro::current,
-            _session_flags   => {},
+            state           => "unauth",
+            _unsent_expunge => [],
+            _unsent_fetch   => {},
+            last_poll       => time,
+            commands        => 0,
+            coro            => $Coro::current,
+            _session_flags  => {},
         }
     );
     $self->update_timer;
@@ -208,6 +219,10 @@ sub update_timer {
 =head2 timer [EV watcher]
 
 Returns the L<EV> watcher in charge of the inactivity timer.
+
+=head2 commands
+
+Returns the number of client commands the connection has processed.
 
 =head2 handle_command
 
@@ -415,7 +430,10 @@ sub force_poll {
 Gets or sets the last time the selected mailbox was polled, in seconds
 since the epoch.
 
-=cut
+=head2 previous_exists
+
+The high-water mark of how many messages the client has been told are
+in the mailbox.
 
 =head2 send_untagged
 
@@ -440,32 +458,32 @@ sub send_untagged {
         $self->in_poll(0);
     }
 
-    for my $s ( keys %{ $self->untagged_fetch } ) {
+    for my $s ( keys %{ $self->_unsent_fetch } ) {
         my ($m) = $self->get_messages($s);
         $self->untagged_response(
                   $s 
                 . " FETCH "
                 . Net::IMAP::Server::Command->data_out(
-                [ $m->fetch( [ keys %{ $self->untagged_fetch->{$s} } ] ) ]
+                [ $m->fetch( [ keys %{ $self->_unsent_fetch->{$s} } ] ) ]
                 )
         );
     }
-    $self->untagged_fetch( {} );
+    $self->_unsent_fetch( {} );
 
     if ( $args{expunged} ) {
 
 # Make sure that they know of at least the existence of what's being expunged.
         my $max = 0;
-        $max = $max < $_ ? $_ : $max for @{ $self->untagged_expunge };
+        $max = $max < $_ ? $_ : $max for @{ $self->_unsent_expunge };
         $self->untagged_response("$max EXISTS")
             if $max > $self->previous_exists;
 
         # Send the expunges, clear out the temporary message store
         $self->previous_exists(
-            $self->previous_exists - @{ $self->untagged_expunge } );
+            $self->previous_exists - @{ $self->_unsent_expunge } );
         $self->untagged_response( map {"$_ EXPUNGE"}
-                @{ $self->untagged_expunge } );
-        $self->untagged_expunge( [] );
+                @{ $self->_unsent_expunge } );
+        $self->_unsent_expunge( [] );
         $self->temporary_messages(undef);
     }
 
@@ -545,17 +563,6 @@ sub capability {
     }
 
     return $base;
-}
-
-=head2 session_flags MESSAGE
-
-=cut
-
-sub session_flags {
-    my $self = shift;
-    my ($message) = shift;
-    $self->_session_flags->{$message . ""} ||= {};
-    return $self->_session_flags->{$message . ""};
 }
 
 =head2 log MESSAGE

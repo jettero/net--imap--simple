@@ -304,7 +304,7 @@ sub expunge {
     for my $c ( Net::IMAP::Server->concurrent_mailbox_connections($self) ) {
 
         # Also, each connection gets these added to their expunge list
-        push @{ $c->untagged_expunge }, @ids;
+        push @{ $c->_unsent_expunge }, @ids;
     }
 
     return 1;

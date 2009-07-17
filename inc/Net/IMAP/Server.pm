@@ -8,7 +8,7 @@ use base qw/Net::Server::Coro Class::Accessor/;
 use UNIVERSAL::require;
 use Coro;
 
-our $VERSION = '1.20';
+our $VERSION = '1.22';
 
 =head1 NAME
 
@@ -480,13 +480,17 @@ Please report any bugs or feature requests to
 C<bug-net-imap-server@rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org>.
 
+A low-traffic mailing list exists for discussion on how to (ab)use
+this module, at
+L<http://lists.bestpractical.com/cgi-bin/mailman/listinfo/net-imap-server>.
+
 =head1 AUTHOR
 
 Alex Vandiver  C<< <alexmv@bestpractical.com> >>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2008, Best Practical Solutions, LLC.  All rights reserved.
+Copyright (c) 2009, Best Practical Solutions, LLC.  All rights reserved.
 
 This module is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself. See L<perlartistic>.
