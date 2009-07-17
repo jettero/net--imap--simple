@@ -1,3 +1,6 @@
+1.1903: Fri Jul 17 2009
+   - actually use the inc/ copy of net-imap-server
+
 1.1902: Fri Jul 17 2009
    - I decided to include a static copy of net-imap-server so I
      know precisely what version is there for tests.  Suggested

@@ -4,6 +4,7 @@ use strict;
 use IO::Socket::INET;
 no warnings;
 
+use lib 'inc'; # use our local copy of Net::IMAP::Server
 for my $mod (qw(Coro::EV Net::IMAP::Server IO::Socket::SSL)) {
     my $res = do {
         # NOTE: the imap server emits various startup warnings on import
