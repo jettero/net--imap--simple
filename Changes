@@ -1,3 +1,7 @@
+1.1905: Mon Jul 20 2009
+   - I apparently need Class::Accessor installed for tests.
+     Pulling over all deps of the now included net-imap-server
+
 1.1904: Fri Jul 17 2009
    - bestpractical's patch makes more sense than mine does
 
