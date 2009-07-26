@@ -11,6 +11,7 @@ certs/server-cert.pem
 certs/server-key.pem
 contrib/33189_attach.pl
 contrib/connectalot.pl
+contrib/dovecot-pipe-server.pl
 contrib/hand_test01.pl
 contrib/imap.pl
 contrib/status.pl

@@ -1,4 +1,7 @@
 #!/bin/bash
 
-fuser -k -n tcp 7000
+for port in 7000 8000 9000; do
+    fuser -k -n tcp $port
+done
+
 rm -vf imap_server.pid
