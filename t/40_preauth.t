@@ -7,6 +7,8 @@ use Net::IMAP::Simple;
 
 plan tests => our $tests = 1;
 
+sub fixeol($) { $_[0] =~ s/[\x0d\x0a]+/\n/g }
+
 my $time = localtime;
 my $msg = <<"HERE";
 From: me
@@ -27,9 +29,13 @@ sub run_tests {
     my $nm = $imap->select('INBOX')
         or die " failure selecting INBOX: " . $imap->errstr . "\n";
 
-    $imap->put( INBOX => $msg );
+    $imap->put( INBOX => $msg ); my $gmsg =
+    $imap->get( $nm + 1 );
 
-    ok( $imap->get($nm + 1), $msg );
+    fixeol($msg);
+    fixeol($gmsg);
+
+    ok( $gmsg, $msg );
 }   
 
 do "t/ppsc_server.pm" or die "error starting imap server: $!$@";

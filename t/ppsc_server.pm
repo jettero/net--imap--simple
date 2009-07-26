@@ -33,7 +33,7 @@ $SIG{CHLD} = $SIG{PIPE} = sub {};
 sub kill_imap_server {
     my $pid = shift;
 
-    warn " killing: $pid";
+    #warn " killing: $pid";
     for(15,2,9,13,11) {
         kill $_, $pid;
         sleep 1;
@@ -49,7 +49,7 @@ if( my $pid = fork ) {
         sleep 1 while (--$retries)>0 and not $imapfh = IO::Socket::INET->new('localhost:9000');
 
         if( not $imapfh ) {
-            warn "unable to start dovecot-pipe, skipping all meaningful tests\n";
+            warn "unable to start pipe-server, skipping all meaningful tests\n";
             skip(1,1,1) for 1 .. $tests;
             exit 0;
         } 
@@ -67,7 +67,7 @@ if( my $pid = fork ) {
         exit 0;
     }
 
-    kill_imap_server();
+    kill_imap_server($pid);
 
     exit(0); # doesn't help, see below
 

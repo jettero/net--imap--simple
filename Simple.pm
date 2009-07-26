@@ -97,23 +97,31 @@ sub new {
 
     my $select = $self->{sel} = IO::Select->new($sock);
 
+    $self->_debug( caller, __LINE__, 'new', "looking for greeting" ) if $self->{debug};
+
     my $greeting_ok = 0;
-    while( $select->can_read(1) ) {
+    if( $select->can_read($self->{timeout}) ) {
         if( my $line = $sock->getline ) {
             # Cool, we got a line, check to see if it's a
             # greeting.
 
-            $greeting_ok = 1 if $line =~ m/^\*\s+OK/i;
+            $self->_debug( caller, __LINE__, 'new', "got a greeting: $line" ) if $self->{debug};
+            $greeting_ok = 1 if $line =~ m/^\*\s+(?:OK|PREAUTH)/i;
 
             # Also, check to see if we failed before we sent any
             # commands.
             return if $line =~ /^\*\s+(?:NO|BAD)(?:\s+(.+))?/i;
 
         } else {
+            $self->_debug( caller, __LINE__, 'new', "server hung up during connect" ) if $self->{debug};
+
             # The server hung up on us, otherwise we'd get a line
             # after can_read.
             return;
         }
+
+    } else {
+        $self->_debug( caller, __LINE__, 'new', "no greeting found before timeout" ) if $self->{debug};
     }
 
     return unless $greeting_ok;
