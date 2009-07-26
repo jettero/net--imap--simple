@@ -1,3 +1,8 @@
+1.1907: Sun Jul 26 2009
+   - PREAUTH fix and tests
+   - a nifty little contrib/ dovecot pipe server thingy
+   - fixed serious issues with the greeting timeout
+
 1.1905: Mon Jul 20 2009
    - I apparently need Class::Accessor installed for tests.
      Pulling over all deps of the now included net-imap-server

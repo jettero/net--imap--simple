@@ -11,9 +11,9 @@ certs/server-cert.pem
 certs/server-key.pem
 contrib/33189_attach.pl
 contrib/connectalot.pl
-contrib/dovecot-pipe-server.pl
 contrib/hand_test01.pl
 contrib/imap.pl
+contrib/preauth-pipe-server.pl
 contrib/status.pl
 inc/Net/IMAP/Server.pm
 inc/Net/IMAP/Server/Command.pm
@@ -63,6 +63,7 @@ t/17_status_and_select.t
 t/22_copy_multiple.t
 t/22_delete_multiple.t
 t/35_imap_results_in_message_body.t
+t/40_preauth.t
 t/Auth.pm
 t/Connection.pm
 t/Model.pm
@@ -70,4 +71,5 @@ t/Shutdown.pm
 t/critic.t
 t/pod.t
 t/pod_coverage.t
+t/ppsc_server.pm
 t/test_server.pm
