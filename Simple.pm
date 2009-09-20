@@ -8,7 +8,7 @@ use IO::File;
 use IO::Socket;
 use IO::Select;
 
-our $VERSION = "1.1907";
+our $VERSION = "1.1908";
 
 BEGIN {
     # I'd really rather the pause/cpan indexers miss this "package"
@@ -372,6 +372,19 @@ sub list {
                 $list{$1} = $2;
             }
         },
+    );
+}
+
+sub search {
+    my ($self, $search) = @_;
+    $search ||= "ALL";
+
+    my @seq;
+
+    return $self->_process_cmd(
+        cmd => [ SEARCH => $search ],
+        final => sub { wantarray ? @seq : \@seq },
+        process => sub { if ( $_[0] =~ /^\*\s+SEARCH\s+(\d+)/i ) { push @seq, $1 } },
     );
 }
 
