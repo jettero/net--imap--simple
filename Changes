@@ -1,5 +1,6 @@
 1.1908: Sun Sep 20 2009
-   - 
+   - added a really weak search command.  I think we can do a
+     little better...
 
 1.1907: Sun Jul 26 2009
    - PREAUTH fix and tests
