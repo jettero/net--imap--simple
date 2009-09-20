@@ -384,7 +384,9 @@ sub search {
     return $self->_process_cmd(
         cmd => [ SEARCH => $search ],
         final => sub { wantarray ? @seq : \@seq },
-        process => sub { if ( $_[0] =~ /^\*\s+SEARCH\s+(\d+)/i ) { push @seq, $1 } },
+        process => sub { if ( my ($msgs) = $_[0] =~ /^\*\s+SEARCH\s+(.*)/i ) {
+            push @seq, $1 while $msgs =~ m/\b(\d+)\b/g;
+        } },
     );
 }
 
