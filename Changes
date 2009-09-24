@@ -1,3 +1,17 @@
+1.1908: Thu Sep 24 2009
+   - top() does a surprisingly terrible job at groking header
+     lines.  If you have something like this:
+
+       message-id:
+            <blarg-blarg.blarg>
+
+       date: wednesday, blarg blarg 
+            xx:xx:xx (pdt)
+
+     The results are somewhat random concerning, lines vs
+     header-rows.  My goal is to make sure each element of the
+     arrayref returned is a header line, not just a line of text.
+
 1.1908: Sun Sep 20 2009
    - added a really weak search command.  I think we can do a
      little better...
