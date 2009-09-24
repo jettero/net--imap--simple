@@ -333,10 +333,31 @@ sub top {
 
     my @lines;
 
+    ## rfc2822 ## 2.2. Header Fields
+
+    ## rfc2822 ##    Header fields are lines composed of a field name, followed by a colon
+    ## rfc2822 ##    (":"), followed by a field body, and terminated by CRLF.  A field
+    ## rfc2822 ##    name MUST be composed of printable US-ASCII characters (i.e.,
+    ## rfc2822 ##    characters that have values between 33 and 126, inclusive), except
+    ## rfc2822 ##    colon.  A field body may be composed of any US-ASCII characters,
+    ## rfc2822 ##    except for CR and LF.  However, a field body may contain CRLF when
+    ## rfc2822 ##    used in header "folding" and  "unfolding" as described in section
+    ## rfc2822 ##    2.2.3.  All field bodies MUST conform to the syntax described in
+    ## rfc2822 ##    sections 3 and 4 of this standard.
+
     return $self->_process_cmd(
-        cmd     => [ FETCH => qq[$number RFC822.HEADER] ],
-        final   => sub { \@lines },
-        process => sub { push @lines, $_[0] if $_[0] =~ /^(?: \s+\S+ | [^:]+: )/x },
+        cmd   => [ FETCH => qq[$number RFC822.HEADER] ],
+        final => sub { \@lines },
+        process => sub {
+            return if $_[0] =~ m/\*\s+\d+\s+FETCH/i; # should this really be case insensitive?
+
+            if( not @lines or $_[0] =~ m/^[!-9;-~]+:/ ) {
+                push @lines, $_[0];
+
+            } else {
+                $lines[-1] .= $_[0];
+            }
+        },
     );
 }
 
