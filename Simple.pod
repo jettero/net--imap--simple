@@ -342,7 +342,7 @@ error handler is set with the error message.
 This method logs out of the IMAP server, expunges the selected mailbox, and
 closes the connection. No error message will ever be returned from this method.
 
-Optionally if BOOL is TRUE (1) then a hard quit is preformed which closes the
+Optionally if BOOL is TRUE (1) then a hard quit is performed which closes the
 socket connection. This hard quit will still issue both EXPUNGE and LOGOUT
 commands however the response is ignored and the socket is closed after issuing
 the commands.
