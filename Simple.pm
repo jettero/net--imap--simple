@@ -816,6 +816,9 @@ sub _cmd_ok {
         $self->_seterrstr( $1 || 'unknown error' );
         return 0;
 
+    } elsif ( $res =~ m/^\*\s+/ ) {
+        # yawn
+
     } else {
         $self->_seterrstr("warning unknown return string (id=$id): $res");
         return;
