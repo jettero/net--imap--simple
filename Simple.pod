@@ -175,7 +175,7 @@ This method is an alias for C<$imap->select>
 
     print "Avaliable server flags: " . join(", ", $imap->flags) . "\n";
 
-This method accepts an optional folder name and returns the current avaliable
+This method accepts an optional folder name and returns the current available
 server flags as a list, for the selected folder. If no folder name is provided
 the last folder C<< $imap->select >>'ed will be used.
 
@@ -191,6 +191,8 @@ folder C<< $imap->select >>'ed will be used.
 
 This method uses caching.
 
+See also: L<search>
+
 =item unseen
 
     print "Unseen messages value: " . $imap->unseen . "\n";
@@ -205,8 +207,9 @@ This method uses caching.
 B<NOTE>: This is not the opposite of L<seen> below.  The UNSEEN value varies
 from server to server, but according to the IMAP specification, it should be the
 I<number of the first unseen message>, in the case the flag is provided.  (If
-the flag is not provided, users would have to use the SEARCH command to find it
--- not implemented.)
+the flag is not provided, users would have to use the SEARCH command to find it.)
+
+See also: L<search>
 
 =item current_box
 
@@ -517,6 +520,115 @@ mention it.
 
 =back
 
+=head1 SEARCHING
+
+=over 4
+
+=item search
+
+This function returns an array of message numbers (in list context) or the
+number of matched messages (in scalar context).  It takes a single argument: the
+search.
+
+IMAP searching can be a little confusing and this function makes no attempt to
+parse your searches.  If you wish to do searches by hand, please see RFC 3501.
+
+Here are a few examples:
+
+    my @ids = $imap->search("UNSEEN");
+    my @ids = $imap->search('SUBJECT "blarg is \"blarg\""');
+    my @ids = $imap->search('FROM "joe@aol.com"');
+    my @ids = $imap->search("DELETED");
+
+    # example from RFC 3501, search terms are ANDed together
+    my @ids = $imap->search('FLAGGED SINCE 1-Feb-1994 NOT FROM "Smith"');
+
+    # flagged and ( since x or !from y ):
+    my @ids = $imap->search('FLAGGED OR SINCE x NOT FROM "y"');
+      # no typo above, see the RFC
+
+Since this module is meant to be simple, L<Net::IMAP::Simple> has a few search
+helpers.  If you need fancy booleans and things, you'll have to learn search.
+If you need a quick search for unseen messages, see below.
+
+These all return an array of messages or count of messages exactly as the search
+function does.  Some of them take arguments, some do not.  They do try to grok
+your arguments slightly, the mechanics of this (if any) will be mentioned below.
+
+=over 4
+
+=item search_seen
+
+Returns numbers of messages that have the \Seen flag.
+
+=item search_recent
+
+Returns numbers of messages that have the \Recent flag.
+
+=item search_answered
+
+Returns numbers of messages that have the \Answered flag.
+
+=item search_deleted
+
+Returns numbers of messages that have the \Deleted flag.
+
+=item search_flagged
+
+Returns numbers of messages that have the \Flagged flag.
+
+=item search_draft
+
+Returns numbers of messages that have the \Draft flag.
+
+=item search_unseen
+
+Returns numbers of messages that do not have the \Seen flag.
+
+=item search_old
+
+Returns numbers of messages that do not have the \Recent flag.
+
+=item search_unanswered
+
+Returns numbers of messages that do not have the \Answered flag.
+
+=item search_undeleted
+
+Returns numbers of messages that do not have the \Deleted flag.
+
+=item search_unflagged
+
+Returns numbers of messages that do not have the \Flagged flag.
+
+=item search_smaller
+
+Returns numbers of messages that are smaller than C<< <x> >> octets.  This
+function will try to force your argument to be a number before passing it to the
+IMAP server.
+
+=item search_larger
+
+Returns numbers of messages that are larger than C<< <x> >> octets.  This
+function will try to force your argument to be a number before passing it to the
+IMAP server.
+
+=item search_from
+=item search_to
+=item search_cc
+=item search_bcc
+=item search_subject
+=item search_body
+
+=item search_before
+=item search_since
+=item search_sentbefore
+=item search_sentsince
+
+=back
+
+=back
+
 =head1 OTHER NOTES
 
 =over 4
@@ -524,7 +636,7 @@ mention it.
 =item sequence set
 
 Message numbers are never checked before being passed to the IMAP server (this
-is a "simple" module afteral), so in most places where a message number is
+is a "simple" module after all), so in most places where a message number is
 required, you can instead use so-called I<sequence sets>.  Examples:
 
     $imap->copy(   "3,4,9:22", "ANOTHERBOX" ) or die $imap->errstr;
