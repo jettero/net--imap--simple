@@ -667,7 +667,7 @@ format C<%d-%m-%Y> (date-month-year) as RFC3501 requires.  If you do not have
 that module, no attempt will be made to coerce your date into the correct
 format.
 
-=item search_sentbefore
+=item search_sent_before
 
 This function takes a single argument we'll call C<< <x> >> and returns numbers
 of messages that have a header date before C<< <x> >>.  If you have L<Date::Manip>
@@ -676,7 +676,7 @@ format C<%d-%m-%Y> (date-month-year) as RFC3501 requires.  If you do not have
 that module, no attempt will be made to coerce your date into the correct
 format.
 
-=item search_sentsince
+=item search_sent_since
 
 This function takes a single argument we'll call C<< <x> >> and returns numbers
 of messages that have a header date after C<< <x> >>.  If you have L<Date::Manip>

@@ -457,10 +457,10 @@ sub _process_qstring {
     return "\"$t\"";
 }
 
-sub search_before     { my $self = shift; my $d = _process_date(shift); return $self->search("BEFORE $d"); }
-sub search_since      { my $self = shift; my $d = _process_date(shift); return $self->search("SINCE $d"); }
-sub search_sentbefore { my $self = shift; my $d = _process_date(shift); return $self->search("SENTBEFORE $d"); }
-sub search_sentsince  { my $self = shift; my $d = _process_date(shift); return $self->search("SENTSINCE $d"); }
+sub search_before      { my $self = shift; my $d = _process_date(shift); return $self->search("BEFORE $d"); }
+sub search_since       { my $self = shift; my $d = _process_date(shift); return $self->search("SINCE $d"); }
+sub search_sent_before { my $self = shift; my $d = _process_date(shift); return $self->search("SENTBEFORE $d"); }
+sub search_sent_since  { my $self = shift; my $d = _process_date(shift); return $self->search("SENTSINCE $d"); }
 
 sub search_from    { my $self = shift; my $t = _process_qstring(shift); return $self->search("FROM $t"); }
 sub search_to      { my $self = shift; my $t = _process_qstring(shift); return $self->search("TO $t"); }
