@@ -411,6 +411,47 @@ sub search {
     );
 }
 
+sub search_seen     { my $self = shift; return $self->search("SEEN"); }
+sub search_recent   { my $self = shift; return $self->search("RECENT"); }
+sub search_answered { my $self = shift; return $self->search("ANSWERED"); }
+sub search_deleted  { my $self = shift; return $self->search("DELETED"); }
+sub search_flagged  { my $self = shift; return $self->search("FLAGGED"); }
+sub search_draft    { my $self = shift; return $self->search("FLAGGED"); }
+
+sub search_unseen     { my $self = shift; return $self->search("UNSEEN"); }
+sub search_old        { my $self = shift; return $self->search("OLD"); }
+sub search_unanswered { my $self = shift; return $self->search("UNANSWERED"); }
+sub search_undeleted  { my $self = shift; return $self->search("UNDELETED"); }
+sub search_unflagged  { my $self = shift; return $self->search("UNFLAGGED"); }
+
+sub search_smaller { my $self = shift; my $octets = int shift; return $self->search("SMALLER $octets"); }
+sub search_larger  { my $self = shift; my $octets = int shift; return $self->search("LARGER $octets"); }
+
+sub _process_date {
+    my $d = shift;
+
+    if( eval 'use Date::Manip; 1' ) { ## no critic
+        # use Date::Manip to try to read the date and make it RFC 2822
+
+    } else {
+        # complain if the date isn't RFC 2822
+    }
+
+    return $d;
+}
+
+sub search_before     { my $self = shift; my $d = eval{_pd(@_);1} || croak $@; return $self->search("BEFORE $d"); }
+sub search_since      { my $self = shift; my $d = eval{_pd(@_);1} || croak $@; return $self->search("SINCE $d"); }
+sub search_sentbefore { my $self = shift; my $d = eval{_pd(@_);1} || croak $@; return $self->search("SENTBEFORE $d"); }
+sub search_sentsince  { my $self = shift; my $d = eval{_pd(@_);1} || croak $@; return $self->search("SENTSINCE $d"); }
+
+sub search_from    { my $self = shift; my $t = shift; return $self->search("FROM $t"); }
+sub search_to      { my $self = shift; my $t = shift; return $self->search("TO $t"); }
+sub search_cc      { my $self = shift; my $t = shift; return $self->search("CC $t"); }
+sub search_bcc     { my $self = shift; my $t = shift; return $self->search("BCC $t"); }
+sub search_subject { my $self = shift; my $t = shift; return $self->search("SUBJECT $t"); }
+sub search_body    { my $self = shift; my $t = shift; return $self->search("BODY $t"); }
+
 sub get {
     my ( $self, $number ) = @_;
 
