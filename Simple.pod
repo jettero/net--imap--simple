@@ -603,27 +603,87 @@ Returns numbers of messages that do not have the \Flagged flag.
 
 =item search_smaller
 
-Returns numbers of messages that are smaller than C<< <x> >> octets.  This
-function will try to force your argument to be a number before passing it to the
-IMAP server.
+This function takes a single argument we'll call C<< <x> >> and returns numbers
+of messages that are smaller than C<< <x> >> octets.  This function will try to
+force your argument to be a number before passing it to the IMAP server.
 
 =item search_larger
 
-Returns numbers of messages that are larger than C<< <x> >> octets.  This
-function will try to force your argument to be a number before passing it to the
-IMAP server.
+This function takes a single argument we'll call C<< <x> >> and returns numbers
+of messages that are larger than C<< <x> >> octets.  This function will try to
+force your argument to be a number before passing it to the IMAP server.
 
 =item search_from
+
+This function takes a single argument we'll call C<< <x> >> and returns numbers
+of messages that have C<< <x> >> in the from header.  This function will attempt
+to force your string into the RFC3501 quoted-string format.
+
 =item search_to
+
+This function takes a single argument we'll call C<< <x> >> and returns numbers
+of messages that have C<< <x> >> in the to header.  This function will attempt
+to force your string into the RFC3501 quoted-string format.
+
 =item search_cc
+
+This function takes a single argument we'll call C<< <x> >> and returns numbers
+of messages that have C<< <x> >> in the cc header.  This function will attempt
+to force your string into the RFC3501 quoted-string format.
+
 =item search_bcc
+
+This function takes a single argument we'll call C<< <x> >> and returns numbers
+of messages that have C<< <x> >> in the bcc header.  This function will attempt
+to force your string into the RFC3501 quoted-string format.
+
 =item search_subject
+
+This function takes a single argument we'll call C<< <x> >> and returns numbers
+of messages that have C<< <x> >> in the subject header.  This function will attempt
+to force your string into the RFC3501 quoted-string format.
+
 =item search_body
 
+This function takes a single argument we'll call C<< <x> >> and returns numbers
+of messages that have C<< <x> >> in the message body.  This function will
+attempt to force your string into the RFC3501 quoted-string format.
+
 =item search_before
+
+This function takes a single argument we'll call C<< <x> >> and returns numbers
+of messages that were received before C<< <x> >>.  If you have L<Date::Manip>
+installed (optional), this function will attempt to force the date into the
+format C<%d-%m-%Y> (date-month-year) as RFC3501 requires.  If you do not have
+that module, no attempt will be made to coerce your date into the correct
+format.
+
 =item search_since
+
+This function takes a single argument we'll call C<< <x> >> and returns numbers
+of messages that were received after C<< <x> >>.  If you have L<Date::Manip>
+installed (optional), this function will attempt to force the date into the
+format C<%d-%m-%Y> (date-month-year) as RFC3501 requires.  If you do not have
+that module, no attempt will be made to coerce your date into the correct
+format.
+
 =item search_sentbefore
+
+This function takes a single argument we'll call C<< <x> >> and returns numbers
+of messages that have a header date before C<< <x> >>.  If you have L<Date::Manip>
+installed (optional), this function will attempt to force the date into the
+format C<%d-%m-%Y> (date-month-year) as RFC3501 requires.  If you do not have
+that module, no attempt will be made to coerce your date into the correct
+format.
+
 =item search_sentsince
+
+This function takes a single argument we'll call C<< <x> >> and returns numbers
+of messages that have a header date after C<< <x> >>.  If you have L<Date::Manip>
+installed (optional), this function will attempt to force the date into the
+format C<%d-%m-%Y> (date-month-year) as RFC3501 requires.  If you do not have
+that module, no attempt will be made to coerce your date into the correct
+format.
 
 =back
 
