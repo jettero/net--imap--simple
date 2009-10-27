@@ -872,9 +872,9 @@ sub _cmd_ok {
 
     } elsif ( $res =~ /^$id\s+(?:NO|BAD)(?:\s+(.+))?/i ) {
         $self->_seterrstr( $1 || 'unknown error' );
+        return 0;
 
     } elsif ( $res =~ m/^\*\s+/ ) {
-        # yawn
 
     } else {
         $self->_seterrstr("warning unknown return string (id=$id): $res");
