@@ -451,17 +451,25 @@ sub _process_date {
     return $d;
 }
 
+sub _process_qstring {
+    my $t = shift;
+       $t =~ s/\\/\\\\/g;
+       $t =~ s/"/\\"/g;
+
+    return "\"$t\"";
+}
+
 sub search_before     { my $self = shift; my $d = _process_date(shift); return $self->search("BEFORE $d"); }
 sub search_since      { my $self = shift; my $d = _process_date(shift); return $self->search("SINCE $d"); }
 sub search_sentbefore { my $self = shift; my $d = _process_date(shift); return $self->search("SENTBEFORE $d"); }
 sub search_sentsince  { my $self = shift; my $d = _process_date(shift); return $self->search("SENTSINCE $d"); }
 
-sub search_from    { my $self = shift; my $t = shift; return $self->search("FROM $t"); }
-sub search_to      { my $self = shift; my $t = shift; return $self->search("TO $t"); }
-sub search_cc      { my $self = shift; my $t = shift; return $self->search("CC $t"); }
-sub search_bcc     { my $self = shift; my $t = shift; return $self->search("BCC $t"); }
-sub search_subject { my $self = shift; my $t = shift; return $self->search("SUBJECT $t"); }
-sub search_body    { my $self = shift; my $t = shift; return $self->search("BODY $t"); }
+sub search_from    { my $self = shift; my $t = _process_qstring(shift); return $self->search("FROM $t"); }
+sub search_to      { my $self = shift; my $t = _process_qstring(shift); return $self->search("TO $t"); }
+sub search_cc      { my $self = shift; my $t = _process_qstring(shift); return $self->search("CC $t"); }
+sub search_bcc     { my $self = shift; my $t = _process_qstring(shift); return $self->search("BCC $t"); }
+sub search_subject { my $self = shift; my $t = _process_qstring(shift); return $self->search("SUBJECT $t"); }
+sub search_body    { my $self = shift; my $t = _process_qstring(shift); return $self->search("BODY $t"); }
 
 sub get {
     my ( $self, $number ) = @_;
