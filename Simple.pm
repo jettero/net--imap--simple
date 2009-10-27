@@ -432,17 +432,15 @@ sub _process_date {
 
     if( eval 'use Date::Manip (); 1' ) { ## no critic
         if( my $pd = Date::Manip::ParseDate($d) ) {
-            # %c     %a %b %e %H:%M:%S %Y     - Fri Apr 28 17:23:15 1995
-            # %C,%u  %a %b %e %H:%M:%S %z %Y  - Fri Apr 28 17:25:57 EDT 1995
-            # %g     %a, %d %b %Y %H:%M:%S %z - Fri, 28 Apr 1995 17:23:15 EDT
-            # none of the shortcuts are perfectly RFC 2822. :(
 
-            return Date::Manip::UnixDate($pd, '%a, %b %e %H:%M:%S %Y');
+            # NOTE: RFC 3501 wants this poorly-internationalized date format
+            # for SEARCH.  Not my fault.
+
+            return Date::Manip::UnixDate($pd, '%d-%m-%Y');
         }
 
     } else {
-        # TODO: complain if the date isn't RFC 2822
-        # [Sat,] Oct 24 11:34:23 2009
+        # TODO: complain if the date isn't %d-%m-%Y
 
         # I'm not sure there's anything to be gained by doing so ...  They'll
         # just get an imap error they can choose to handle.
