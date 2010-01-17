@@ -37,6 +37,7 @@ WriteMakefile(
                     'Email::Simple'               => 1.999,
                     'Encode::IMAPUTF7'            => 0,
                     'MIME::Base64'                => 0,
+                    'List::MoreUtils'             => 0,
                     'Net::SSLeay'                 => 0,
                     'Net::Server::Coro'           => 0.3,
                     'Regexp::Common'              => 0,
