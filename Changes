@@ -1,3 +1,10 @@
+1.1910_1: Sun Jan 17 2010
+   - http://www.nntp.perl.org/group/perl.cpan.testers/2010/01/msg6625605.html
+     It seems the t/22_* tests are failing, but I can't seem to
+     build a perl for which the tests fail. :(  No idea.
+     I added another prereq to the makefile and added another
+     line (perhaps informative?) to the t/22_copy* test.
+
 1.1910: Tue Oct 27 2009
    - documented search() and added a bunch of kid functions that
      issue searches on your behalf.  Added tests for search().
