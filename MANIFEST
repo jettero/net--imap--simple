@@ -62,7 +62,7 @@ t/09_concurrent_connections_new.t
 t/15_flags.t
 t/17_status_and_select.t
 t/22_copy_multiple.t
-t/22_delete_multiple.t
+t/23_delete_multiple.t
 t/35_imap_results_in_message_body.t
 t/40_preauth.t
 t/45_search.t
