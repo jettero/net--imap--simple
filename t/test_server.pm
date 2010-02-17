@@ -72,7 +72,7 @@ if( my $pid = fork ) {
     $line =~ s/(\* OK).*/$1 $file ($ver)/;
 
     my $len = length $line; $len ++;
-    print STDERR "\e7\e[5000C\e[${len}D$line\e8";
+    print STDERR "\e7\e[5000C\e[${len}D$line\e8" unless $ENV{AUTOMATED_TESTING};
     close $imapfh;
 
     $0 = "Net::IMAP::Simple($$)";
