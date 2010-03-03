@@ -13,6 +13,14 @@ my @id2 = $goog->search(q(HEADER Message-ID "<rt-3.8.HEAD-12685-1267618808-430.5
 print "id1: @id1\n";
 print "id2: @id2\n";
 
+$goog->put( jet => "from: jettero\@cpan.org\nmessage-id: hrm-test-77\n\nsupz?\n" );
+
+my @id3 = $goog->search(q(HEADER Message-ID "hrm-test-77"));
+
+print "id3: @id3\n";
+
+
+
 # login {{{
 sub login {
     my $arg = ""; $arg = ".$_[0]" if $_[0];
