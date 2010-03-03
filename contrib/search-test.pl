@@ -7,18 +7,17 @@ my $goog = login();
 
 $goog->select("jet");
 
-my @id1 = $goog->search(q(SUBJECT "rt.cpan.org #55177"));
-my @id2 = $goog->search(q(HEADER Message-ID "<rt-3.8.HEAD-12685-1267618808-430.55177-4-0@rt.cpan.org>"));
+my @id1 = $goog->search(q(SUBJECT "rt.cpan.org #55177"));                                                 print "id1: @id1\n";
+my @id2 = $goog->search(q(HEADER Message-ID "<rt-3.8.HEAD-12685-1267618808-430.55177-4-0@rt.cpan.org>")); print "id2: @id2\n";
 
-print "id1: @id1\n";
-print "id2: @id2\n";
+$goog->put( jet => qq(from: jettero\@cpan.org\r\nMessage-ID: test-77\r\nsubject: test-77\r\n\r\ntest-77\r\n) );
+$goog->put( jet => qq(from: jettero\@cpan.org\r\nMessage-ID: <test-77>\r\nsubject: <test-77>\r\n\r\n<test-77>\r\n) );
+$goog->put( jet => qq(from: jettero\@cpan.org\r\nMessage-ID: <test-77\@hrm>\r\nsubject: <test-77\@hrm>\r\n\r\n<test-77\@hrm>\r\n) );
 
-$goog->put( jet => "from: jettero\@cpan.org\nmessage-id: hrm-test-77\n\nsupz?\n" );
-
-my @id3 = $goog->search(q(HEADER Message-ID "hrm-test-77"));
-
-print "id3: @id3\n";
-
+my @id3 = $goog->search(q(HEADER Message-ID "test-77"));       print "id3: @id3\n";
+my @id4 = $goog->search(q(HEADER Message-ID "<test-77>"));     print "id4: @id4\n";
+my @id5 = $goog->search(q(HEADER Message-ID "<test-77@hrm>")); print "id5: @id5\n";
+my @id6 = $goog->search(q(SUBJECT "test-77"));                 print "id6: @id6\n";
 
 
 # login {{{
