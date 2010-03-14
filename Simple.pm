@@ -682,16 +682,16 @@ sub mailboxes {
         # recurse, should probably follow
         # RFC 2683: 3.2.1.1.  Listing Mailboxes
         return $self->_process_cmd(
-            cmd => [ LIST => qq[$ref *] ],
-            final => sub { _unescape($_) for @list; @list },
+            cmd     => [ LIST => qq[$ref *] ],
+            final   => sub { map { _unescape($_) } @list },
             process => sub { push @list, $self->_process_list( $_[0] ); },
         );
 
     }
 
     return $self->_process_cmd(
-        cmd => [ LIST => qq[$ref $box] ],
-        final => sub { _unescape($_) for @list; @list },
+        cmd     => [ LIST => qq[$ref $box] ],
+        final   => sub { map { _unescape($_) } @list },
         process => sub { push @list, $self->_process_list( $_[0] ) },
     );
 }
@@ -707,16 +707,16 @@ sub mailboxes_subscribed {
         # recurse, should probably follow
         # RFC 2683: 3.2.2.  Subscriptions
         return $self->_process_cmd(
-            cmd => [ LSUB => qq[$ref *] ],
-            final => sub { _unescape($_) for @list; @list },
+            cmd     => [ LSUB => qq[$ref *] ],
+            final   => sub { map { _unescape($_) } @list },
             process => sub { push @list, $self->_process_list( $_[0] ) },
         );
 
     }
 
     return $self->_process_cmd(
-        cmd => [ LSUB => qq[$ref $box] ],
-        final => sub { _unescape($_) for @list; @list },
+        cmd     => [ LSUB => qq[$ref $box] ],
+        final   => sub { map { _unescape($_) } @list },
         process => sub { push @list, $self->_process_list( $_[0] ) },
     );
 }
