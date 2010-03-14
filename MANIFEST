@@ -15,6 +15,7 @@ contrib/connectalot.pl
 contrib/hand_test01.pl
 contrib/imap.pl
 contrib/preauth-pipe-server.pl
+contrib/search-test.pl
 contrib/status.pl
 inc/Net/IMAP/Server.pm
 inc/Net/IMAP/Server/Command.pm
@@ -59,6 +60,7 @@ t/01_load.t
 t/07_select_and_examine.t
 t/08_selectalot.t
 t/09_concurrent_connections_new.t
+t/11_mailboxes.t
 t/15_flags.t
 t/17_status_and_select.t
 t/22_copy_multiple.t
