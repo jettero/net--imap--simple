@@ -1,3 +1,8 @@
+1.1911: Sun Mar 14 2010
+   - Fixed [introduced] bugs illuminated in #55552 (RT), thanks
+     to Aaron Wilson <aaron@gmx.co.uk> for a positively excellent
+     bug report!
+
 1.1910_2: Wed Feb 17 2010
    - http://www.nntp.perl.org/group/perl.cpan.testers/2010/02/msg6764802.html
      - I still can't figure out what's causing this... NO IDEA
