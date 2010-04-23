@@ -1,3 +1,11 @@
+1.1912_1: Thu Apr 22 2010
+   - Hrm, per Doug Reed at Service Optimi, I noticed that _last
+     returns self->{last} regardless of whether it's ever been
+     set.  Seems like we can DWIM and call self->select if it's
+     never been called yet and make ->list (et al) function.
+
+     We'll see what he thinks of this fix.
+
 1.1911: Sun Mar 14 2010
    - Fixed [introduced] bugs illuminated in #55552 (RT), thanks
      to Aaron Wilson <aaron@gmx.co.uk> for a positively excellent

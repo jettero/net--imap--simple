@@ -8,7 +8,7 @@ use IO::File;
 use IO::Socket;
 use IO::Select;
 
-our $VERSION = "1.1911";
+our $VERSION = "1.1912_1";
 
 BEGIN {
     # I'd really rather the pause/cpan indexers miss this "package"
@@ -146,7 +146,7 @@ sub _connect {
 sub _port        { return $_[0]->{use_ssl} ? 993 : 143 } 
 sub _sock        { return $_[0]->{sock} }
 sub _count       { return $_[0]->{count} }
-sub _last        { return $_[0]->{last} }
+sub _last        { $_[0]->select unless exists $_[0]->{last}; return $_[0]->{last} }
 sub _timeout     { return 90 }
 sub _retry       { return 1 }
 sub _retry_delay { return 5 }
