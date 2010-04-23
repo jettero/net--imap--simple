@@ -1,3 +1,7 @@
+1.1912: Fri Apr 23 2010
+   - Doug confirmed that it worked.  I'm going to go ahead and
+     release this as a new version.
+
 1.1912_1: Thu Apr 22 2010
    - Hrm, per Doug Reed at Service Optimi, I noticed that _last
      returns self->{last} regardless of whether it's ever been
