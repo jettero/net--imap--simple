@@ -165,6 +165,12 @@ This is very nearly a synonym for C<select()>.  The only real difference is that
 the EXAMINE command is sent to the server instead of SELECT.
 L<Net::IMAP::Simple> is otherwise unaware of the read-only-ness of the mailbox.
 
+=item close
+
+    $imap->close;
+
+Un-selects the current mailbox, leaving no mailbox selected.
+
 =item messages
 
     print "Messages in Junk Mail -- " . $imap->messages("INBOX.Junk Mail") .  "\n";
