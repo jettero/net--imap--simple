@@ -328,7 +328,8 @@ sub current_box {
     return ( $self->{working_box} ? $self->{working_box} : 'INBOX' );
 }
 
-sub close {
+sub close { ## no critic -- we already have tons of methods with built in names
+
     my $self = shift;
     $self->{working_box} = undef;
     return $self->_process_cmd(
