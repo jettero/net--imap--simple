@@ -328,6 +328,21 @@ sub current_box {
     return ( $self->{working_box} ? $self->{working_box} : 'INBOX' );
 }
 
+sub close {
+    my $self = shift;
+    $self->{working_box} = undef;
+    return $self->_process_cmd(
+        cmd => [ "CLOSE" ],
+    );
+}
+
+sub noop {
+    my $self = shift;
+    return $self->_process_cmd(
+        cmd => [ "NOOP" ],
+    );
+}
+
 sub top {
     my ( $self, $number ) = @_;
 

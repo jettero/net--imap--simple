@@ -165,6 +165,12 @@ This is very nearly a synonym for C<select()>.  The only real difference is that
 the EXAMINE command is sent to the server instead of SELECT.
 L<Net::IMAP::Simple> is otherwise unaware of the read-only-ness of the mailbox.
 
+=item close
+
+    $imap->close;
+
+Un-selects the current mailbox, leaving no mailbox selected.
+
 =item messages
 
     print "Messages in Junk Mail -- " . $imap->messages("INBOX.Junk Mail") .  "\n";
@@ -499,6 +505,15 @@ This method copies the message number (or L<sequence set>) in the currently
 selected mailbox to the fold specified in the second argument.  Both arguments
 are required.  On success this method returns true. Returns false on failure and
 the C<errstr()> error handler is set with the error message.
+
+=item noop
+
+  $imap->noop;
+
+Performs a null operation.  This may be needed to get updates on a
+mailbox, or ensure that the server does not close the connection as
+idle.  RFC 3501 states that servers' idle timeouts must not be less
+than 30 minutes.
 
 =item errstr
 
