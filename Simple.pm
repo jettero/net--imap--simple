@@ -336,6 +336,13 @@ sub close {
     );
 }
 
+sub noop {
+    my $self = shift;
+    return $self->_process_cmd(
+        cmd => [ "NOOP" ],
+    );
+}
+
 sub top {
     my ( $self, $number ) = @_;
 
