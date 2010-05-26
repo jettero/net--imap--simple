@@ -659,9 +659,8 @@ sub _process_list {
         chomp( my $res = $self->_sock->getline );
 
         $res =~ s/\r//;
-        _escape($res);
 
-        push @list, $res;
+        push @list, _escape($res);
 
         $self->_debug( caller, __LINE__, '_process_list', $res ) if $self->{debug};
 
