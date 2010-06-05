@@ -27,8 +27,7 @@ sub run {
     my $mailbox = $self->connection->model->lookup( $self->parsed_options );
     $mailbox->poll;
     $self->connection->last_poll(time);
-    $self->connection->selected($mailbox);
-    $self->connection->selected_read_only(1) if $self->command eq "Examine";
+    $self->connection->selected($mailbox, $self->command eq "Examine");
 
     $self->untagged_response(
         'FLAGS (' . join( ' ', $mailbox->flags ) . ')' );
@@ -50,7 +49,7 @@ sub run {
             . join( ' ', $mailbox->permanentflags )
             . ')]' );
 
-    if ( $self->connection->selected->read_only ) {
+    if ( $mailbox->read_only ) {
         $self->ok_command("[READ-ONLY] Completed");
     } else {
         $self->ok_command("[READ-WRITE] Completed");

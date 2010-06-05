@@ -28,7 +28,7 @@ sub run {
     my $self = shift;
 
     my($type, $arg) = $self->parsed_options;
-    $self->server->auth_class->require || warn $@;
+    $self->server->auth_class->require || $self->log( 1, $@ );
     my $auth = $self->server->auth_class->new;
     if ( grep {uc $type eq uc $_} $auth->sasl_provides ) {
         $type = lc $type;

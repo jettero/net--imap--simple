@@ -24,7 +24,7 @@ sub validate {
 sub run {
     my $self = shift;
 
-    $self->server->auth_class->require || warn $@;
+    $self->server->auth_class->require || $self->log( 1, $@ );
     my $auth = $self->server->auth_class->new;
     if (    $auth->provides_plain
         and $auth->auth_plain( $self->parsed_options ) )

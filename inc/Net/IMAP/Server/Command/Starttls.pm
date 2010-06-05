@@ -23,10 +23,6 @@ sub validate {
 sub run {
     my $self = shift;
 
-    unless (-r "certs/server-cert.pem" and -r "certs/server-key.pem") {
-        return $self->bad_command("Server error");
-    }
-
     $self->ok_completed;
 
     $self->connection->io_handle->start_SSL;

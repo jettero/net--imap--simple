@@ -34,7 +34,8 @@ sub run {
 
     my $base = $self->connection->model->root;
     for my $n (0.. $#parts) {
-        my $path = join($self->connection->model->root->separator, @parts[0 .. $n]);
+        my $sep = $self->connection->model->root->separator || "";
+        my $path = join($sep, @parts[0 .. $n]);
         my $part = $self->connection->model->lookup($path);
         unless ($part) {
             unless ($part = $base->create( name => $parts[$n] )) {
@@ -44,8 +45,7 @@ sub run {
         $base = $part;
     }
 
-    $mailbox->reparent($base) or return $self->no_command("Permission denied");
-    $mailbox->name($newname);
+    $mailbox->reparent($base, $newname) or return $self->no_command("Permission denied");
 
     $self->ok_completed();
 }

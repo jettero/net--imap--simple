@@ -105,8 +105,6 @@ sub copy {
     my $sequence = join(",",map {$_->uid} @messages);
     my $uids     = join(",",map {$_->uid} @new);
     $self->ok_command("[COPYUID @{[$mailbox->uidvalidity]} $sequence $uids] COPY COMPLETED");
-
-    $self->ok_completed;
 }
 
 sub expunge {

@@ -461,12 +461,12 @@ sub mime_select {
             $result = $copy->as_string ? $copy->as_string . "\r\n" : "";
         } elsif ( uc $_ eq "TEXT" ) {
             $mime ||= $self->mime;
-            $result = $mime->body;
+            $result = $mime->body_raw;
         } elsif ( $_ =~ /^\d+$/i ) {
             $mime ||= $self->mime;
             my @parts = $mime->parts;
             $mime   = $parts[ $_ - 1 ];
-            $result = $mime->body;
+            $result = $mime->body_raw;
         }
     }
 

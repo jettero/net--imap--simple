@@ -374,9 +374,9 @@ sub bad_command {
     return 0;
 }
 
-=head2 log MESSAGE
+=head2 log SEVERITY, MESSAGE
 
-Identical to L<Net::IMAP::Server::Connection/log>.
+Defers to L<Net::IMAP::Server::Connection/log>.
 
 =cut
 

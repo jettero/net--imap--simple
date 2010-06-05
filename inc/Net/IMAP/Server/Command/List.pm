@@ -27,14 +27,18 @@ sub run {
 
     # In the special case of a query for the delimiter, give them our delimiter
     if ( $search eq "" ) {
-        $self->tagged_response( q{(\Noselect) "}
-                . $self->connection->model->root->separator
-                . q{" ""} );
+        my $sep = (defined $self->connection->model->root->separator)
+            ? q{"}.$self->connection->model->root->separator.q{"} : "NIL";
+        $self->tagged_response( qq|(\\Noselect) $sep ""| );
     } else {
         my $sep = $self->connection->model->root->separator;
         $search = quotemeta($search);
         $search =~ s/\\\*/.*/g;
-        $search =~ s/\\%/[^$sep]+/g;
+        if (defined $sep) {
+            $search =~ s/\\%/[^$sep]*/g;
+        } else {
+            $search =~ s/\\%/.*/g;
+        }
         my $regex = qr{^\Q$root\E$search$};
         $self->connection->model->root->update_tree;
         $self->traverse( $self->connection->model->root, $regex );
@@ -48,9 +52,11 @@ sub list_out {
     my $node = shift;
     my @props = @_;
 
-    my $str = $self->data_out([map {\$_} @props]);
-    $str .= q{ "} . $self->connection->model->root->separator . q{" };
-    $str .= q{"} . Encode::encode('IMAP-UTF-7',$node->full_path) . q{"};
+    my $sep = (defined $self->connection->model->root->separator)
+        ? q{"}.$self->connection->model->root->separator.q{"} : "NIL";
+    my $name = q{"}.Encode::encode('IMAP-UTF-7',$node->full_path).q{"};
+
+    my $str = $self->data_out([map {\$_} @props]) . " $sep $name";
     $self->tagged_response($str);
 }
 
@@ -61,6 +67,7 @@ sub traverse {
 
     my @props;
     push @props, @{$node->children} ? '\HasChildren' : '\HasNoChildren';
+    push @props, '\Noinferiors' unless defined $self->connection->model->root->separator;
     push @props, '\Noselect' unless $node->is_selectable;
 
     $self->list_out($node, @props) if $node->parent and 

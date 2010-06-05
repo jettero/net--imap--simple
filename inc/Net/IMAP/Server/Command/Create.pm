@@ -37,7 +37,8 @@ sub run {
 
     my $base = $self->connection->model->root;
     for my $n (0.. $#parts) {
-        my $path = join($self->connection->model->root->separator, @parts[0 .. $n]);
+        my $sep = $self->connection->model->root->separator || "";
+        my $path = join($sep, @parts[0 .. $n]);
         my $part = $self->connection->model->lookup($path);
         unless ($part) {
             unless ($part = $base->create( name => $parts[$n] )) {

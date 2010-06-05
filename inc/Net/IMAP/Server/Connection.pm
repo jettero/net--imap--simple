@@ -92,7 +92,7 @@ sub auth {
     my $self = shift;
     if (@_) {
         $self->{auth} = shift;
-        $self->server->model_class->require || warn $@;
+        $self->server->model_class->require || $self->log(1, $@);
         $self->update_timer;
         $self->model(
             $self->server->model_class->new( { auth => $self->{auth} } ) );
@@ -116,23 +116,36 @@ sub client_id {
     return $self->{client} || {};
 }
 
-=head2 selected [MAILBOX]
+=head2 selected [MAILBOX], [READ_ONLY]
 
-Gets or sets the currently selected mailbox for this connection.  This
-may trigger the sending of untagged notifications to the client.
+Gets or sets the currently selected mailbox for this connection.
+Changing mailboxes triggers the sending of untagged notifications to
+the client, as well as calling L<Net::IMAP::Server::Mailbox/close> and
+L<Net::IMAP::Server::Mailbox/select>.
 
 =cut
 
 sub selected {
     my $self = shift;
-    if ( @_ and $self->selected ) {
-        unless ( $_[0] and $self->selected eq $_[0] ) {
-            $self->send_untagged;
-            $self->selected->close;
-        }
-        $self->selected_read_only(0);
+    my ($mailbox, $read_only) = @_;
+
+    # This is just being called as a getter
+    return $self->_selected unless @_;
+
+    # This is a setter, but isn't actually changing the mailbox.
+    return $self->_selected if $mailbox and $mailbox eq $self->_selected;
+
+    # Otherwise, flush any untagged messages, close the old, and open
+    # the new.
+    $self->send_untagged;
+    $self->_selected->close if $self->_selected;
+    $self->_selected( $mailbox );
+    if ($self->_selected) {
+        $self->selected_read_only( $read_only );
+        $self->_selected->select;
     }
-    return $self->_selected(@_);
+
+    return $self->_selected;
 }
 
 =head2 selected_read_only
@@ -182,12 +195,12 @@ sub handle_lines {
             cede;
         }
 
-        $self->log(
+        $self->log( 4,
             "-(@{[$self]},@{[$self->auth ? $self->auth->user : '???']},@{[$self->is_selected ? $self->selected->full_path : 'unselected']}): Connection closed by remote host"
         );
     };
     my $err = $@;
-    warn $err
+    $self->log(1, $err)
         if $err and not( $err eq "Error printing\n" or $err eq "Timeout\n" );
     eval { $self->out("* BYE Idle timeout; I fell asleep.") if $err eq "Timeout\n"; };
     $self->close;
@@ -235,14 +248,19 @@ Any errors generated while running commands will cause a C<NO Server
 error> to be sent to the client -- unless the error message starts
 with C<NO> or c<BAD>, in which case it will be relayed to the client.
 
+Returns the L<Net::IMAP::Server::Command> instance that was run, or
+C<undef> if it was a continuation line or pending interactive command.
+
 =cut
 
 sub handle_command {
     my $self    = shift;
     my $content = shift;
 
-    $self->log(
-        "C(@{[$self]},@{[$self->auth ? $self->auth->user : '???']},@{[$self->is_selected ? $self->selected->full_path : 'unselected']}): $content"
+    my $output = $content;
+    $output =~ s/[\r\n]+$//;
+    $self->log( 4,
+        "C(@{[$self]},@{[$self->auth ? $self->auth->user : '???']},@{[$self->is_selected ? $self->selected->full_path : 'unselected']}): $output"
     );
 
     if ( $self->pending ) {
@@ -273,9 +291,10 @@ sub handle_command {
             $handler->bad_command($1);
         } else {
             $handler->no_command("Server error");
-            $self->log($error);
+            $self->log(1, $error);
         }
     }
+    return $handler;
 }
 
 =head2 class_for COMMAND
@@ -297,7 +316,7 @@ sub class_for {
     $cmd_class->require();
     my $err = $@;
     if ($err and $err !~ /^Can't locate $class_path.pm in \@INC/) {
-        warn $@;
+        $self->log(1, $@);
         $cmd_class = "Net::IMAP::Server::Error";
     }
 
@@ -565,17 +584,15 @@ sub capability {
     return $base;
 }
 
-=head2 log MESSAGE
+=head2 log SEVERITY, MESSAGE
 
-Logs the message to standard error, using C<warn>.
+Defers to L<Net::IMAP::Server/log>.
 
 =cut
 
 sub log {
     my $self = shift;
-    my $msg  = shift;
-    chomp($msg);
-    warn $msg . "\n";
+    $self->server->log(@_);
 }
 
 =head2 untagged_response STRING
@@ -603,7 +620,7 @@ sub out {
     my $msg  = shift;
     if ( $self->io_handle and $self->io_handle->peerport ) {
         if ( $self->io_handle->print( $msg . "\r\n" ) ) {
-            $self->log(
+            $self->log( 4,
                 "S(@{[$self]},@{[$self->auth ? $self->auth->user : '???']},@{[$self->is_selected ? $self->selected->full_path : 'unselected']}): $msg"
             );
         } else {
