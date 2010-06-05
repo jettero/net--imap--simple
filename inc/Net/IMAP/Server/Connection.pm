@@ -133,7 +133,7 @@ sub selected {
     return $self->_selected unless @_;
 
     # This is a setter, but isn't actually changing the mailbox.
-    return $self->_selected if $mailbox and $mailbox eq $self->_selected;
+    return $self->_selected if $mailbox and $mailbox eq $self->_selected and @_<2;
 
     # Otherwise, flush any untagged messages, close the old, and open
     # the new.
