@@ -80,10 +80,16 @@ sub internaldate {
 
     if (ref $value) {
         $self->{internaldate} = $value->strftime("%e-%b-%Y %T %z");
+        $self->{internaldate} =~ s/^\s+//;
+        $self->{internaldate} =~ s/\s+$//;
+
     } else {
+        $value =~ s/^\s+//;
+        $value =~ s/\s+$//;
         $self->{internaldate} = $value;
         $value = $self->INTERNALDATE_PARSER->parse_datetime($value);
     }
+
     $value->truncate( to => "day" );
     $value->set_time_zone( "floating" );
     $value->set_time_zone( "UTC" );
