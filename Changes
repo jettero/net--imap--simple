@@ -1,3 +1,8 @@
+1.1915: Sat Jun 05 2010
+   - import the latest Net-IMAP-Server to the inc/ dir (1.27)
+   - report various bugs
+   - fix various bugs in inc/ dir
+
 1.1913: Wed May 26 2010
 1.1914: Wed May 26 2010
    - pulled in changes from alexmv
