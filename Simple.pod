@@ -548,6 +548,10 @@ search.
 IMAP searching can be a little confusing and this function makes no attempt to
 parse your searches.  If you wish to do searches by hand, please see RFC 3501.
 
+IMAP sorting (see RFC 5256) is supported via an optional second argument.  The
+RFC requires the charset be specified, which can be provided via the optional
+third argument (defaults to UTF-8).
+
 Here are a few examples:
 
     my @ids = $imap->search("UNSEEN");
@@ -557,10 +561,16 @@ Here are a few examples:
 
     # example from RFC 3501, search terms are ANDed together
     my @ids = $imap->search('FLAGGED SINCE 1-Feb-1994 NOT FROM "Smith"');
+    # example from RFC 3501, search terms are ORed together
+    my @ids = $imap->search('OR BODY "blard" SUBJECT "blarg"');
 
     # flagged and ( since x or !from y ):
     my @ids = $imap->search('FLAGGED OR SINCE x NOT FROM "y"');
       # no typo above, see the RFC
+
+    # example from RFC 5256, sorted by subject and reverse date
+    my @ids = $imap->search('BODY "zaphod"', 'SUBJECT REVERSE DATE');
+
 
 Since this module is meant to be simple, L<Net::IMAP::Simple> has a few search
 helpers.  If you need fancy booleans and things, you'll have to learn search.
