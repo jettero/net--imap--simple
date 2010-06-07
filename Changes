@@ -1,3 +1,7 @@
+1.1916: Mon Jun 07 2010
+   - woodward sent in an RFC-5256 patch to make SEARCH more
+     correct
+
 1.1915: Sat Jun 05 2010
    - import the latest Net-IMAP-Server to the inc/ dir (1.27)
    - report various bugs
