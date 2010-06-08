@@ -132,8 +132,10 @@ sub selected {
     # This is just being called as a getter
     return $self->_selected unless @_;
 
-    # This is a setter, but isn't actually changing the mailbox.
-    return $self->_selected if $mailbox and $mailbox eq $self->_selected and @_<2;
+    # This is a setter, but isn't actually changing the mailbox, nor
+    # changing the read-only-ness.
+    return $self->_selected if ($mailbox || "") eq ($self->_selected || "")
+        and ($self->selected_read_only || 0) == ($read_only || 0);
 
     # Otherwise, flush any untagged messages, close the old, and open
     # the new.
