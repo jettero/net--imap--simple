@@ -121,6 +121,10 @@ if( my $pid = fork ) {
         auth_class       => "t::Auth",
         model_class      => "t::Model",
         connection_class => "t::Connection",
+
+        log_file  => "formal-imap-server.log",
+        log_level => 4
+
     )->run;
 }
 
