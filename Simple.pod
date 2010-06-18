@@ -770,6 +770,10 @@ This program is distributed in the hope that it will be useful,
 but without any warranty; without even the implied warranty of
 merchantability or fitness for a particular purpose.
 
+[This software may have had previous licenses, of which the current maintainer
+is completely unaware.  If this is so, it is possible the above license is
+incorrect or invalid.]
+
 =head1 BUGS
 
 There are probably bugs.  But don't worry, the current maintainer takes them
