@@ -60,3 +60,14 @@ WriteMakefile(
 
     ) : ()),
 );
+
+sub MY::postamble {
+    my $postamble = <<'MAKE_FRAG';
+
+inc/slurp_fetchmailx.pm: inc/slurp_fetchmail.pm
+	sed s/Net::IMAP::Simple/Net::IMAP::SimpleX/ $< > $@
+
+MAKE_FRAG
+
+    return $postamble;
+}
