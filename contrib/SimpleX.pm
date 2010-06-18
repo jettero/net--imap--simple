@@ -1,4 +1,5 @@
-package SimpleX;
+package Net::IMAP::SimpleX;
+
 use strict;
 use warnings;
 use Parse::RecDescent;  
