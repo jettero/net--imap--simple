@@ -62,10 +62,12 @@ WriteMakefile(
 );
 
 sub MY::postamble {
+    return unless $build_simplex;
+
     my $postamble = <<'MAKE_FRAG';
 
 inc/slurp_fetchmailx.pm: inc/slurp_fetchmail.pm
-	sed s/Net::IMAP::Simple/Net::IMAP::SimpleX/ $< > $@
+	sed -e s/slurp_fetchmail/slurp_fetchmailx/ -e s/Net::IMAP::Simple/Net::IMAP::SimpleX/ $< > $@
 
 MAKE_FRAG
 
