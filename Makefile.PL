@@ -6,6 +6,7 @@ my $build_simplex = prompt("Do you wish to include some simple protocol extensio
 if( $build_simplex ) {
     local @ARGV = qw(contrib/SimpleX.pm .);
     cp();
+    open my $out, ">test_simplex" or die "unable to setup body-summary tests: $!";
 }
 
 WriteMakefile(
