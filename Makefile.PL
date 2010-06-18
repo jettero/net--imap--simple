@@ -1,4 +1,12 @@
 use ExtUtils::MakeMaker;
+use ExtUtils::Command qw(cp);
+
+my $build_simplex = prompt("Do you wish to include some simple protocol extensions (pulls in Parse::RecDescent)? ", "y");
+
+if( $build_simplex ) {
+    local @ARGV = qw(contrib/SimpleX.pm .);
+    cp();
+}
 
 WriteMakefile(
     'NAME'	       => 'Net::IMAP::Simple',
@@ -8,6 +16,8 @@ WriteMakefile(
     PREREQ_PM => {
         'IO::Socket' => 0,
         'IO::Select' => 0,
+
+        ( $build_simplex ? ('Parse::RecDescent'=>0) : () ),
     },
 
     ($ExtUtils::MakeMaker::VERSION ge '6.48'? 
