@@ -772,7 +772,8 @@ merchantability or fitness for a particular purpose.
 
 =head1 BUGS
 
-There's tons, I'm trying to slog through them:
+There are probably bugs.  But don't worry, the current maintainer takes them
+very seriously and will usually triage (at least) within a single day.
 
 L<https://rt.cpan.org/Dist/Display.html?Queue=Net-IMAP-Simple>
 
