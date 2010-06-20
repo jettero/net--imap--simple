@@ -34,14 +34,17 @@ body_fields:        body_field_param body_field_id body_field_desc body_field_en
                         content_description => $item{body_field_desc},
                         encoding            => $item{body_field_enc},
                         encoded_size        => $item{body_field_octets},
-                        ref $item{body_field_param} eq 'Hash' ? %{$item{body_field_param}} : (),
+                        $item{body_field_param} ? %{$item{body_field_param}} : ()
                       };
                     }
 body_field_id:      nil | word
 body_field_desc:    nil | word
 body_field_enc:     word
 body_field_octets:  number
-body_field_param:   '('word word')'
+body_field_param:   body_field_param_simple | body_field_param_ext | nil
+body_field_param_ext:   '('word word word word')'
+                    { $return = { $item[2] => $item[3], $item[4] => $item[5] }; }
+body_field_param_simple:   '('word word')'
                     { $return = { $item[2] => $item[3] }; }
 body_field_param:   nil
 media_type:         type subtype
