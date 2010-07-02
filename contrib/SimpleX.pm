@@ -2,7 +2,7 @@ package Net::IMAP::SimpleX;
 
 use strict;
 use warnings;
-use Parse::RecDescent;  
+use Parse::RecDescent;
 use base 'Net::IMAP::Simple';
 
 # directly from http://tools.ietf.org/html/rfc3501#section-9
@@ -56,9 +56,9 @@ nil:                'NIL'
 number:             /\d+/
 key:                word
 value:              word
-word:               /[^\s\)\(]+/ 
+word:               /[^\s\)\(]+/
                     { $item[1] =~ s/\"//g; $return = $item[1];}
-};  
+};
 
 
 sub new {
