@@ -1,0 +1,198 @@
+=head1 NAME
+
+Net::IMAP::SimpleX - Addons for Net::IMAP::Simple.
+
+=head1 SYNOPSIS
+
+    use strict;
+    use warnings;
+    use Net::IMAP::SimpleX;
+
+    # ...
+
+    # get a hash representation of the message body
+    my $body = $imap->body_summary($message_number);
+
+    # multipart message
+    if (my $subparts = $body->{parts}) {
+        for my $subpart (@$subparts) {
+            if ($subpart->{parts}) { ... }
+            # examine the message part
+            my @attr = @$subpart{qw/content_type encoding encoded_size/};
+            # fetch the raw message part
+            my $subpart_body = $imap->get($message_number, $subpart->{part_number});
+        }
+    }
+    
+
+=head1 DESCRIPTION
+
+This module adds some useful, yet not so simple, extensions on top of Net::IMAP::Simple.
+
+=head1 METHODS
+
+=over 4
+
+=item body_summary
+
+    my $body = $imap->body_summary($message_number);
+
+This method returns a hash reference that represents the body of a message.
+The structure is built by a L<Parse::RecDescent> parser using the output
+of an IMAP I<fetch body> command.  The parser uses the formal syntax as
+defined by RFC3501 L<http://tools.ietf.org/html/rfc3501#section-9>.
+
+An example of a single part message would look something like this:
+
+    $VAR1 = {
+        'content_type' => 'text/plain',
+        'content_description' => '',
+        'part_number' => 1,
+        'encoded_size' => '274',
+        'id' => '',
+        'charset' => 'us-ascii',
+        'encoding' => '7bit'
+    };
+
+
+For multipart messages, the hash reference contains a parts and a type field.
+The type field describes the type of multipart (such as mixed or alternative).
+The parts field is an reference to a list of sub parts, which themselves may
+have subparts, and so on.
+
+An example of a multipart, alternative message with a text body and an html
+version of the body would looke something like:
+
+    $VAR1 = {
+        'parts' => [
+            {
+                'content_type' => 'text/plain',
+                'content_description' => '',
+                'part_number' => '1',
+                'encoded_size' => '252',
+                'id' => '',
+                'charset' => 'utf-8',
+                'encoding' => 'base64'
+            },
+            {
+                'content_type' => 'text/html',
+                'content_description' => '',
+                'part_number' => '2',
+                'encoded_size' => '678',
+                'id' => '',
+                'charset' => 'utf-8',
+                'encoding' => 'base64'
+            }
+        ],
+        'type' => 'alternative'
+    };
+
+A really complex, multipart message could look something like this:
+
+    $VAR1 = {
+        'parts' => [
+            {
+                'content_type' => 'text/plain',
+                'content_description' => '',
+                'part_number' => '1',
+                'encoded_size' => '41',
+                'id' => '<1276732734.Ec04BF51.1710@jaos.org>',
+                'charset' => 'us-ascii',
+                'encoding' => '7bit'
+            },
+            {
+                'content_type' => 'text/plain',
+                'content_description' => '',
+                'part_number' => '2',
+                'encoded_size' => '23',
+                'id' => '<1276732734.fe0b1DB12.1710@jaos.org>',
+                'charset' => 'us-ascii',
+                'encoding' => '7bit'
+            },
+            {
+                'part_number' => '3',
+                'parts' => [
+                    {
+                        'content_type' => 'text/plain',
+                        'content_description' => '',
+                        'part_number' => '3.1',
+                        'encoded_size' => '44',
+                        'id' => '',
+                        'charset' => 'us-ascii',
+                        'encoding' => '7bit'
+                    },
+                    {
+                        'content_type' => 'application/pdf',
+                        'content_description' => '',
+                        'part_number' => '3.2',
+                        'encoded_size' => '76754',
+                        'name' => 'brochure.pdf',
+                        'id' => '',
+                        'encoding' => 'base64'
+                    }
+                ],
+                'type' => 'mixed'
+            },
+            {
+                'part_number' => '4',
+                'parts' => [
+                    {
+                        'content_type' => 'text/plain',
+                        'content_description' => '',
+                        'part_number' => '4.1',
+                        'encoded_size' => '36',
+                        'id' => '',
+                        'charset' => 'us-ascii',
+                        'encoding' => '7bit'
+                    },
+                    {
+                        'content_type' => 'application/x-gzip',
+                        'content_description' => '',
+                        'part_number' => '4.2',
+                        'encoded_size' => '3968',
+                        'name' => 'transcript.gz',
+                        'id' => '',
+                        'encoding' => 'base64'
+                    }
+                ],
+                'type' => 'mixed'
+            }
+        ],
+        'type' => 'mixed'
+    };
+
+
+
+=back
+
+=head1 AUTHOR
+
+=over 4
+
+Jason Woodward C<< <woodwardj@jaos.org> >>
+
+=back
+
+=head1 COPYRIGHT
+
+Copyright (c) 2010 Jason Woodward
+
+All rights reserved. This program is free software; you can redistribute it
+and/or modify it under the same terms as Perl itself.
+
+=head1 LICENSE
+
+This module is free software.  You can redistribute it and/or
+modify it under the terms of the Artistic License 2.0.
+
+This program is distributed in the hope that it will be useful,
+but without any warranty; without even the implied warranty of
+merchantability or fitness for a particular purpose.
+
+=head1 BUGS
+
+L<https://rt.cpan.org/Dist/Display.html?Queue=Net-IMAP-Simple>
+
+=head1 SEE ALSO
+
+L<perl>, L<Net::IMAP::Simple>, L<Parse::RecDescent>
