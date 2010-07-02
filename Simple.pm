@@ -494,12 +494,13 @@ sub search_subject { my $self = shift; my $t = _process_qstring(shift); return $
 sub search_body    { my $self = shift; my $t = _process_qstring(shift); return $self->search("BODY $t"); }
 
 sub get {
-    my ( $self, $number ) = @_;
+    my ( $self, $number, $part ) = @_;
+    my $arg = $part ? "BODY[$part]" : 'RFC822';
 
     my @lines;
 
     return $self->_process_cmd(
-        cmd => [ FETCH => qq[$number RFC822] ],
+        cmd => [ FETCH => qq[$number $arg] ],
         final => sub { pop @lines; wantarray ? @lines : Net::IMAP::Simple::_message->new(\@lines) },
         process => sub {
             if ( $_[0] !~ /^\* \d+ FETCH/ ) {

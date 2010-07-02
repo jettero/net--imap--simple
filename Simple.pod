@@ -279,9 +279,18 @@ error message.
   my $message = $imap->get( $message_number ) or die $imap->errstr;
   my @message_lines = $map->get( $message_number ) or die $imap->errstr;
 
+  my $part = $imap->get( $message_number, '1.1' ) or die $imap->errstr;
+  my @part_lines = $imap->get( $message_number, '1.1' ) or die $imap->errstr;
+
 This method fetches a message and returns its lines as an array or, the actual
 message.  On failure, either an empty list is returned and the C<errstr()> error
 handler is set with the error message.
+
+Optionally, a part can be specified in order to fetch a specific portion of a
+message.  This is the raw, encoded body of the message part.  The part number
+is a set of zero or more part specifiers delimited by periods.  Every message
+has at least one part.  Specifying a part of '1' returns the raw, encoded 
+body.  This is only useful if you know the header information such as encoding.
 
 Historically, C<get()> returned the array of lines as a reference to the array
 instead of returning the message or the array itself.  Please note that it still
