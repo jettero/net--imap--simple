@@ -62,11 +62,28 @@ word:               /[^\s\)\(]+/
 
 
 sub new {
-  my $class = shift;
-  if (my $self = $class->SUPER::new(@_)) {
-    $self->{__body_parser} = Parse::RecDescent->new($body_grammar);
-    return $self;
-  }
+    my $class = shift;
+    if (my $self = $class->SUPER::new(@_)) {
+        $self->{__body_parser} = Parse::RecDescent->new($body_grammar);
+        return $self;
+    }
+}
+
+sub __id_parts {
+    my $data  = shift;
+    my $pre   = shift;
+    $pre = $pre ? "$pre." : '';
+
+    my $id = 1;
+    if (my $parts = $data->{parts}) {
+        for my $sub (@$parts){
+          __id_parts($sub,"$pre$id") if $sub->{parts};
+          $sub->{part_number} = "$pre$id";
+          $id++;
+        }
+    } else {
+        $data->{part_number} = $id;
+    }
 }
 
 sub body_summary {
@@ -79,6 +96,7 @@ sub body_summary {
         final => sub { $body_parts; },
         process => sub { if ($_[0] =~ m/\(BODY\s+(.*?)\)\s*$/i) {
           $body_parts = $self->{__body_parser}->body($1);
+          __id_parts($body_parts);
         }},
     );
 }
