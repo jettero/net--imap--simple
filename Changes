@@ -1,6 +1,11 @@
+1.2000: Sat Jul 03 2010
+   - woodward sent in some rfc3501 fetch-body support and docs.
+     The extension requires Parse::RecDescent for correct
+     parsing, so body_summary() was forked off to an extensions
+     module.
+
 1.1916: Mon Jun 07 2010
-   - woodward sent in an RFC-5256 patch to make SEARCH more
-     correct
+    - woodward sent in an RFC-5256 patch to make SEARCH more correct
 
 1.1915: Sat Jun 05 2010
    - import the latest Net-IMAP-Server to the inc/ dir (1.27)
