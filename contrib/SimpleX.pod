@@ -8,7 +8,13 @@ Net::IMAP::SimpleX - Addons for Net::IMAP::Simple
     use warnings;
     use Net::IMAP::SimpleX;
 
-    # ...
+L<Net::IMAP::SimpleX> uses L<Net::IMAP::Simple> as a base so the object creation
+is the same as it is for the ancestor:
+
+    my $imap = Net::IMAP::Simple->new('imap.example.com') ||
+       die "Unable to connect to IMAP: $Net::IMAP::Simple::errstr\n";
+
+So far L<Net::IMAP::SimpleX> only provides one extension.
 
     # get a hash representation of the message body
     my $body = $imap->body_summary($message_number);
@@ -27,7 +33,8 @@ Net::IMAP::SimpleX - Addons for Net::IMAP::Simple
 
 =head1 DESCRIPTION
 
-This module adds some useful, yet not so simple, extensions on top of Net::IMAP::Simple.
+This module adds some useful, yet not so simple, extensions on top of
+L<Net::IMAP::Simple>.
 
 =head1 METHODS
 
