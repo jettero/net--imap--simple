@@ -1,7 +1,7 @@
 \.log$
 ^MANIFEST\.SKIP$
 ^Makefile$
-^SimpleX.pm
+^SimpleX.p
 ^\.git
 ^\.pm-desc\.html$
 ^\.st$

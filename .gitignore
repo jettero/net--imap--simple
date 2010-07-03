@@ -1,7 +1,7 @@
 *.log
 Makefile
 Makefile.old
-SimpleX.pm
+SimpleX.p*
 blib
 formal-imap-server.log
 imap_server.pid

@@ -12,6 +12,7 @@ certs/server-cert.pem
 certs/server-key.pem
 contrib/33189_attach.pl
 contrib/SimpleX.pm
+contrib/SimpleX.pod
 contrib/connectalot.pl
 contrib/hand_test01.pl
 contrib/imap.pl
