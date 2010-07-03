@@ -289,7 +289,7 @@ handler is set with the error message.
 Optionally, a part can be specified in order to fetch a specific portion of a
 message.  This is the raw, encoded body of the message part.  The part number
 is a set of zero or more part specifiers delimited by periods.  Every message
-has at least one part.  Specifying a part of '1' returns the raw, encoded 
+has at least one part.  Specifying a part of '1' returns the raw, encoded
 body.  This is only useful if you know the header information such as encoding.
 
 Historically, C<get()> returned the array of lines as a reference to the array
@@ -331,7 +331,7 @@ context, detecting an error is synonymous with testing for defined.
         # it has $flags!
 
     } else {
-        warn "problem listing flags for message #$num: " 
+        warn "problem listing flags for message #$num: "
            . $imap->errstr;
     }
 

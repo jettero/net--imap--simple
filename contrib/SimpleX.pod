@@ -1,6 +1,6 @@
 =head1 NAME
 
-Net::IMAP::SimpleX - Addons for Net::IMAP::Simple.
+Net::IMAP::SimpleX - Addons for Net::IMAP::Simple
 
 =head1 SYNOPSIS
 
@@ -23,7 +23,7 @@ Net::IMAP::SimpleX - Addons for Net::IMAP::Simple.
             my $subpart_body = $imap->get($message_number, $subpart->{part_number});
         }
     }
-    
+
 
 =head1 DESCRIPTION
 
