@@ -11,8 +11,10 @@ Net::IMAP::SimpleX - Addons for Net::IMAP::Simple
 L<Net::IMAP::SimpleX> uses L<Net::IMAP::Simple> as a base so the object creation
 is the same as it is for the ancestor:
 
-    my $imap = Net::IMAP::Simple->new('imap.example.com') ||
+    my $imap = Net::IMAP::SimpleX->new('imap.example.com') ||
        die "Unable to connect to IMAP: $Net::IMAP::Simple::errstr\n";
+
+    $imap->select("INBOX");
 
 So far L<Net::IMAP::SimpleX> only provides one extension.
 
