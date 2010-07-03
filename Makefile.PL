@@ -4,7 +4,7 @@ use ExtUtils::Command qw(cp);
 my $build_simplex = prompt("Do you wish to include some simple protocol extensions (pulls in Parse::RecDescent)? ", "y");
 
 if( $build_simplex ) {
-    local @ARGV = qw(contrib/SimpleX.pm .);
+    local @ARGV = qw(contrib/SimpleX.pod contrib/SimpleX.pm .);
     cp();
     open my $out, ">test_simplex" or die "unable to setup body-summary tests: $!";
 }
