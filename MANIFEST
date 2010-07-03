@@ -70,6 +70,7 @@ t/23_delete_multiple.t
 t/35_imap_results_in_message_body.t
 t/40_preauth.t
 t/45_search.t
+t/50_body_summary.t
 t/Auth.pm
 t/Connection.pm
 t/Model.pm
