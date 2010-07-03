@@ -14,8 +14,7 @@ BEGIN {
 
 use Net::IMAP::SimpleX;
 
-plan tests => our $tests = 
-    3;
+plan tests => our $tests = 3 + 6;
 
 sub run_tests {
     open INFC, ">>", "informal-imap-client-dump.log" or die $!;
@@ -34,6 +33,33 @@ sub run_tests {
     ok( $bs->{type}, "SINGLE" );
     ok( $bs->{parts}[0]{content_type}, "text/plain" );
 
+    $imap->put( INBOX => <<TEST2 );
+From jettero\@cpan.org Wed Jun 30 11:34:39 2010
+Subject: something
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="0-1563833763-1277912078=:86501"
+
+--0-1563833763-1277912078=:86501
+Content-Type: text/plain; charset=fake-charset-1
+
+Text Content.
+
+--0-1563833763-1277912078=:86501
+Content-Type: text/html; charset=fake-charset-2
+
+<p>HTML Content</p>
+
+--0-1563833763-1277912078=:86501--
+
+TEST2
+
+    $bs = $imap->body_summary(2);
+    ok( int(@{ $bs->{parts} }), 2 );
+    ok( $bs->{type}, "alternative" );
+    ok( $bs->{parts}[0]{content_type}, "text/plain" );
+    ok( $bs->{parts}[1]{content_type}, "text/html" );
+    ok( $bs->{parts}[0]{charset}, "fake-charset-1" );
+    ok( $bs->{parts}[1]{charset}, "fake-charset-2" );
 }
 
 do "t/test_server.pm" or die "error starting imap server: $!$@";
