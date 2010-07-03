@@ -1,12 +1,16 @@
 use ExtUtils::MakeMaker;
 use ExtUtils::Command qw(cp);
 
-my $build_simplex = prompt("Do you wish to include some simple protocol extensions (pulls in Parse::RecDescent)? ", "y");
+my $build_simplex = prompt("Do you wish to include some simple protocol extensions (pulls in Parse::RecDescent)? ",
+    $ENV{OVERRIDE_DEFAULT_SX} ? $ENV{OVERRIDE_DEFAULT_SX} : "y");
 
 if( $build_simplex =~ m/[Yy]/ ) {
     local @ARGV = qw(contrib/SimpleX.pod contrib/SimpleX.pm .);
     cp();
     open my $out, ">test_simplex" or die "unable to setup body-summary tests: $!";
+
+} else {
+    unlink qw(SimpleX.pod SimpleX.pm test_simplex);
 }
 
 WriteMakefile(
@@ -21,7 +25,7 @@ WriteMakefile(
         ( $build_simplex ? ('Parse::RecDescent'=>0) : () ),
     },
 
-    ($ExtUtils::MakeMaker::VERSION ge '6.48'? 
+    ($ExtUtils::MakeMaker::VERSION ge '6.48'?
         (MIN_PERL_VERSION => 5.008,
             META_MERGE => {
                 keywords => [qw(imap simple)],
