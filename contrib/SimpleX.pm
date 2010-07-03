@@ -81,6 +81,7 @@ sub __id_parts {
           $sub->{part_number} = "$pre$id";
           $id++;
         }
+
     } else {
         $data->{part_number} = $id;
     }
@@ -93,11 +94,25 @@ sub body_summary {
 
     return $self->_process_cmd(
         cmd => [ 'FETCH' => qq[$number BODY] ],
-        final => sub { $body_parts; },
-        process => sub { if ($_[0] =~ m/\(BODY\s+(.*?)\)\s*$/i) {
-          $body_parts = $self->{__body_parser}->body($1);
-          __id_parts($body_parts);
-        }},
+
+        final => sub {
+            if( not exists $body_parts->{parts} ) {
+                return {
+                    parts => [$body_parts],
+                    type  => "SINGLE",
+                };
+            }
+
+            return $body_parts;
+        },
+
+        process => sub {
+            if ($_[0] =~ m/\(BODY\s+(.*?)\)\s*$/i) {
+                $body_parts = $self->{__body_parser}->body($1);
+                __id_parts($body_parts);
+            }
+        },
+
     );
 }
 

@@ -54,13 +54,18 @@ defined by RFC3501 L<http://tools.ietf.org/html/rfc3501#section-9>.
 An example of a single part message would look something like this:
 
     $VAR1 = {
-        'content_type' => 'text/plain',
-        'content_description' => '',
-        'part_number' => 1,
-        'encoded_size' => '274',
-        'id' => '',
-        'charset' => 'us-ascii',
-        'encoding' => '7bit'
+        'parts' => [
+            {
+                'content_type' => 'text/plain',
+                'content_description' => '',
+                'part_number' => 1,
+                'encoded_size' => '274',
+                'id' => '',
+                'charset' => 'us-ascii',
+                'encoding' => '7bit'
+            },
+        ],
+        'type' => 'SINGLE'
     };
 
 
