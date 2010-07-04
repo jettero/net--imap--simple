@@ -1,3 +1,33 @@
+package Net::IMAP::SimpleX::Body;
+BEGIN {
+  our @fields = qw/content_description encoded_size charset content_type format part_number id name encoding/;
+  for my $attr (@fields) {
+    *{"Net::IMAP::SimpleX::Body::$attr"} = sub { shift->{$attr}; };
+  }
+};
+sub hasparts { 0; }
+sub parts {}
+sub type {}
+sub body { shift; }
+package Net::IMAP::SimpleX::BodySummary;
+sub new {
+  my ($class, $data) = @_;
+  my $self;
+  
+  Net::IMAP::SimpleX::__id_parts($data);
+  if ($data->{parts}) {
+    $self = $data;
+  } else {
+    $self = { body => $data };
+  }
+  bless $self, $class;
+}
+sub hasparts { return shift->{parts} ? 1 : 0; }
+sub parts { my $self = shift; wantarray ? @{$self->{parts}} : $self->{parts}; }
+sub type { shift->{type} || undef; }
+sub body { shift->{body}; }
+
+
 package Net::IMAP::SimpleX;
 
 use strict;
@@ -11,14 +41,15 @@ our $VERSION = "1.0000";
 # try and flatten, format as best we can
 our $body_grammar = q {
 body:                 body_type_mpart | body_type_1part
-                      { $return = $item[1]; }
+                      { $return = bless $item[1], 'Net::IMAP::SimpleX::Body'; }
 body_type_mpart:    '('body(s) subtype')'
-                    { $return = {
+                    { $return = bless {
                         parts => $item[2],
                         type  => $item{subtype}
-                      };
+                      }, 'Net::IMAP::SimpleX::BodySummary';
                     }
 body_type_1part:    body_type_basic | body_type_text
+                    { $return = bless $item[1], 'Net::IMAP::SimpleX::BodySummary'; }
 body_type_basic:    '('media_type body_fields')'
                     { $return = {
                         content_type => $item{media_type},
@@ -92,26 +123,17 @@ sub __id_parts {
 sub body_summary {
     my ($self, $number) = @_;
 
-    my $body_parts;
+    my $bodysummary;
 
     return $self->_process_cmd(
         cmd => [ 'FETCH' => qq[$number BODY] ],
 
-        final => sub {
-            if( not exists $body_parts->{parts} ) {
-                return {
-                    parts => [$body_parts],
-                    type  => "SINGLE",
-                };
-            }
-
-            return $body_parts;
-        },
+        final => sub { return $bodysummary; },
 
         process => sub {
             if ($_[0] =~ m/\(BODY\s+(.*?)\)\s*$/i) {
-                $body_parts = $self->{__body_parser}->body($1);
-                __id_parts($body_parts);
+                my $body_parts = $self->{__body_parser}->body($1);
+                $bodysummary = Net::IMAP::SimpleX::BodySummary->new($body_parts);
             }
         },
 
