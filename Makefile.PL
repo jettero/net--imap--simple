@@ -8,6 +8,7 @@ if( $build_simplex =~ m/[Yy]/ ) {
     local @ARGV = qw(contrib/SimpleX.pod contrib/SimpleX.pm .);
     cp();
     open my $out, ">test_simplex" or die "unable to setup body-summary tests: $!";
+    chmod 0444, qw(SimpleX.pod SimpleX.pm); # prevent myself from editing them without realizing it
 
 } else {
     unlink qw(SimpleX.pod SimpleX.pm test_simplex);
