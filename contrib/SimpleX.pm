@@ -5,7 +5,7 @@ BEGIN {
     *{"Net::IMAP::SimpleX::Body::$attr"} = sub { shift->{$attr}; };
   }
 };
-sub hasparts { 0; }
+sub hasparts { 0; } *has_parts = \&hasparts;
 sub parts {}
 sub type {}
 sub body { shift; }
@@ -22,7 +22,7 @@ sub new {
   }
   bless $self, $class;
 }
-sub hasparts { return shift->{parts} ? 1 : 0; }
+sub hasparts { return shift->{parts} ? 1 : 0; } *has_parts = \&hasparts;
 sub parts { my $self = shift; wantarray ? @{$self->{parts}} : $self->{parts}; }
 sub type { shift->{type} || undef; }
 sub body { shift->{body}; }
