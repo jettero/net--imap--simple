@@ -1,31 +1,45 @@
 package Net::IMAP::SimpleX::Body;
+
+use strict;
+use warnings;
+
 BEGIN {
   our @fields = qw/content_description encoded_size charset content_type format part_number id name encoding/;
   for my $attr (@fields) {
+    no strict;
     *{"Net::IMAP::SimpleX::Body::$attr"} = sub { shift->{$attr}; };
   }
-};
-sub hasparts { 0; } *has_parts = \&hasparts;
-sub parts {}
-sub type {}
-sub body { shift; }
+}
+
+sub hasparts { return 0; } *has_parts = \&hasparts;
+sub parts { return }
+sub type { return }
+sub body { return shift; }
+
 package Net::IMAP::SimpleX::BodySummary;
+
+use strict;
+use warnings;
+
 sub new {
   my ($class, $data) = @_;
   my $self;
-  
+
   Net::IMAP::SimpleX::__id_parts($data);
+
   if ($data->{parts}) {
     $self = $data;
   } else {
     $self = { body => $data };
   }
-  bless $self, $class;
+
+  return bless $self, $class;
 }
+
 sub hasparts { return shift->{parts} ? 1 : 0; } *has_parts = \&hasparts;
-sub parts { my $self = shift; wantarray ? @{$self->{parts}} : $self->{parts}; }
-sub type { shift->{type} || undef; }
-sub body { shift->{body}; }
+sub parts { my $self = shift; return wantarray ? @{$self->{parts}} : $self->{parts}; }
+sub type { return shift->{type} || undef; }
+sub body { return shift->{body}; }
 
 
 package Net::IMAP::SimpleX;
@@ -118,6 +132,8 @@ sub __id_parts {
     } else {
         $data->{part_number} = $id;
     }
+
+    return;
 }
 
 sub body_summary {
