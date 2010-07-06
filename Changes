@@ -1,3 +1,9 @@
+1.2000: Tue Jul 06 2010
+   - Jason and I (due to a disagreement about what should be
+     returned by body_summary()) begun using objects instead.
+     This way the return value can be interrogated easily to see
+     what it is and what it has.
+
 1.2000: Sat Jul 03 2010
    - woodward sent in some rfc3501 fetch-body support and docs.
      The extension requires Parse::RecDescent for correct
