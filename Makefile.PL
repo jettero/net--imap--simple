@@ -72,6 +72,9 @@ sub MY::postamble {
 
     my $postamble = <<'MAKE_FRAG';
 
+SimpleX.%: contrib/SimpleX.%
+	[ -f $@ ] && $(RM) $@; $(CP) $< $@ && $(CHMOD) 0444 $@
+
 inc/slurp_fetchmailx.pm: inc/slurp_fetchmail.pm
 	sed -e s/slurp_fetchmail/slurp_fetchmailx/ -e s/Net::IMAP::Simple/Net::IMAP::SimpleX/ $< > $@
 
