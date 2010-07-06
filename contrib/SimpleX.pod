@@ -93,6 +93,9 @@ A really complex, multipart message could look something like this:
 
     }
 
+=item new
+
+For details on the invocation, read L<Net::IMAP::Simple>.
 
 =back
 
