@@ -1,6 +1,13 @@
 use strict;
-use warnings;
 no warnings;
+
+# NOTE: To use this test, you have to enter a PREAUTH server command into your
+# ~/.ppsc_test file and make sure you have File::Slurp installed.
+#
+# Example command:
+#
+# echo ssh -C blarghost exec dovecot --exec-mail imap > ~/.ppsc_test
+#
 
 use Test;
 use Net::IMAP::Simple;
