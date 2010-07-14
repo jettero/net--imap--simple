@@ -1,3 +1,15 @@
+1.2000_1: Wed Jul 14 2010
+   - ugh, I'm *STILL* getting that bug (is it?) where sometimes
+     machines can't copy messages (line 25) after there's
+     definitely (line 22) 10 messages in the mailbox. WHY WHY WHY
+     WHY?  Naturally, the logdump is truncated at the point where
+     I really need it.
+
+     http://www.cpantesters.org/cpan/report/590a9a6e-8e97-11df-b0b7-6c9e78e28bc1
+
+     Changed the t/22 test to dump the last 200 lines instead of
+     the first few hundred.
+
 1.2000: Tue Jul 06 2010
    - Jason and I (due to a disagreement about what should be
      returned by body_summary()) begun using objects instead.
