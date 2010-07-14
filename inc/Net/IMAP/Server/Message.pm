@@ -12,7 +12,7 @@ use DateTime;
 
 use DateTime::Format::Strptime;
 use DateTime::Format::Mail;
-use constant INTERNALDATE_PARSER => DateTime::Format::Strptime->new(pattern => "%n%e-%b-%Y %T %z");
+use constant INTERNALDATE_PARSER => DateTime::Format::Strptime->new(pattern => "%e-%b-%Y %T %z");
 use constant HEADERDATE_PARSER => DateTime::Format::Mail->new->loose;
 
 # Canonical capitalization
@@ -82,6 +82,7 @@ sub internaldate {
         $self->{internaldate} = $value->strftime("%e-%b-%Y %T %z");
     } else {
         $self->{internaldate} = $value;
+        $value =~ s/^\s+//;
         $value = $self->INTERNALDATE_PARSER->parse_datetime($value);
     }
     $value->truncate( to => "day" );

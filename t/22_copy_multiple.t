@@ -32,9 +32,11 @@ sub run_tests {
             sleep 1;
 
             for my $file(qw(informal-imap-client-dump.log informal-imap-server-dump.log)) {
-                if( open my $in, $file ) {
+                if( open my $in, "<", $file ) {
                     print STDERR "dumping $file\n";
-                    my @log = grep { defined $_ } (<$in>)[-200 .. -1];
+                    my @log = <$in>;
+                       @log = @log[-200 .. -1] if @log > 200;
+
                     print STDERR @log;
                 }
             }
