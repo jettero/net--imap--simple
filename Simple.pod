@@ -106,10 +106,13 @@ Enable C<select()> caching internally
 The number of seconds to allow a select cache result live before running
 C<$imap->select()> again.
 
-=item debug => BOOL | \*HANDLE
+=item debug => BOOL | \*HANDLE | warn | file:name
 
 Enable debugging output. If C<\*HANDLE> is a valid file handle, debugging will
-be written to it. Otherwise debugging will be written to C<STDOUT>
+be written to it.  If it is the string C<"warn"> then the debugging will be
+written using the L<warn> command.  If it is a string of the form C<file:name>
+then the named file will be opened for append and the debugs written to it.
+Otherwise debugging will be written to C<STDOUT>
 
 =back
 

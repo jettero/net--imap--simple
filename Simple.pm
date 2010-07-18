@@ -8,7 +8,7 @@ use IO::File;
 use IO::Socket;
 use IO::Select;
 
-our $VERSION = "1.2001";
+our $VERSION = "1.2010";
 
 BEGIN {
     # I'd really rather the pause/cpan indexers miss this "package"
@@ -982,6 +982,13 @@ sub _debug {
 
     if ( ref( $self->{debug} ) eq 'GLOB' ) {
         print { $self->{debug} } $line;
+
+    } elsif( $self->{debug} eq "warn" ) {
+        warn $line;
+
+    } elsif( $self->{debug} =~ m/^file:(.+)/ ) {
+        open my $out, ">>",  $1 or warn "[log io fail: $@] $line";
+        print $out $line;
 
     } else {
         print STDOUT $line;
