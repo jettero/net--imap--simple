@@ -989,6 +989,7 @@ sub _debug {
     } elsif( $self->{debug} =~ m/^file:(.+)/ ) {
         open my $out, ">>",  $1 or warn "[log io fail: $@] $line";
         print $out $line;
+        CORE::close($out);
 
     } else {
         print STDOUT $line;
