@@ -363,7 +363,12 @@ sub top {
 
     return $self->_process_cmd(
         cmd   => [ FETCH => qq[$number RFC822.HEADER] ],
-        final => sub { \@lines },
+        final => sub {
+            $lines[-1] =~ s/\)\x0d\x0a\z//; # sometimes we get this and I don't think we should
+                                            # I really hoping I'm not breaking someting by doing this.
+
+            \@lines
+        },
         process => sub {
             return if $_[0] =~ m/\*\s+\d+\s+FETCH/i; # should this really be case insensitive?
 
