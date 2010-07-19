@@ -188,6 +188,13 @@ Return the C<UID> value(s) for a message.  These unique IDs "I<must>" stay the
 same during the session and "I<should>" stay the same between sessions.  Whether
 they stay the same depends on the C<UIDVALIDITY> value; see: above and RFC3501.
 
+Warning, although you might thing C<@uid> should contain the C<UID>s for 15,
+then 4, then 14 in the example above; most IMAP servers seem to return the UIDs
+in increasing order.  Normally the sequence numbers are in increasing order
+also, so it all maches up.
+
+    my ($uid4, $uid14, $uid15) = $imap->uid("15,4,14"); # warning
+
 =item select
 
     my $num_messages = $imap->select($folder);
