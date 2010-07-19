@@ -988,6 +988,9 @@ sub _process_cmd {
     my ( $self, %args ) = @_;
     my ( $sock, $id )   = $self->_send_cmd( @{ $args{cmd} } );
 
+    $args{process} = sub {} unless ref($args{process}) eq "CODE";
+    $args{final}   = sub {} unless ref($args{final})   eq "CODE";
+
     my $res;
     while ( $res = $sock->getline ) {
         $self->_debug( caller, __LINE__, '_process_cmd', $res ) if $self->{debug};
