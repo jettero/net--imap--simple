@@ -211,24 +211,67 @@ sub _clear_cache {
     return 1;
 }
 
+sub uidnext {
+    my $self = shift;
+    my $mbox = shift || $self->current_box || "INBOX";
+
+    return $self->status($mbox => 'uidnext');
+}
+
+sub uidvalidity {
+    my $self = shift;
+    my $mbox = shift || $self->current_box || "INBOX";
+
+    return $self->status($mbox => 'uidvalidity');
+}
+
+sub uid {
+    my $self = shift;
+    my $msgno = shift || "*";
+
+    $self->be_on_a_box; # does a select if we're not on a mailbox
+
+    my @UID;
+
+    # 3 UID SEARCH 28,4,30\r\n
+    # * SEARCH 58864 58888 58890\r\n
+
+    return $self->_process_cmd(
+        cmd     => [ "UID SEARCH " . _escape($msgno) ],
+        final   => sub { wantarray ? @UID : $UID[-1] },
+        process => sub {
+            if( my ($digits) = $_[0] =~ m/\* SEARCH\s+([\d\s]+)/i ) {
+                @UID = split m/\s+/, $digits;
+            }
+        },
+    );
+}
+
 sub status {
     my $self = shift;
     my $mbox = shift || $self->current_box || "INBOX";
+    my @fields = @_ ? @_ : qw(unseen recent messages);
 
     # Example: C: A042 STATUS blurdybloop (UIDNEXT MESSAGES)
     #          S: * STATUS blurdybloop (MESSAGES 231 UIDNEXT 44292)
     #          S: A042 OK STATUS completed
 
-    my ($unseen, $recent, $messages);
+    @fields = map{uc$_} @fields;
+    my %fields;
 
     return $self->_process_cmd(
-        cmd     => [ STATUS => _escape($mbox) . " (UNSEEN RECENT MESSAGES)" ],
-        final   => sub { return unless defined $messages; ($unseen, $recent, $messages) },
+        cmd     => [ STATUS => _escape($mbox) . " (@fields)" ],
+        final   => sub { (@fields{@fields}) },
         process => sub {
             if( my ($status) = $_[0] =~ m/\* STATUS.+?$mbox.+?\((.+?)\)/i ) {
-                $unseen   = $1 if $status =~ m/UNSEEN (\d+)/i;
-                $recent   = $1 if $status =~ m/RECENT (\d+)/i;
-                $messages = $1 if $status =~ m/MESSAGES (\d+)/i;
+
+                for( @fields ) {
+                    $fields{$_} = _unescape($1)
+                        if $status =~ m/$_\s+(\S+|"[^"]+"|'[^']+')/i
+                            # NOTE: this regex isn't perfect, but should almost always work
+                            # for status values returned by a well meaning IMAP server
+                }
+
             }
         },
     );

@@ -154,6 +154,40 @@ C<INBOX> if the C<$folder> argument is not provided.
 
 This method does not use caching.
 
+This method can also query custom status values.  The first argument to the
+function (if any) is assumed to be the folder name, so the folder argument is
+required when trying to query custom status values.
+
+    my ($f1, $f2) = $imap->status($folder, qw(f1 f2));
+    my $f2        = $imap->status($folder, qw(f1 f2));
+
+=item uidnext
+
+    my $uidnext = $imap->uidnext($folder);
+
+Return the C<UIDNEXT> value for a mailbox.  The C<$folder> argument is optional.
+This is really just an alias for
+
+    my $uidnext = $imap->status($folder, qw(uidnext));
+
+with the mild difference that it can compute the folder argument for you
+
+=item uidvalidity
+
+    my $uidvalidity = $imap->uidnext($folder);
+
+Return the C<UIDVALIDITY> value for a mailbox.  The C<$folder> argument is
+optional.  This is also an alias for the status call like C<uidnext()> above.
+
+=item uid
+
+    my $uid = $imap->uid($msgno);
+    my @uid = $imap->uid($msg_range); # eg 4:14  or 15,4,14
+
+Return the C<UID> value(s) for a message.  These unique IDs "I<must>" stay the
+same during the session and "I<should>" stay the same between sessions.  Whether
+they stay the same depends on the C<UIDVALIDITY> value; see: above and RFC3501.
+
 =item select
 
     my $num_messages = $imap->select($folder);
