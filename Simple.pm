@@ -423,7 +423,7 @@ sub search {
     $charset  ||= 'UTF-8';
     my $cmd   = 'SEARCH';
 
-    $self->last; # does a select if we're not on a mailbox
+    $self->be_on_a_box; # does a select if we're not on a mailbox
 
     # add rfc5256 sort, requires charset :(
     if ($sort) {
@@ -618,6 +618,13 @@ sub quit {
     $self->_sock->close;
 
     return 1;
+}
+
+sub be_on_a_box {
+    my $self = shift;
+    return if $self->{working_box};
+    $self->select; # sit on something
+    return;
 }
 
 sub last { ## no critic -- too late to choose a different name now...
