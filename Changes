@@ -6,6 +6,8 @@
    - provide uidnext, uidvalidity, and uid
    - also (incidental to the above) make status() take field
      arguments
+   - fixed a "bug" where not passing coderefs to _process_cmd
+     will probably cause various crashes.
 
 1.2010: Sun Jul 18 2010
    - I was having some issues getting the debugs to work inside
