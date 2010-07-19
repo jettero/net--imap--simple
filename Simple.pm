@@ -231,17 +231,17 @@ sub uid {
 
     $self->be_on_a_box; # does a select if we're not on a mailbox
 
-    my @UID;
+    my @_uids;
 
     # 3 UID SEARCH 28,4,30\r\n
     # * SEARCH 58864 58888 58890\r\n
 
     return $self->_process_cmd(
         cmd     => [ "UID SEARCH " . _escape($msgno) ],
-        final   => sub { wantarray ? @UID : $UID[-1] },
+        final   => sub { wantarray ? @_uids : $_uids[-1] },
         process => sub {
             if( my ($digits) = $_[0] =~ m/\* SEARCH\s+([\d\s]+)/i ) {
-                @UID = split m/\s+/, $digits;
+                @_uids = split m/\s+/, $digits;
             }
         },
     );
