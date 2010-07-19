@@ -467,7 +467,7 @@ sub _process_date {
             # NOTE: RFC 3501 wants this poorly-internationalized date format
             # for SEARCH.  Not my fault.
 
-            return Date::Manip::UnixDate($pd, '"%d %b %Y"');
+            return Date::Manip::UnixDate($pd, '%d-%b-%Y');
         }
 
     } else {
