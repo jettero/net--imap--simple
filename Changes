@@ -7,6 +7,8 @@
      *** let me know if this broke something for you ***
    - If the client is not yet setting on a mailbox and a search
      is issued, the client now selects the default mbox first.
+   - RFC3501 wants RFC 2822 dates for date-based searches,
+     %d-%m-%Y is therefore wrong, it should be %d %b %Y (huh).
 
 1.2001: Wed Jul 14 2010
    - Ugh.  I have seen it before and I already found this
