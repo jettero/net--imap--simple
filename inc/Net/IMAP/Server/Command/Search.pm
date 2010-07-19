@@ -166,7 +166,7 @@ sub filter {
             push @{$filters}, sub {not $_[0]->has_flag($keyword)};
         } elsif ($token eq "UNSEEN") {
             push @{$filters}, sub {not $_[0]->has_flag('\Seen')};
-        } elsif ($token =~ /^\d+(:\d+|:\*)?(,\d+(:\d+|:\*))*$/) {
+        } elsif ($token =~ /^\d+(:\d+|:\*)?(,\d+(:\d+|:\*)?)*$/) {
             my %uids;
             $uids{$_->uid}++ for $self->connection->get_messages($token);
             push @{$filters}, sub {$uids{$_[0]->uid}};
