@@ -229,7 +229,7 @@ sub uid {
     my $self = shift;
     my $msgno = shift || "1:*";
 
-    $self->be_on_a_box; # does a select if we're not on a mailbox
+    $self->_be_on_a_box; # does a select if we're not on a mailbox
 
     my @_uids;
 
@@ -466,7 +466,7 @@ sub search {
     $charset  ||= 'UTF-8';
     my $cmd   = 'SEARCH';
 
-    $self->be_on_a_box; # does a select if we're not on a mailbox
+    $self->_be_on_a_box; # does a select if we're not on a mailbox
 
     # add rfc5256 sort, requires charset :(
     if ($sort) {
@@ -663,7 +663,7 @@ sub quit {
     return 1;
 }
 
-sub be_on_a_box {
+sub _be_on_a_box {
     my $self = shift;
     return if $self->{working_box};
     $self->select; # sit on something
