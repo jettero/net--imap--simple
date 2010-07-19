@@ -227,7 +227,7 @@ sub uidvalidity {
 
 sub uid {
     my $self = shift;
-    my $msgno = shift || "*";
+    my $msgno = shift || "1:*";
 
     $self->be_on_a_box; # does a select if we're not on a mailbox
 
