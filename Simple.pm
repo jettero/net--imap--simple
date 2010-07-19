@@ -423,7 +423,7 @@ sub search {
     $charset  ||= 'UTF-8';
     my $cmd   = 'SEARCH';
 
-    $self->select or return;
+    $self->last; # does a select if we're not on a mailbox
 
     # add rfc5256 sort, requires charset :(
     if ($sort) {
