@@ -423,6 +423,8 @@ sub search {
     $charset  ||= 'UTF-8';
     my $cmd   = 'SEARCH';
 
+    $self->select or return;
+
     # add rfc5256 sort, requires charset :(
     if ($sort) {
         $sort = uc $sort;
