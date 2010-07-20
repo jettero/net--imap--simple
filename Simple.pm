@@ -1016,6 +1016,33 @@ sub _process_cmd {
     return;
 }
 
+sub _fetch {
+    my $imap = shift;
+    my $msno = shift;
+    my $spec = shift;
+
+    # XXX: this is experimental
+
+    # C: A654 FETCH 2:4 (FLAGS BODY[HEADER.FIELDS (DATE FROM)])
+    # S: * 2 FETCH ....
+    # S: * 3 FETCH ....
+    # S: * 4 FETCH ....
+    # S: A654 OK FETCH completed
+
+    my %a;
+    my $full_response = ""; # to get a really good parse, we're better off not
+                            # trying to parse this line by line
+
+    return $imap->_process_cmd(
+        cmd => [ "FETCH $msno ($spec)" ],
+
+        final => sub {
+        },
+
+        process => sub { $full_response .= $_[0] },
+    );
+}
+
 sub _seterrstr {
     my ( $self, $err ) = @_;
 
