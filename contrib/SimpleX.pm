@@ -49,7 +49,9 @@ use warnings;
 use Parse::RecDescent;
 use base 'Net::IMAP::Simple';
 
-our $VERSION = "1.0000";
+our $VERSION = "1.0010";
+
+{
 
 # directly from http://tools.ietf.org/html/rfc3501#section-9
 # try and flatten, format as best we can
@@ -107,11 +109,23 @@ word:               /[^\s\)\(]+/
                     { $item[1] =~ s/\"//g; $return = $item[1];}
 };
 
+our $fetch_grammar = q&
+    fetch: value_pair(s)
+
+    value_pair: tag value
+
+    tag: /[\w\d]+/
+
+    value: /\d+/ | '(' /[^()]+/ ')' {$return=$item[1]}
+&;
 
 sub new {
     my $class = shift;
     if (my $self = $class->SUPER::new(@_)) {
-        $self->{__body_parser} = Parse::RecDescent->new($body_grammar);
+
+        $self->{parser}{body_summary}  = Parse::RecDescent->new($body_grammar);
+        $self->{parser}{fetch}         = Parse::RecDescent->new($fetch_grammar);
+
         return $self;
     }
 }
@@ -148,12 +162,15 @@ sub body_summary {
 
         process => sub {
             if ($_[0] =~ m/\(BODY\s+(.*?)\)\s*$/i) {
-                my $body_parts = $self->{__body_parser}->body($1);
+                my $body_parts = $self->{parser}{body_summary}->body($1);
                 $bodysummary = Net::IMAP::SimpleX::BodySummary->new($body_parts);
             }
         },
 
     );
+}
+
+sub fetch {
 }
 
 1;
