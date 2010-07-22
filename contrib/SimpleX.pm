@@ -25,7 +25,7 @@ sub new {
   my ($class, $data) = @_;
   my $self;
 
-  Net::IMAP::SimpleX::__id_parts($data);
+  Net::IMAP::SimpleX::_id_parts($data);
 
   if ($data->{parts}) {
     $self = $data;
@@ -130,7 +130,7 @@ sub new {
     }
 }
 
-sub __id_parts {
+sub _id_parts {
     my $data  = shift;
     my $pre   = shift;
     $pre = $pre ? "$pre." : '';
@@ -138,7 +138,7 @@ sub __id_parts {
     my $id = 1;
     if (my $parts = $data->{parts}) {
         for my $sub (@$parts){
-          __id_parts($sub,"$pre$id") if $sub->{parts};
+          _id_parts($sub,"$pre$id") if $sub->{parts};
           $sub->{part_number} = "$pre$id";
           $id++;
         }
