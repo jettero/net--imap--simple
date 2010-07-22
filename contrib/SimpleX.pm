@@ -51,8 +51,6 @@ use base 'Net::IMAP::Simple';
 
 our $VERSION = "1.0010";
 
-{
-
 # directly from http://tools.ietf.org/html/rfc3501#section-9
 # try and flatten, format as best we can
 our $body_grammar = q {
