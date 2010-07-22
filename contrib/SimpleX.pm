@@ -110,11 +110,12 @@ word:               /[^\s\)\(]+/
 our $fetch_grammar = q&
     fetch: value_pair(s)
 
-    value_pair: tag value
+    value_pair: tag value {$return=[$item[1], $item[2]]}
 
     tag: /[\w\d]+/
 
-    value: /\d+/ | '(' /[^()]+/ ')' {$return=$item[1]}
+    value: /\d+/ | '(' /[^()]+/ ')' {$return=$item[2]}
+         | m/{(\d+)(?{ $::NISF_OCTETS=$^N })}\x0d\x0a((??{ ".{$::NISF_OCTETS}" }))/s
 &;
 
 sub new {
