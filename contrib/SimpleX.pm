@@ -114,8 +114,10 @@ our $fetch_grammar = q&
 
     tag: /[\w\d]+/
 
-    value: /\d+/ | '(' /[^()]+/ ')' {$return=$item[2]}
-         | m/{(\d+)(?{ $::NISF_OCTETS=$^N })}\x0d\x0a((??{ ".{$::NISF_OCTETS}" }))/s
+    value: /\S+/
+         | '"' / ([^\x0d\x0a"]*)/ '"' {$return=$item[2]}
+         | '(' /[^()]+/ ')'           {$return=$item[2]}
+         | m/{(\d+)(?{ $::NISF_OCTETS=$^N })}\x0d\x0a((??{ ".{$::NISF_OCTETS}" }))/s {$return=$2}
 &;
 
 sub new {
