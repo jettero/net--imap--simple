@@ -108,16 +108,16 @@ word:               /[^\s\)\(]+/
 };
 
 our $fetch_grammar = q&
-    fetch: value_pair(s)
+    fetch: 'FETCH' '(' value_pair(s) ')' {$return=$item[3]}
 
     value_pair: tag value {$return=[$item[1], $item[2]]}
 
     tag: /[\w\d]+/
 
-    value: /\S+/
-         | '"' / ([^\x0d\x0a"]*)/ '"' {$return=$item[2]}
-         | '(' /[^()]+/ ')'           {$return=$item[2]}
-         | m/{(\d+)(?{ $::NISF_OCTETS=$^N })}\x0d\x0a((??{ ".{$::NISF_OCTETS}" }))/s {$return=$2}
+    value: /{(\d+)(?{ $::NISF_OCTETS=$^N })}\x0d\x0a((??{ ".{$::NISF_OCTETS}" }))/s {$return=$2}
+         | '"' /([^\x0d\x0a"]*)/ '"' {$return=$item[2]}
+         | '(' /[^()]+/ ')'          {$return=$item[2]}
+         | m/[^"()\s{}]+/
 &;
 
 sub new {
