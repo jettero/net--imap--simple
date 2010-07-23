@@ -48,6 +48,7 @@ package Net::IMAP::SimpleX;
 
 use strict;
 use warnings;
+use Carp;
 use Parse::RecDescent;
 use base 'Net::IMAP::Simple';
 
@@ -174,6 +175,30 @@ sub body_summary {
 }
 
 sub fetch {
+    my $self = shift;
+    my $msg  = shift; $msg =~ s/[^\d:,-]//g; croak "which message?" unless $msg;
+    my $spec = "@_" || 'FULL';
+
+    # cut and pasted from ::Server
+    $spec = [qw/FLAGS INTERNALDATE RFC822.SIZE ENVELOPE/]      if uc $spec eq "ALL";
+    $spec = [qw/FLAGS INTERNALDATE RFC822.SIZE/]               if uc $spec eq "FAST";
+    $spec = [qw/FLAGS INTERNALDATE RFC822.SIZE ENVELOPE BODY/] if uc $spec eq "FULL";
+    $spec = [ $spec ] unless ref $spec;
+
+    my $stxt = join(" ", map {s/[^\Da-zA-Z.-]//; uc($_)} @$spec);
+
+    my $res;
+
+    return $self->_process_cmd(
+        cmd => [ FETCH => qq[$msg $spec] ],
+
+        final => sub { return $res; },
+
+        process => sub {
+            return $self->{parser}{fetch}->fetch($1) if $_[0] =~ m/(FETCH\s+\(.+?\))$/i;
+        },
+
+    );
 }
 
 1;
