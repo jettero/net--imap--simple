@@ -2,6 +2,7 @@ package Net::IMAP::SimpleX::Body;
 
 use strict;
 use warnings;
+no warnings 'once'; ## no critic
 
 BEGIN {
   our @fields = qw/content_description encoded_size charset content_type format part_number id name encoding/;
@@ -20,6 +21,7 @@ package Net::IMAP::SimpleX::BodySummary;
 
 use strict;
 use warnings;
+no warnings 'once'; ## no critic
 
 sub new {
   my ($class, $data) = @_;
