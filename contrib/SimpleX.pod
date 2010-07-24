@@ -104,6 +104,34 @@ The fetch command returns the various parts of messages that users request.  It
 is fairly complicated (following RFC3501 using a grammar/parser), but there are
 some basic patterns that it follows.
 
+    my $res  =$imap->fetch('30:32' => 'UID BODY.PEEK[HEADER.FIELDS (DATE)] FLAGS')
+    # $res = {
+    #   30 => {
+    #           "BODY[HEADER.FIELDS (DATE)]" => "Date: Sun, 18 Jul 2010 20:54:48 -0400\r\n\r\n",
+    #           "FLAGS" => ["\\Flagged", "\\Seen"],
+    #           "UID" => 58890,
+    #         },
+    #   31 => {
+    #           "BODY[HEADER.FIELDS (DATE)]" => "Date: Wed, 21 Jul 2010 09:09:04 -0400\r\n\r\n",
+    #           "FLAGS" => ["\\Seen"],
+    #           "UID" => 58891,
+    #         },
+    #   32 => {
+    #           "BODY[HEADER.FIELDS (DATE)]" => "Date: Sat, 24 Jul 2010 05:12:06 -0700\r\n\r\n",
+    #           "FLAGS" => ["\\Seen"],
+    #           "UID" => 58892,
+    #         },
+    # }
+
+So-called "parenthized" lists will be returned as an array (see C<FLAGS>) but
+nearly everything else will come back as strings.  This includes parenthized
+queries.  Take C<BODY.PEAK[HEADER.FIELDS (DATE FROM SUBJECT)]>), for example.
+The result would come back as the RFC822 header lines (as the above C<Date: Sun,
+...> has done).
+
+For more information about the different types of queries, see RFC3501.  There's
+a surprising number of things that can be queried.
+
 =back
 
 =head1 AUTHOR
