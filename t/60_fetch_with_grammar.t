@@ -46,7 +46,7 @@ Content-Type: text/html; charset=fake-charset-2
 
 TEST2
 
-    my %parts = $imap->fetch(1=>'full');
+    my %parts = $imap->fetch(1=>'FULL');
     ok( int( keys %parts ), 4 );
 }
 
