@@ -111,20 +111,13 @@ word:               /[^\s\)\(]+/
 };
 
 our $fetch_grammar = q&
-    fetch: fetch_item(s)
+    fetch: fetch_item(s) {$return={ map {(@$_)} @{$item[1]} }}
 
-    fetch_item: cmd_start 'FETCH' '(' value_pair(s?) ')' {
-        if( $return ) {
-            $return->{$item[1]} = $item[4];
-
-        } else {
-            $return = {$item[1] => $item[4]}
-        }
-    }
+    fetch_item: cmd_start 'FETCH' '(' value_pair(s?) ')' {$return=[$item[1], {map {(@$_)} @{$item[4]}}]}
 
     cmd_start: '*' /\d+/ {$return=$item[2]}
 
-    value_pair: atom value {$return={name=>$item[1], value=>$item[2]}}
+    value_pair: atom value {$return=[$item[1], $item[2]]}
 
     tag: /[\w\d]+/
 
@@ -214,18 +207,21 @@ sub fetch {
 
     $self->_debug( caller, __LINE__, parsed_fetch=> "$msg ($stxt)" ) if $self->{debug};
 
-    my $res;
+    my $entire_response = "";
 
     return $self->_process_cmd(
         cmd => [ FETCH => qq[$msg ($stxt)] ],
 
         final => sub {
+            $self->_debug( caller, __LINE__, parsed_fetch=> "entire_response: $entire_response") if $self->{debug};
+
+            my $res = $self->{parser}{fetch}->fetch($entire_response) or return;
             return wantarray ? %$res : $res;
         },
 
         process => sub {
-            $res = $self->{parser}{fetch}->fetch($_[0]);
-            return $res ? 1:0;
+            $entire_response .= $_[0];
+            return 1;
         },
 
     );
