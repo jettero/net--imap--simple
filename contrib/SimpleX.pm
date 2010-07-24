@@ -204,7 +204,7 @@ sub fetch {
     $spec = [qw/FLAGS INTERNALDATE RFC822.SIZE ENVELOPE BODY/] if uc $spec eq "FULL";
     $spec = [ $spec ] unless ref $spec;
 
-    my $stxt = join(" ", map {s/[^()[\]\s<>\da-zA-Z.-]//g; uc($_)} @$spec);
+    my $stxt = join(" ", map {s/[^()[\]\s<>\da-zA-Z.-]//g; uc($_)} @$spec); ## no critic: really? don't modify $_? pfft
 
     $self->_debug( caller, __LINE__, parsed_fetch=> "$msg ($stxt)" ) if $self->{debug};
 
