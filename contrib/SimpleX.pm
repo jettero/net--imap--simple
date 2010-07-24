@@ -196,6 +196,8 @@ sub fetch {
     my $msg  = shift; $msg =~ s/[^\*\d:,-]//g; croak "which message?" unless $msg;
     my $spec = "@_" || 'FULL';
 
+    $self->_be_on_a_box;
+
     # cut and pasted from ::Server
     $spec = [qw/FLAGS INTERNALDATE RFC822.SIZE ENVELOPE/]      if uc $spec eq "ALL";
     $spec = [qw/FLAGS INTERNALDATE RFC822.SIZE/]               if uc $spec eq "FAST";
