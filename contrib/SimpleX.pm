@@ -111,7 +111,9 @@ word:               /[^\s\)\(]+/
 };
 
 our $fetch_grammar = q&
-    fetch: 'FETCH' '(' value_pair(s?) ')' {$return=$item[3]}
+    fetch: cmd_start(?) 'FETCH' '(' value_pair(s?) ')' {$return=$item[4]}
+
+    cmd_start: '*' /\d+/
 
     value_pair: atom value {$return=[$item[1], $item[2]]}
 
@@ -191,7 +193,7 @@ sub fetch {
     my $msg  = shift; $msg =~ s/[^\d:,-]//g; croak "which message?" unless $msg;
     my $spec = "@_" || 'FULL';
 
-    $self->_debug( caller, __LINE__, _fetch=> "($msg, $spec)" ) if $self->{debug};
+    $self->_debug( caller, __LINE__, parsed_fetch=> "($msg, $spec)" ) if $self->{debug};
 
     # cut and pasted from ::Server
     $spec = [qw/FLAGS INTERNALDATE RFC822.SIZE ENVELOPE/]      if uc $spec eq "ALL";
@@ -201,7 +203,7 @@ sub fetch {
 
     my $stxt = join(" ", map {s/[^\da-zA-Z.-]//g; uc($_)} @$spec);
 
-    $self->_debug( caller, __LINE__, _fetch=> "$msg ($stxt)" ) if $self->{debug};
+    $self->_debug( caller, __LINE__, parsed_fetch=> "$msg ($stxt)" ) if $self->{debug};
 
     my $res;
 
@@ -215,7 +217,11 @@ sub fetch {
         },
 
         process => sub {
-            return $self->{parser}{fetch}->fetch($1) if $_[0] =~ m/(FETCH\s+\(.+?\))$/i;
+            $res = $self->{parser}{fetch}->fetch($_[0]);
+            no warnings;
+            use Data::Dump qw(dump);
+            $self->_debug( caller, __LINE__, parsed_fetch=> "[0]: $_[0]; result: " . dump($res) ) if $self->{debug};
+            return $res ? 1:0;
         },
 
     );
