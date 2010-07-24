@@ -179,18 +179,22 @@ sub fetch {
     my $msg  = shift; $msg =~ s/[^\d:,-]//g; croak "which message?" unless $msg;
     my $spec = "@_" || 'FULL';
 
+    $self->_debug( caller, __LINE__, _fetch=> "($msg, $spec)" ) if $self->{debug};
+
     # cut and pasted from ::Server
     $spec = [qw/FLAGS INTERNALDATE RFC822.SIZE ENVELOPE/]      if uc $spec eq "ALL";
     $spec = [qw/FLAGS INTERNALDATE RFC822.SIZE/]               if uc $spec eq "FAST";
     $spec = [qw/FLAGS INTERNALDATE RFC822.SIZE ENVELOPE BODY/] if uc $spec eq "FULL";
     $spec = [ $spec ] unless ref $spec;
 
-    my $stxt = join(" ", map {s/[^\Da-zA-Z.-]//; uc($_)} @$spec);
+    my $stxt = join(" ", map {s/[^\da-zA-Z.-]//g; uc($_)} @$spec);
+
+    $self->_debug( caller, __LINE__, _fetch=> "$msg ($stxt)" ) if $self->{debug};
 
     my $res;
 
     return $self->_process_cmd(
-        cmd => [ FETCH => qq[$msg $spec] ],
+        cmd => [ FETCH => qq[$msg ($stxt)] ],
 
         final => sub {
             my %res;

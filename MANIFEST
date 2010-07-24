@@ -81,3 +81,4 @@ t/pod.t
 t/pod_coverage.t
 t/ppsc_server.pm
 t/test_server.pm
+t/60_fetch_with_grammar.t
