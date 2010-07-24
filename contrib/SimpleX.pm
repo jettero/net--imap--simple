@@ -192,7 +192,7 @@ sub body_summary {
 
 sub fetch {
     my $self = shift;
-    my $msg  = shift; $msg =~ s/[^\d:,-]//g; croak "which message?" unless $msg;
+    my $msg  = shift; $msg =~ s/[^\*\d:,-]//g; croak "which message?" unless $msg;
     my $spec = "@_" || 'FULL';
 
     $self->_debug( caller, __LINE__, parsed_fetch=> "($msg, $spec)" ) if $self->{debug};
