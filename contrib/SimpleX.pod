@@ -16,7 +16,25 @@ is the same as it is for the ancestor:
 
     $imap->select("INBOX");
 
-So far L<Net::IMAP::SimpleX> only provides one extension.
+L<Net::IMAP::SimpleX> is a collection of handy methods that are
+not simple, require L<Parse::RecDescent>, or are experimental.
+
+=head1 DESCRIPTION
+
+This module adds some useful, yet not so simple, extensions on top of
+L<Net::IMAP::Simple>.
+
+=head1 METHODS
+
+=over 4
+
+=item new
+
+For details on the invocation, read L<Net::IMAP::Simple>.
+
+=item body_summary
+
+Typical invocations will take this overall shape.
 
     # get an object representation of the message body
     my $summary = $imap->body_summary($message_number);
@@ -35,19 +53,6 @@ So far L<Net::IMAP::SimpleX> only provides one extension.
         my @attr = map { $body->$_ } qw/content_type encoding encoded_size/
     }
 
-
-=head1 DESCRIPTION
-
-This module adds some useful, yet not so simple, extensions on top of
-L<Net::IMAP::Simple>.
-
-=head1 METHODS
-
-=over 4
-
-=item body_summary
-
-    my $summary = $imap->body_summary($message_number);
 
 This method returns a simple object that contains a representation of the body
 of a message.  The object is built by a L<Parse::RecDescent> parser using the
@@ -93,9 +98,11 @@ A really complex, multipart message could look something like this:
 
     }
 
-=item new
+=item fetch
 
-For details on the invocation, read L<Net::IMAP::Simple>.
+The fetch command returns the various parts of messages that users request.  It
+is fairly complicated (following RFC3501 using a grammar/parser), but there are
+some basic patterns that it follows.
 
 =back
 
@@ -103,7 +110,13 @@ For details on the invocation, read L<Net::IMAP::Simple>.
 
 =over 4
 
+=item INITIAL AUTHOR
+
 Jason Woodward C<< <woodwardj@jaos.org> >>
+
+=item ADDITIONAL CONTRIBUTIONS
+
+Paul Miller C<< <jettero@cpan.org> >>  [I<fetch()>]
 
 =back
 
