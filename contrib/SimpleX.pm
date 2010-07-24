@@ -192,7 +192,11 @@ sub fetch {
     return $self->_process_cmd(
         cmd => [ FETCH => qq[$msg $spec] ],
 
-        final => sub { return $res; },
+        final => sub {
+            my %res;
+            $res{$_->[0]} = $_->[1] for @$res;
+            return wantarray ? %res : \%res;
+        },
 
         process => sub {
             return $self->{parser}{fetch}->fetch($1) if $_[0] =~ m/(FETCH\s+\(.+?\))$/i;

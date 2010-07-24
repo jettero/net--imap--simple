@@ -1016,46 +1016,6 @@ sub _process_cmd {
     return;
 }
 
-# XXX: this is experimental
-sub _fetch {
-    my $imap = shift;
-    my $msno = shift || "1:*";
-    my $spec = shift || "FAST";
-
-    # cut and pasted from ::Server
-    $spec = [qw/FLAGS INTERNALDATE RFC822.SIZE ENVELOPE/]
-        if uc $spec eq "ALL";
-    $spec = [qw/FLAGS INTERNALDATE RFC822.SIZE/] if uc $spec eq "FAST";
-    $spec = [qw/FLAGS INTERNALDATE RFC822.SIZE ENVELOPE BODY/]
-        if uc $spec eq "FULL";
-
-    $spec = [ $spec ] unless ref $spec;
-
-    my $stxt = join(" ", map {s/[^\Da-zA-Z.-]//; uc($_)} @$spec);
-
-    # C: A654 FETCH 2:4 (FLAGS BODY[HEADER.FIELDS (DATE FROM)])
-    # S: * 2 FETCH ....
-    # S: * 3 FETCH ....
-    # S: * 4 FETCH ....
-    # S: A654 OK FETCH completed
-
-    my %a;
-    my $full_response = ""; # to get a really good parse, we're better off not
-                            # trying to parse this line by line
-
-    return $imap->_process_cmd(
-        cmd => [ "FETCH $msno ($stxt)" ],
-
-        final => sub {
-            if( my ($result) = $full_response =~ m/FETCH\s*\((.+)\)[\r\n\s]*\z/s ) {
-                return "\n\n>>$result<<\n\n";
-            }
-        },
-
-        process => sub { $full_response .= $_[0] },
-    );
-}
-
 sub _seterrstr {
     my ( $self, $err ) = @_;
 
