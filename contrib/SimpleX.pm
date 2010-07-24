@@ -111,7 +111,7 @@ word:               /[^\s\)\(]+/
 };
 
 our $fetch_grammar = q&
-    fetch: fetch_item(s) {$return={ map {(@$_)} @{$item[1]} }}
+    fetch: fetch_item(s) {$return={ map {(@$_)} reverse @{$item[1]} }}
 
     fetch_item: cmd_start 'FETCH' '(' value_pair(s?) ')' {$return=[$item[1], {map {(@$_)} @{$item[4]}}]}
 
@@ -196,8 +196,6 @@ sub fetch {
     my $msg  = shift; $msg =~ s/[^\*\d:,-]//g; croak "which message?" unless $msg;
     my $spec = "@_" || 'FULL';
 
-    $self->_debug( caller, __LINE__, parsed_fetch=> "($msg, $spec)" ) if $self->{debug};
-
     # cut and pasted from ::Server
     $spec = [qw/FLAGS INTERNALDATE RFC822.SIZE ENVELOPE/]      if uc $spec eq "ALL";
     $spec = [qw/FLAGS INTERNALDATE RFC822.SIZE/]               if uc $spec eq "FAST";
@@ -214,10 +212,16 @@ sub fetch {
         cmd => [ FETCH => qq[$msg ($stxt)] ],
 
         final => sub {
-            $self->_debug( caller, __LINE__, parsed_fetch=> "entire_response: $entire_response") if $self->{debug};
+            #open my $fh, ">", "entire_response.dat";
+            #print $fh $entire_response;
 
-            my $res = $self->{parser}{fetch}->fetch($entire_response) or return;
-            return wantarray ? %$res : $res;
+            if( my $res = $self->{parser}{fetch}->fetch($entire_response) ) {
+                $self->_debug( caller, __LINE__, parsed_fetch=> "PARSED") if $self->{debug};
+                return wantarray ? %$res : $res;
+            }
+
+            $self->_debug( caller, __LINE__, parsed_fetch=> "PARSE FAIL") if $self->{debug};
+            return;
         },
 
         process => sub {
