@@ -111,16 +111,28 @@ word:               /[^\s\)\(]+/
 };
 
 our $fetch_grammar = q&
-    fetch: 'FETCH' '(' value_pair(s) ')' {$return=$item[3]}
+    fetch: 'FETCH' '(' value_pair(s?) ')' {$return=$item[3]}
 
-    value_pair: tag value {$return=[$item[1], $item[2]]}
+    value_pair: atom value {$return=[$item[1], $item[2]]}
 
     tag: /[\w\d]+/
 
-    value: /{(\d+)(?{ $::NISF_OCTETS=$^N })}\x0d\x0a((??{ ".{$::NISF_OCTETS}" }))/s {$return=$2}
-         | '"' /([^\x0d\x0a"]*)/ '"' {$return=$item[2]}
-         | '(' /[^()]+/ ')'          {$return=$item[2]}
-         | m/[^"()\s{}]+/
+    value: atom | string | parenthized_list
+
+    atom:   /[^"()\s{}]+/ {
+            # strictly speaking, the NIL atom should be undef, but P::RD isn't going to allow that.
+            # returning a null character instead
+            $return=($item[1] eq "NIL" ? "\x00" : $item[1])
+        }
+
+    string: '"' /[^\x0d\x0a"]*/ '"' {$return=$item[2]}
+        | /{(\d+)(?{ $::NISF_OCTETS=$^N })}\x0d\x0a((??{ ".{$::NISF_OCTETS}" }))/s {
+            # returning $2, rather than $item[x] because we really
+            # just want the group 2 item from the RE
+            $return = $2;
+        }
+
+    parenthized_list: '(' value(s?) ')' {$return=$item[2]}
 &;
 
 sub new {
