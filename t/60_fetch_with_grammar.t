@@ -57,7 +57,7 @@ Content-Type: text/html; charset=fake-charset-2
 TEST2
 
     my %parts = $imap->fetch(1=>'FULL');
-    ok( int( keys %parts ), 4 );
+    ok( int( keys %parts ), 5 ) or warn do {my @a = keys %parts; "parts(@a)"};
 }
 
 do "t/test_server.pm" or die "error starting imap server: $!$@";
