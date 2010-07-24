@@ -127,7 +127,7 @@ our $fetch_grammar = q&
     atom:   /[^"()\s{}[\]]+/ {
             # strictly speaking, the NIL atom should be undef, but P::RD isn't going to allow that.
             # returning a null character instead
-            $return=($item[1] eq "NIL" ? "\x00" : $item[1])
+            $return=($item[1] eq "NIL" ? '' : $item[1])
         }
 
     string: '"' /[^\x0d\x0a"]*/ '"' {$return=$item[2]}
