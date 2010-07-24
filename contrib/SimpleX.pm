@@ -117,9 +117,10 @@ our $fetch_grammar = q&
 
     cmd_start: '*' /\d+/ {$return=$item[2]}
 
-    value_pair: atom value {$return=[$item[1], $item[2]]}
+    value_pair: tag value {$return=[$item[1], $item[2]]}
 
-    tag: /[\w\d]+/
+    tag: atom <score: length($item[1])>
+       | /BODY(?:\.PEEK)?(?:\[[^\]]*\])?(?:<[\d\.]*>)?/i <score: length($item[1])>
 
     value: atom | string | parenthized_list
 
@@ -130,7 +131,7 @@ our $fetch_grammar = q&
         }
 
     string: '"' /[^\x0d\x0a"]*/ '"' {$return=$item[2]}
-        | /{(\d+)(?{ $::NISF_OCTETS=$^N })}\x0d\x0a((??{ ".{$::NISF_OCTETS}" }))/s {
+        | /{(\d+)(?{ $::NISF_OCTETS=$^N })}\x0d\x0a((??{ "(?s:.{$::NISF_OCTETS})" }))/s {
             # returning $2, rather than $item[x] because we really
             # just want the group 2 item from the RE
             $return = $2;
@@ -203,7 +204,7 @@ sub fetch {
     $spec = [qw/FLAGS INTERNALDATE RFC822.SIZE ENVELOPE BODY/] if uc $spec eq "FULL";
     $spec = [ $spec ] unless ref $spec;
 
-    my $stxt = join(" ", map {s/[^\da-zA-Z.-]//g; uc($_)} @$spec);
+    my $stxt = join(" ", map {s/[^()[\]\s<>\da-zA-Z.-]//g; uc($_)} @$spec);
 
     $self->_debug( caller, __LINE__, parsed_fetch=> "$msg ($stxt)" ) if $self->{debug};
 
