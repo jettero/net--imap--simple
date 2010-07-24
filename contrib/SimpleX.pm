@@ -111,11 +111,20 @@ word:               /[^\s\)\(]+/
 };
 
 our $fetch_grammar = q&
-    fetch: cmd_start(?) 'FETCH' '(' value_pair(s?) ')' {$return=$item[4]}
+    fetch: fetch_item(s)
 
-    cmd_start: '*' /\d+/
+    fetch_item: cmd_start 'FETCH' '(' value_pair(s?) ')' {
+        if( $return ) {
+            $return->{$item[1]} = $item[4];
 
-    value_pair: atom value {$return=[$item[1], $item[2]]}
+        } else {
+            $return = {$item[1] => $item[4]}
+        }
+    }
+
+    cmd_start: '*' /\d+/ {$return=$item[2]}
+
+    value_pair: atom value {$return={name=>$item[1], value=>$item[2]}}
 
     tag: /[\w\d]+/
 
@@ -211,16 +220,11 @@ sub fetch {
         cmd => [ FETCH => qq[$msg ($stxt)] ],
 
         final => sub {
-            my %res;
-            $res{$_->[0]} = $_->[1] for @$res;
-            return wantarray ? %res : \%res;
+            return wantarray ? %$res : $res;
         },
 
         process => sub {
             $res = $self->{parser}{fetch}->fetch($_[0]);
-            no warnings;
-            use Data::Dump qw(dump);
-            $self->_debug( caller, __LINE__, parsed_fetch=> "[0]: $_[0]; result: " . dump($res) ) if $self->{debug};
             return $res ? 1:0;
         },
 
