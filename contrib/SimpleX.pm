@@ -124,7 +124,7 @@ our $fetch_grammar = q&
 
     value: atom | string | parenthized_list
 
-    atom:   /[^"()\s{}]+/ {
+    atom:   /[^"()\s{}[\]]+/ {
             # strictly speaking, the NIL atom should be undef, but P::RD isn't going to allow that.
             # returning a null character instead
             $return=($item[1] eq "NIL" ? "\x00" : $item[1])
