@@ -647,14 +647,22 @@ sub getfh {
     );
 }
 
+sub logout {
+    my $self = shift;
+
+    return $self->_process_cmd( cmd => ['LOGOUT'], final => sub { $self->_sock->close; 1 }, process => sub { } );
+}
+
 sub quit {
     my ( $self, $hq ) = @_;
-    $self->_send_cmd('EXPUNGE');
+    $self->_send_cmd('EXPUNGE'); # XXX: $self->expunge_mailbox?
 
     if ( !$hq ) {
+        # XXX: $self->logout?
         $self->_process_cmd( cmd => ['LOGOUT'], final => sub { 1 }, process => sub { } );
 
     } else {
+        # XXX: do people use the $hq?
         $self->_send_cmd('LOGOUT');
     }
 

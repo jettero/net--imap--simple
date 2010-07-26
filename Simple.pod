@@ -409,6 +409,14 @@ socket connection. This hard quit will still issue both EXPUNGE and LOGOUT
 commands however the response is ignored and the socket is closed after issuing
 the commands.
 
+=item logout
+
+  $imap->logout;
+
+This method is just like the quit method except that it does not have a hard
+quit option and it does not expunge the mailbox before it hangs up and closes
+the socket.
+
 =item last
 
   my $message_number = $imap->last;
