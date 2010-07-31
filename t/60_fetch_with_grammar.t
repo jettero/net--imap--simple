@@ -46,7 +46,9 @@ sub run_tests {
     my %parts = eval { %{ $imap->fetch(1=>'FULL')->{1} } };
     ok( int( keys %parts ), 5 ) or warn do {my @a = keys %parts; "parts(@a)"};
 
+    warn "\nissuing fetch\n\n";
     my $res = $imap->fetch('1:*', "UID BODY[HEADER.FIELDS (DATE FROM SUBJECT)]");
+    warn "\nfinished fetch\n\n";
 
     ok( $res->{1}{UID}, 1000 );
     ok( $res->{2}{UID}, 1001 );
@@ -105,11 +107,151 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 User-Agent: Mutt/1.5.20 (2009-06-14)
-Content-Length: 141
-Lines: 6
 
 
-test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2
+
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2
+
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2
+
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2
+
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2
+
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2
+
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2
+
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2
+
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2
+
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2
+
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2
+
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2
+
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2
+
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2
+
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2
+
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2 test2
+test2 test2 test2 test2 test2
 
 --
 If riding in an airplane is flying, then riding in a boat is swimming.
