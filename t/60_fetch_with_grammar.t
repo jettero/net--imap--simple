@@ -46,9 +46,7 @@ sub run_tests {
     my %parts = eval { %{ $imap->fetch(1=>'FULL')->{1} } };
     ok( int( keys %parts ), 5 ) or warn do {my @a = keys %parts; "parts(@a)"};
 
-    warn "\nissuing fetch\n\n";
     my $res = $imap->fetch('1:*', "UID BODY[HEADER.FIELDS (DATE FROM SUBJECT)]");
-    warn "\nfinished fetch\n\n";
 
     ok( $res->{1}{UID}, 1000 );
     ok( $res->{2}{UID}, 1001 );

@@ -117,20 +117,6 @@ word:               /[^\s\)\(]+/
                     { $item[1] =~ s/\"//g; $return = $item[1];}
 };
 
-sub _octets2RE {
-    my $o = 0 + shift;
-    my $B = int($o / 32_766);
-
-    warn " R=(.{$o}) ";
-    return "(.{$o})" if $B < 1;
-
-    my $r = $o % 32_766;
-    my $R = "((?:.{32000}){$b}.{$r})";
-
-    warn " R=$R ";
-    return $R;
-}
-
 our $fetch_grammar = q&
     fetch: fetch_item(s) {$return={ map {(@$_)} reverse @{$item[1]} }}
 
@@ -151,10 +137,10 @@ our $fetch_grammar = q&
             $return=($item[1] eq "NIL" ? Net::IMAP::SimpleX::NIL->new : $item[1])
         }
 
-    string: '"' /[^\x0d\x0a"]*/ '"' {$return=$item[2]} | /{(\d+)}\x0d\x0a((??{ warn " CN=$^N "; _octets2RE($^N) }))/s {
-            # returning $2, rather than $item[x] because we really
-            # just want the group 2 item from the RE
-            $return = $2;
+    string: '"' /[^\x0d\x0a"]*/ '"' {$return=$item[2]} | '{' /\d+/ "}\x0d\x0a" {
+            $return = length($text) >= $item[2]
+                    ? substr($text,0,$item[2],"") # if the production is accepted, we alter the input stream
+                    : undef;
         }
 
     parenthized_list: '(' value(s?) ')' {$return=$item[2]}
