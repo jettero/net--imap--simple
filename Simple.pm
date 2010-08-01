@@ -8,7 +8,7 @@ use IO::File;
 use IO::Socket;
 use IO::Select;
 
-our $VERSION = "1.2011_00";
+our $VERSION = "1.2012";
 
 BEGIN {
     # I'd really rather the pause/cpan indexers miss this "package"
@@ -903,6 +903,17 @@ sub copy {
 
     return $self->_process_cmd(
         cmd     => [ COPY => qq[$number $b] ],
+        final   => sub { 1 },
+        process => sub { },
+    );
+}
+
+sub uidcopy {
+    my ( $self, $number, $box ) = @_;
+    my $b = _escape($box);
+
+    return $self->_process_cmd(
+        cmd     => [ 'UID COPY' => qq[$number $b] ],
         final   => sub { 1 },
         process => sub { },
     );

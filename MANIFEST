@@ -66,12 +66,14 @@ t/11_mailboxes.t
 t/15_flags.t
 t/17_status_and_select.t
 t/22_copy_multiple.t
+t/22_uidcopy_multiple.t
 t/23_delete_multiple.t
 t/35_imap_results_in_message_body.t
 t/40_preauth.t
 t/45_search.t
 t/50_body_summary.t
 t/55_uid_stuff.t
+t/60_fetch_with_grammar.t
 t/Auth.pm
 t/Connection.pm
 t/Model.pm
@@ -81,4 +83,3 @@ t/pod.t
 t/pod_coverage.t
 t/ppsc_server.pm
 t/test_server.pm
-t/60_fetch_with_grammar.t

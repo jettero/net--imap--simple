@@ -567,6 +567,13 @@ selected mailbox to the fold specified in the second argument.  Both arguments
 are required.  On success this method returns true. Returns false on failure and
 the C<errstr()> error handler is set with the error message.
 
+=item uidcopy
+
+  print "copied" if $imap->uidcopy( $message_uid, $mailbox );
+
+This method is identical to C<copy()> above, except that it uses UID numbers
+instead of sequence numbers.
+
 =item noop
 
   $imap->noop;
