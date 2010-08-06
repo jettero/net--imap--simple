@@ -8,7 +8,7 @@ use IO::File;
 use IO::Socket;
 use IO::Select;
 
-our $VERSION = "1.2012";
+our $VERSION = "1.2013";
 
 BEGIN {
     # I'd really rather the pause/cpan indexers miss this "package"
@@ -245,6 +245,15 @@ sub uid {
             }
         },
     );
+}
+
+sub seq {
+    my $self = shift;
+    my $msgno = shift || "1:*";
+
+    $self->_be_on_a_box; # does a select if we're not on a mailbox
+
+    return $self->search("uid $msgno");
 }
 
 sub status {

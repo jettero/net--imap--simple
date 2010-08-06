@@ -195,6 +195,13 @@ also, so it all maches up.
 
     my ($uid4, $uid14, $uid15) = $imap->uid("15,4,14"); # warning
 
+=item seq
+
+    my $seq = $imap->seq($uids);
+    my @seq = $imap->seq($uids); # eg 58888:58900
+
+Rather like C<uid()> above, but maps uids to sequence numbers.
+
 =item select
 
     my $num_messages = $imap->select($folder);
