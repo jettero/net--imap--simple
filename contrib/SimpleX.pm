@@ -128,7 +128,7 @@ our $fetch_grammar = q&
 
     value_pair: tag value {$return=[$item[1], $item[2]]}
 
-    tag: /BODY(?:\.PEEK)?(?:\[[^\]]*\])?(?:<[\d\.]*>)?/i | atom
+    tag: /BODY\b(?:\.PEEK)?(?:\[[^\]]*\])?(?:<[\d\.]*>)?/i | atom
 
     value: atom | string | parenthized_list
 

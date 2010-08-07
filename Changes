@@ -1,7 +1,8 @@
-1.2012: Sat Aug 07 2010
+1.2013: Sat Aug 07 2010
    - added seq()
    - added list2range
    - added contrib/uidfetch
+   - fixed a BODY bug in the fetch grammar
 
 1.2012: Sun Aug 01 2010
    - added uidcopy()
