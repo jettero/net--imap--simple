@@ -1,6 +1,7 @@
-1.2013: Fri Aug 06 2010
+1.2012: Sat Aug 07 2010
    - added seq()
    - added list2range
+   - added contrib/uidfetch
 
 1.2012: Sun Aug 01 2010
    - added uidcopy()
