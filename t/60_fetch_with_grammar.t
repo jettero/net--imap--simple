@@ -23,8 +23,8 @@ plan tests => our $tests = (
 );
 
 my $sample = q/* 1 FETCH (FLAGS (\Recent) INTERNALDATE "23-Jul-2010 22:21:37 -0400" RFC822.SIZE 402/
-          . q/ ENVELOPE (NIL "something" NIL NIL NIL NIL NIL NIL NIL NIL) BODY (("text" "plain" ("charset" "fake-charset-1")/
-        . qq/ NIL NIL "7BIT" 15 2)("text" "html" ("charset" "fake-charset-2") NIL NIL "7BIT" 21 2) "alternative"))\x0d\x0a/;
+. q/ ENVELOPE (NIL "something" NIL NIL NIL NIL NIL NIL NIL NIL) BODYSTRUCTURE (("text" "plain" ("charset" "fake-charset-1")/
+. qq/ NIL NIL "7BIT" 15 2)("text" "html" ("charset" "fake-charset-2") NIL NIL "7BIT" 21 2) "alternative"))\x0d\x0a/;
 
 sub run_tests {
 
