@@ -74,6 +74,7 @@ t/45_search.t
 t/50_body_summary.t
 t/55_uid_stuff.t
 t/60_fetch_with_grammar.t
+t/70_list2range.t
 t/Auth.pm
 t/Connection.pm
 t/Model.pm

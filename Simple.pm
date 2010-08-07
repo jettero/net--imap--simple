@@ -454,7 +454,8 @@ sub deleted {
 
 sub list2range {
     my $self_or_class = shift;
-    my @a = sort { $a<=>$b } @_;
+    my %h;
+    my @a = grep {!$h{$_}++} sort { $a<=>$b } @_;
     my @b;
 
     while(@a) {
