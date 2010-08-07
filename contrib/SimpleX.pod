@@ -132,6 +132,21 @@ The result would come back as the RFC822 header lines (as the above C<Date: Sun,
 For more information about the different types of queries, see RFC3501.  There's
 a surprising number of things that can be queried.
 
+=item uidfetch
+
+This is roughly the same thing as the C<fetch()> method above, but the query
+runs on UIDs instead of sequence numbers.  The keys of the C<$res> are still the
+sequence numbers though.
+
+    my $res  =$imap->fetch('58890' => 'UID BODY.PEEK[HEADER.FIELDS (DATE)] FLAGS')
+    # $res = {
+    #   30 => {
+    #           "BODY[HEADER.FIELDS (DATE)]" => "Date: Sun, 18 Jul 2010 20:54:48 -0400\r\n\r\n",
+    #           "FLAGS" => ["\\Flagged", "\\Seen"],
+    #           "UID" => 58890,
+    #         },
+    #   ...
+
 =back
 
 =head1 AUTHOR
