@@ -608,6 +608,16 @@ wish to detect errors.
 Few of the L<Net::IMAP::Simple> methods use C<waserr()>.  The ones that do will
 mention it.
 
+=item list2range
+
+Sometimes you have a long list of sequence numbers which are consecutive
+and really want to be an IMAP-style range.
+
+    my @list  = (5..9, 13..38, 55,56,57);
+    my $short = $imap->list2range(@list);
+
+    # $short how says: 5:9,13:38,55:57
+
 =back
 
 =head1 SEARCHING

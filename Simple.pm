@@ -452,6 +452,23 @@ sub deleted {
     return 0;
 }
 
+sub list2range {
+    my $self_or_class = shift;
+    my @a = sort { $a<=>$b } @_;
+    my @b;
+
+    while(@a) {
+        my $e = 0;
+
+        $e++ while $e+1 < @a and $a[$e]+1 == $a[$e+1];
+
+        push @b, ($e>0 ? [$a[0], $a[$e]] : [$a[0]]);
+        splice @a, 0, $e+1;
+    }
+
+    return join(",", map {join(":", @$_)} @b);
+}
+
 sub list {
     my ( $self, $number ) = @_;
 
