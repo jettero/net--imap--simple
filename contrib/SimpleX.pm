@@ -11,6 +11,8 @@ use strict;
 use warnings;
 no warnings 'once'; ## no critic
 
+our $uidm;
+
 BEGIN {
   our @fields = qw/content_description encoded_size charset content_type format part_number id name encoding/;
   for my $attr (@fields) {
@@ -126,8 +128,7 @@ our $fetch_grammar = q&
 
     value_pair: tag value {$return=[$item[1], $item[2]]}
 
-    tag: /BODY(?:\.PEEK)?(?:\[[^\]]*\])?(?:<[\d\.]*>)?/i
-       | atom
+    tag: /BODY\b(?:\.PEEK)?(?:\[[^\]]*\])?(?:<[\d\.]*>)?/i | atom
 
     value: atom | string | parenthized_list
 
@@ -197,6 +198,14 @@ sub body_summary {
     );
 }
 
+sub uidfetch {
+    my $self = shift;
+
+    local $uidm = 1; # auto-pop this after the fetch
+
+    return $self->fetch(@_);
+}
+
 sub fetch {
     my $self = shift;
     my $msg  = shift; $msg =~ s/[^\*\d:,-]//g; croak "which message?" unless $msg;
@@ -217,7 +226,7 @@ sub fetch {
     my $entire_response = "";
 
     return $self->_process_cmd(
-        cmd => [ FETCH => qq[$msg ($stxt)] ],
+        cmd => [ ($uidm ? "UID FETCH " : "FETCH")=> qq[$msg ($stxt)] ],
 
         final => sub {
             #open my $fh, ">", "entire_response.dat";

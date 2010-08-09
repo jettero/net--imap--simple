@@ -8,7 +8,7 @@ use IO::File;
 use IO::Socket;
 use IO::Select;
 
-our $VERSION = "1.2012";
+our $VERSION = "1.2013";
 
 BEGIN {
     # I'd really rather the pause/cpan indexers miss this "package"
@@ -247,6 +247,15 @@ sub uid {
     );
 }
 
+sub seq {
+    my $self = shift;
+    my $msgno = shift || "1:*";
+
+    $self->_be_on_a_box; # does a select if we're not on a mailbox
+
+    return $self->search("uid $msgno");
+}
+
 sub status {
     my $self = shift;
     my $mbox = shift || $self->current_box || "INBOX";
@@ -441,6 +450,24 @@ sub deleted {
     return if $self->waserr;
     return 1 if grep {$_ eq '\Deleted'} @flags;
     return 0;
+}
+
+sub list2range {
+    my $self_or_class = shift;
+    my %h;
+    my @a = grep {!$h{$_}++} sort { $a<=>$b } @_;
+    my @b;
+
+    while(@a) {
+        my $e = 0;
+
+        $e++ while $e+1 < @a and $a[$e]+1 == $a[$e+1];
+
+        push @b, ($e>0 ? [$a[0], $a[$e]] : [$a[0]]);
+        splice @a, 0, $e+1;
+    }
+
+    return join(",", map {join(":", @$_)} @b);
 }
 
 sub list {

@@ -19,11 +19,12 @@ plan tests => our $tests = (
     + 1 # keys=5
     + 2 # UIDs
     + 2 # HEADER FIELDS
+    + 2 # UID HEADER FIELDS
 );
 
 my $sample = q/* 1 FETCH (FLAGS (\Recent) INTERNALDATE "23-Jul-2010 22:21:37 -0400" RFC822.SIZE 402/
-          . q/ ENVELOPE (NIL "something" NIL NIL NIL NIL NIL NIL NIL NIL) BODY (("text" "plain" ("charset" "fake-charset-1")/
-        . qq/ NIL NIL "7BIT" 15 2)("text" "html" ("charset" "fake-charset-2") NIL NIL "7BIT" 21 2) "alternative"))\x0d\x0a/;
+. q/ ENVELOPE (NIL "something" NIL NIL NIL NIL NIL NIL NIL NIL) BODYSTRUCTURE (("text" "plain" ("charset" "fake-charset-1")/
+. qq/ NIL NIL "7BIT" 15 2)("text" "html" ("charset" "fake-charset-2") NIL NIL "7BIT" 21 2) "alternative"))\x0d\x0a/;
 
 sub run_tests {
 
@@ -52,7 +53,12 @@ sub run_tests {
     ok( $res->{2}{UID}, 1001 );
 
     ok( $res->{1}{'BODY[HEADER.FIELDS (DATE FROM SUBJECT)]'} =~ m/1:09.*Paul Miller.*test message/s );
-    ok( $res->{2}{'BODY[HEADER.FIELDS (DATE FROM SUBJECT)]'} =~ m/4:12.*Paul Miller.*test2/s )
+    ok( $res->{2}{'BODY[HEADER.FIELDS (DATE FROM SUBJECT)]'} =~ m/4:12.*Paul Miller.*test2/s );
+
+    $res = $imap->uidfetch('1000,1001', "UID BODY[HEADER.FIELDS (DATE FROM SUBJECT)]");
+
+    ok( $res->{1}{'BODY[HEADER.FIELDS (DATE FROM SUBJECT)]'} =~ m/1:09.*Paul Miller.*test message/s );
+    ok( $res->{2}{'BODY[HEADER.FIELDS (DATE FROM SUBJECT)]'} =~ m/4:12.*Paul Miller.*test2/s );
 }
 
 do "t/test_server.pm" or die "error starting imap server: $!$@";

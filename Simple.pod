@@ -195,6 +195,13 @@ also, so it all maches up.
 
     my ($uid4, $uid14, $uid15) = $imap->uid("15,4,14"); # warning
 
+=item seq
+
+    my $seq = $imap->seq($uids);
+    my @seq = $imap->seq($uids); # eg 58888:58900
+
+Rather like C<uid()> above, but maps uids to sequence numbers.
+
 =item select
 
     my $num_messages = $imap->select($folder);
@@ -600,6 +607,16 @@ wish to detect errors.
 
 Few of the L<Net::IMAP::Simple> methods use C<waserr()>.  The ones that do will
 mention it.
+
+=item list2range
+
+Sometimes you have a long list of sequence numbers which are consecutive
+and really want to be an IMAP-style range.
+
+    my @list  = (5..9, 13..38, 55,56,57);
+    my $short = $imap->list2range(@list);
+
+    # $short how says: 5:9,13:38,55:57
 
 =back
 
