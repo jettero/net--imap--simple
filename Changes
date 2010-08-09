@@ -1,3 +1,6 @@
+1.2013: Mon Aug 09 2010
+   - created the PipeSocket object
+
 1.2013: Sat Aug 07 2010
    - added seq()
    - added list2range

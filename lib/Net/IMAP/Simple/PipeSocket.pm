@@ -10,7 +10,7 @@ sub new {
     my $class = shift;
     my $this  = bless(ref($_[0]) ? $_[0] : {@_}, $class);
 
-    croak "cmd=>'ssh imap-host blarg' is a required argument" unless $this->{cmd};
+    croak "cmd=>'eg ssh hostname dovecot' is a required argument" unless $this->{cmd};
 
     return $this;
 }
