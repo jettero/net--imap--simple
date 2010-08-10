@@ -52,11 +52,16 @@ sub new {
         } or croak "IO::Socket::INET6 must be installed in order to use_v6";
     }
 
-    my ( $srv, $prt ) = split( /:/, $server, 2 );
-    $prt ||= ( $opts{port} ? $opts{port} : $self->_port );
+    if( $server =~ m/cmd:(.+)/ ) {
+        $self->{cmd} = $1;
 
-    $self->{server} = $srv;
-    $self->{port}   = $prt;
+    } else {
+        my ( $srv, $prt ) = split( /:/, $server, 2 );
+        $prt ||= ( $opts{port} ? $opts{port} : $self->_port );
+
+        $self->{server} = $srv;
+        $self->{port}   = $prt;
+    }
 
     $self->{timeout}          = ( $opts{timeout} ? $opts{timeout} : $self->_timeout );
     $self->{retry}            = ( $opts{retry} ? $opts{retry} : $self->_retry );
@@ -132,13 +137,18 @@ sub _connect {
     my ($self) = @_;
     my $sock;
 
-    $sock = $self->_sock_from->new(
-        PeerAddr => $self->{server},
-        PeerPort => $self->{port},
-        Timeout  => $self->{timeout},
-        Proto    => 'tcp',
-        ( $self->{bindaddr} ? { LocalAddr => $self->{bindaddr} } : () )
-    );
+    if( $self->{cmd} ) {
+        $sock = Net::IMAP::Simple::PipeSocket->new(cmd=>$this->{cmd});
+
+    } else {
+        $sock = $self->_sock_from->new(
+            PeerAddr => $self->{server},
+            PeerPort => $self->{port},
+            Timeout  => $self->{timeout},
+            Proto    => 'tcp',
+            ( $self->{bindaddr} ? { LocalAddr => $self->{bindaddr} } : () )
+        );
+    }
 
     return $sock;
 }
