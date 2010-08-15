@@ -8,7 +8,7 @@ use IO::File;
 use IO::Socket;
 use IO::Select;
 
-our $VERSION = "1.2013";
+our $VERSION = "1.2014";
 
 BEGIN {
     # I'd really rather the pause/cpan indexers miss this "package"
@@ -17,6 +17,8 @@ BEGIN {
        use overload fallback=>1, '""' => sub { local $"=""; "@{$_[0]}" };
        sub new { bless $_[1] })
 }
+
+our $uidm;
 
 sub new {
     my ( $class, $server, %opts ) = @_;
@@ -225,26 +227,19 @@ sub uidvalidity {
     return $self->status($mbox => 'uidvalidity');
 }
 
+sub uidsearch {
+    my $self = shift;
+
+    local $uidm = 1;
+
+    return $self->search(@_);
+}
+
 sub uid {
     my $self = shift;
-    my $msgno = shift || "1:*";
+       $self->_be_on_a_box; # does a select if we're not on a mailbox
 
-    $self->_be_on_a_box; # does a select if we're not on a mailbox
-
-    my @_uids;
-
-    # 3 UID SEARCH 28,4,30\r\n
-    # * SEARCH 58864 58888 58890\r\n
-
-    return $self->_process_cmd(
-        cmd     => [ "UID SEARCH " . _escape($msgno) ],
-        final   => sub { wantarray ? @_uids : $_uids[-1] },
-        process => sub {
-            if( my ($digits) = $_[0] =~ m/\* SEARCH\s+([\d\s]+)/i ) {
-                @_uids = split m/\s+/, $digits;
-            }
-        },
-    );
+    return $self->uidsearch( shift || "1:*" );
 }
 
 sub seq {
@@ -489,9 +484,11 @@ sub list {
 
 sub search {
     my ($self, $search, $sort, $charset) = @_;
+
     $search   ||= "ALL";
     $charset  ||= 'UTF-8';
-    my $cmd   = 'SEARCH';
+
+    my $cmd = $uidm ? 'UID SEARCH' : 'SEARCH';
 
     $self->_be_on_a_box; # does a select if we're not on a mailbox
 
