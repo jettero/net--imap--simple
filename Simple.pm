@@ -513,7 +513,7 @@ sub search {
         final => sub { wantarray ? @seq : int @seq },
         process => sub { if ( my ($msgs) = $_[0] =~ /^\*\s+(?:SEARCH|SORT)\s+(.*)/i ) {
 
-            @seq = $this->range2list($msgs);
+            @seq = $self->range2list($msgs);
 
         }},
     );
