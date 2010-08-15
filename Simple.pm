@@ -138,7 +138,7 @@ sub _connect {
     my $sock;
 
     if( $self->{cmd} ) {
-        $sock = Net::IMAP::Simple::PipeSocket->new(cmd=>$this->{cmd});
+        $sock = Net::IMAP::Simple::PipeSocket->new(cmd=>$self->{cmd});
 
     } else {
         $sock = $self->_sock_from->new(

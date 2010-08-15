@@ -12,6 +12,8 @@ sub new {
 
     croak "cmd=>'eg ssh hostname dovecot' is a required argument" unless $this->{cmd};
 
+    my ($
+
     return $this;
 }
 
