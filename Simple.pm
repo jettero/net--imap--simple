@@ -447,6 +447,14 @@ sub deleted {
     return 0;
 }
 
+sub range2list {
+    my $self_or_class = shift;
+    my %h;
+    my @items = sort {$a<=>$b} grep {!$h{$_}++} map { m/(\d+):(\d+)/ ? ($1 .. $2) : ($_) } split(",", shift);
+
+    return @items;
+}
+
 sub list2range {
     my $self_or_class = shift;
     my %h;

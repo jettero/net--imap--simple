@@ -620,6 +620,13 @@ and really want to be an IMAP-style range.
 
     # $short how says: 5:9,13:38,55:57
 
+=item range2list
+
+Pretty much the opposite of C<list2range>.
+
+    my @list = $imap->range2list("1,3,5:9");
+    # @list is (1,3,5,6,7,8,9);
+
 =back
 
 =head1 SEARCHING
