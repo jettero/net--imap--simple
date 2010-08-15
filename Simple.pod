@@ -255,7 +255,7 @@ See also: L<search>
     print "Unseen messages value: " . $imap->unseen . "\n";
 
 This method accepts an optional folder name and returns the 'UNSEEN' value
-provided duringg a SELECT command result. If no folder name is provided the last
+provided during a SELECT command result. If no folder name is provided the last
 folder C<< $imap->select >>'ed will be used.  If a folder name I<is> provided,
 this will issue a SELECT first.
 
