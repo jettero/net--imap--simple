@@ -450,7 +450,7 @@ sub deleted {
 sub range2list {
     my $self_or_class = shift;
     my %h;
-    my @items = sort {$a<=>$b} grep {!$h{$_}++} map { m/(\d+):(\d+)/ ? ($1 .. $2) : ($_) } split(",", shift);
+    my @items = sort {$a<=>$b} grep {!$h{$_}++} map { m/(\d+):(\d+)/ ? ($1 .. $2) : ($_) } split(m/[,\s]+/, shift);
 
     return @items;
 }
