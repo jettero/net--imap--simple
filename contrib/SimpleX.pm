@@ -226,7 +226,7 @@ sub fetch {
     my $entire_response = "";
 
     return $self->_process_cmd(
-        cmd => [ ($uidm ? "UID FETCH " : "FETCH")=> qq[$msg ($stxt)] ],
+        cmd => [ ($uidm ? "UID FETCH" : "FETCH")=> qq[$msg ($stxt)] ],
 
         final => sub {
             #open my $fh, ">", "entire_response.dat";
