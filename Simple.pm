@@ -512,8 +512,10 @@ sub search {
         cmd => [ $cmd => $search ],
         final => sub { wantarray ? @seq : int @seq },
         process => sub { if ( my ($msgs) = $_[0] =~ /^\*\s+(?:SEARCH|SORT)\s+(.*)/i ) {
-            push @seq, $1 while $msgs =~ m/\b(\d+)\b/g;
-        } },
+
+            @seq = $this->range2list($msgs);
+
+        }},
     );
 }
 
