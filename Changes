@@ -1,5 +1,5 @@
 1.2014: Sun Aug 15 2010
-   - added uidsearch
+   - added uidsearch() -- just like search()
 
 1.2013: Sat Aug 07 2010
    - added seq()
