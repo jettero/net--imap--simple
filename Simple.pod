@@ -195,6 +195,8 @@ also, so it all maches up.
 
     my ($uid4, $uid14, $uid15) = $imap->uid("15,4,14"); # warning
 
+This function is actually an alias for C<< $imap->uidsearch($msg_range) >>.
+
 =item seq
 
     my $seq = $imap->seq($uids);
@@ -796,6 +798,11 @@ that module, no attempt will be made to coerce your date into the correct
 format.
 
 =back
+
+=item uidsearch
+
+This function works exactly like C<search()> but it returns UIDs instead of
+sequence numbers.  The convenient shortcuts above are not provided for it.
 
 =back
 
