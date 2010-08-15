@@ -19,7 +19,7 @@ plan tests => our $tests = 4 + (3+4);
 sub run_tests {
     open INFC, ">>", "informal-imap-client-dump.log" or die $!;
 
-    my $imap = Net::IMAP::SimpleX->new('localhost:8000', debug=>\*INFC, use_ssl=>1)
+    my $imap = Net::IMAP::SimpleX->new('localhost:19795', debug=>\*INFC, use_ssl=>1)
         or die "\nconnect failed: $Net::IMAP::Simple::errstr\n";
 
     $imap->login(qw(working login));

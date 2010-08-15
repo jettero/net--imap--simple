@@ -11,7 +11,7 @@ sub run_tests {
 
     my @c;
     my $c = sub {
-        my $c = Net::IMAP::Simple->new('localhost:8000', debug=>\*INFC, use_ssl=>1);
+        my $c = Net::IMAP::Simple->new('localhost:19795', debug=>\*INFC, use_ssl=>1);
         push @c, $c;
         $c;
     };
