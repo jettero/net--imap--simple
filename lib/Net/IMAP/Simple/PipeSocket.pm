@@ -17,10 +17,11 @@ sub new {
     open my $fake, "+>", undef or die "initernal error dealing with blarg: $!";
 
     my($wtr, $rdr, $err); $err = gensym;
-    my $pid  = eval { open3($wtr, $rdr, $err, $cmd) } or croak $@;
+    my $pid = eval { open3($wtr, $rdr, $err, $cmd) } or croak $@;
+    my $sel = IO::Select->new($err);
 
     my $this = tie *{$fake}, $class,
-        (pid=>$pid, wtr=>$wtr, rdr=>$rdr, err=>$err)
+        (pid=>$pid, wtr=>$wtr, rdr=>$rdr, err=>$err, sel=>$sel)
             or croak $!;
 
     return $fake;
@@ -37,13 +38,18 @@ sub TIEHANDLE {
 }
 
 sub _chkerr {
-    return;
     my $this = shift;
-    my $rin = '';
-    vec($rin,fileno(my $e = $this->{err}),1)=1;
-    while( select($rin,undef,undef,0.1) ) {
-        my $line = <$e>;
-        warn "PIPE ERR: $e";
+    my $sel = $this->{sel};
+
+    while( my @rdy = $sel->can_read ) {
+        for my $fh (@rdy) {
+            if( eof($fh) ) {
+                $sel->remove($fh);
+                next;
+            }
+            my $line = <$fh>;
+            warn "PIPE ERR: $line";
+        }
     }
 }
 
