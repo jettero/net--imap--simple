@@ -10,18 +10,18 @@ use base 'Tie::Handle';
 
 sub new {
     my $class = shift;
-    my $cmd   = shift;
+    my %args  = {@_};
 
-    croak "command (e.g. 'ssh hostname dovecot') argument required" unless $cmd;
+    croak "command (e.g. 'ssh hostname dovecot') argument required" unless $args{cmd};
 
     open my $fake, "+>", undef or die "initernal error dealing with blarg: $!";
 
     my($wtr, $rdr, $err); $err = gensym;
-    my $pid = eval { open3($wtr, $rdr, $err, $cmd) } or croak $@;
+    my $pid = eval { open3($wtr, $rdr, $err, $args{cmd}) } or croak $@;
     my $sel = IO::Select->new($err);
 
     my $this = tie *{$fake}, $class,
-        (pid=>$pid, wtr=>$wtr, rdr=>$rdr, err=>$err, sel=>$sel)
+        (%args, pid=>$pid, wtr=>$wtr, rdr=>$rdr, err=>$err, sel=>$sel, )
             or croak $!;
 
     return $fake;
