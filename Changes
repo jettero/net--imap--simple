@@ -1,3 +1,6 @@
+1.2015: Sun Aug 29 2010
+   - got the pipesocket working
+
 1.2014: Sun Aug 15 2010
    - added uidsearch() -- just like search()
 
