@@ -8,11 +8,6 @@ use IO::Select;
 use Symbol 'gensym';
 use base 'Tie::Handle';
 
-my %inn;
-my %out;
-my %err;
-my %pid;
-
 sub new {
     my $class = shift;
     my $cmd   = shift;
@@ -23,40 +18,62 @@ sub new {
 
     my($wtr, $rdr, $err); $err = gensym;
     my $pid  = eval { open3($wtr, $rdr, $err, $cmd) } or croak $@;
-    my $this = bless $fake, $class or croak $!;
 
-    $inn{$this} = $rdr;
-    $out{$this} = $wtr;
-    $err{$this} = $err;
-    $pid{$this} = $pid;
+    my $this = tie *{$fake}, $class,
+        (pid=>$pid, wtr=>$wtr, rdr=>$rdr, err=>$err)
+            or croak $!;
 
-    return $this;
+    return $fake;
 }
 
 sub UNTIE   { $_[0]->_waitpid }
 sub DESTROY { $_[0]->_waitpid }
 
+sub TIEHANDLE {
+    my $class = shift;
+    my $this  = bless {@_}, $class;
+
+    return $this;
+}
+
+sub _chkerr {
+    return;
+    my $this = shift;
+    my $rin = '';
+    vec($rin,fileno(my $e = $this->{err}),1)=1;
+    while( select($rin,undef,undef,0.1) ) {
+        my $line = <$e>;
+        warn "PIPE ERR: $e";
+    }
+}
+
 sub PRINT {
     my $this = shift;
-    my $wtr  = $out{$this};
+    my $wtr  = $this->{wtr};
 
+    $this->_chkerr;
     print $wtr @_;
 }
 
 sub READLINE {
     my $this = shift;
-    my $rdr  = $inn{$this};
+    my $rdr  = $this->{rdr};
 
+    $this->_chkerr;
     <$rdr>
 }
 
 sub _waitpid {
     my $this = shift;
 
-    if( my $pid = delete $pid{$this} ) {
-        close delete $inn{$this} if exists $inn{$this};
-        close delete $out{$this} if exists $out{$this};
-        close delete $err{$this} if exists $err{$this};
+    if( my $pid = delete $this->{pid} ) {
+        for my $key (qw(wtr rdr err)) {
+            close delete $this->{$key} if exists $this->{$key};
+        }
+
+        kill 1, $pid;
+        # doesn't really matter if this works... we hung up all the
+        # filehandles, so ... it's probably dead anyway.
 
         waitpid( $pid, 0 );
         my $child_exit_status = $? >> 8;
