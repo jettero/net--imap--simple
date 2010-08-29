@@ -5,12 +5,12 @@ use Test;
 
 use Net::IMAP::Simple;
 
-plan tests => our $tests = 6;
+plan tests => our $tests = 7;
 
 sub run_tests {
     open INFC, ">>", "informal-imap-client-dump.log" or die $!;
 
-    my $imap = Net::IMAP::Simple->new('localhost:8000', debug=>\*INFC, use_ssl=>1)
+    my $imap = Net::IMAP::Simple->new('localhost:19795', debug=>\*INFC, use_ssl=>1)
         or die "\nconnect failed: $Net::IMAP::Simple::errstr\n";
 
     $imap->login(qw(working login));
@@ -32,6 +32,9 @@ sub run_tests {
 
     ok( $imap->uidnext, $uid[-1]+1 ); # this is (perhaps) Net-IMAP-Server specific ... perhaps
     ok( $imap->uidvalidity ); # how could we test this?
+
+    my @ssuid = $imap->uidsearch("since 1-Jan-1971");
+    ok( "@ssuid", "@uid" );
 }
 
 do "t/test_server.pm" or die "error starting imap server: $!$@";

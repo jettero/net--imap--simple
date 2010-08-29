@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for port in 7000 8000 9000; do
+for port in 19794 19795; do
     fuser -k -n tcp $port
 done
 

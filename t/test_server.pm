@@ -26,7 +26,7 @@ for my $mod (qw(Coro::EV Net::IMAP::Server IO::Socket::SSL)) {
 $SIG{CHLD} = $SIG{PIPE} = sub {};
 
 sub shutdown_imap_server {
-    if( my $imapfh = IO::Socket::INET->new('localhost:7000') ) {
+    if( my $imapfh = IO::Socket::INET->new('localhost:19794') ) {
         print $imapfh "1 Shutdown\n";
     }
 }
@@ -53,7 +53,7 @@ if( my $pid = fork ) {
     $retries = 10;
 
     my $line; {
-        sleep 1 while (--$retries)>0 and not $imapfh = IO::Socket::INET->new('localhost:7000');
+        sleep 1 while (--$retries)>0 and not $imapfh = IO::Socket::INET->new('localhost:19794');
 
         if( not $imapfh ) {
             warn "unable to start Net::IMAP::Server, skipping all meaningful tests\n";
@@ -116,8 +116,8 @@ if( my $pid = fork ) {
 
     use t::Shutdown;
     Net::IMAP::Server->new(
-        port             => 7000,
-        ssl_port         => 8000,
+        port             => 19794,
+        ssl_port         => 19795,
         auth_class       => "t::Auth",
         model_class      => "t::Model",
         connection_class => "t::Connection",

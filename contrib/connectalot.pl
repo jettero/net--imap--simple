@@ -13,7 +13,7 @@ $SIG{__WARN__} = sub { print "[$$] $_[0]" };
 $SIG{__DIE__}  = sub { print "[$$] $_[0]"; exit 0 };
 
 my $class = $ENV{ca_use_ssl} ? "IO::Socket::SSL" : "IO::Socket::INET";
-my $port  = $ENV{ca_use_ssl} ? 8000 : 7000;
+my $port  = $ENV{ca_use_ssl} ? 19794 : 19795;
 
 my @pids;
 for( 1 .. 5 ) {
