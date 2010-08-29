@@ -7,6 +7,7 @@ use Carp;
 use IO::File;
 use IO::Socket;
 use IO::Select;
+use Net::IMAP::Simple::PipeSocket;
 
 our $VERSION = "1.2015";
 
@@ -74,8 +75,10 @@ sub new {
     $self->{debug}            = $opts{debug};
 
     # Pop the port off the address string if it's not an IPv6 IP address
-    if ( !$self->{use_v6} && $self->{server} =~ /^[A-Fa-f0-9]{4}:[A-Fa-f0-9]{4}:/ && $self->{server} =~ s/:(\d+)$//g ) {
-        $self->{port} = $1;
+    if( $self->{server} ) {
+        if ( !$self->{use_v6} && $self->{server} =~ /^[A-Fa-f0-9]{4}:[A-Fa-f0-9]{4}:/ && $self->{server} =~ s/:(\d+)$//g ) {
+            $self->{port} = $1;
+        }
     }
 
     my $sock;

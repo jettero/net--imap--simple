@@ -10,7 +10,7 @@ use base 'Tie::Handle';
 
 sub new {
     my $class = shift;
-    my %args  = {@_};
+    my %args  = @_;
 
     croak "command (e.g. 'ssh hostname dovecot') argument required" unless $args{cmd};
 
@@ -29,6 +29,13 @@ sub new {
 
 sub UNTIE   { $_[0]->_waitpid }
 sub DESTROY { $_[0]->_waitpid }
+
+sub FILENO {
+    my $this = shift;
+
+    # do we mean rdr or wtr? meh?
+    fileno $this->{rdr}; # probably need this for select() on the read handle
+}
 
 sub TIEHANDLE {
     my $class = shift;
