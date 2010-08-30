@@ -107,10 +107,11 @@ sub new {
 
     my $select = $self->{sel} = IO::Select->new($sock);
 
-    $self->_debug( caller, __LINE__, 'new', "looking for greeting" ) if $self->{debug};
+    $self->_debug( caller, __LINE__, 'new', "waiting for socket ready" ) if $self->{debug};
 
     my $greeting_ok = 0;
     if( $select->can_read($self->{timeout}) ) {
+        $self->_debug( caller, __LINE__, 'new', "looking for greeting" ) if $self->{debug};
         if( my $line = $sock->getline ) {
             # Cool, we got a line, check to see if it's a
             # greeting.
