@@ -1,7 +1,6 @@
 1.2015: Sun Aug 29 2010
    - got the pipesocket working
-   - made sure it ps works in the context of nisim, just needs a
-     test
+   - made sure it ps works in the context of nisim
 
 1.2014: Sun Aug 15 2010
    - added uidsearch() -- just like search()

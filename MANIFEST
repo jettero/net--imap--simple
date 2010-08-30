@@ -1,4 +1,3 @@
-lib/Net/IMAP/Simple/PipeSocket.pm
 .perlcriticrc
 .todo
 Changes
@@ -57,6 +56,7 @@ inc/Net/IMAP/Server/Mailbox.pm
 inc/Net/IMAP/Server/Message.pm
 inc/rebuild_iff_necessary.pm
 inc/slurp_fetchmail.pm
+lib/Net/IMAP/Simple/PipeSocket.pm
 start_server.sh
 stop_server.sh
 t/01_load.t
@@ -71,6 +71,7 @@ t/22_uidcopy_multiple.t
 t/23_delete_multiple.t
 t/35_imap_results_in_message_body.t
 t/40_preauth.t
+t/42_preauth_with_command.t
 t/45_search.t
 t/50_body_summary.t
 t/55_uid_stuff.t
