@@ -20,6 +20,10 @@ sub new {
     my $pid = eval { open3($wtr, $rdr, $err, $args{cmd}) } or croak $@;
     my $sel = IO::Select->new($err);
 
+    # my $orig = select $wtr; $|=1;
+    # select $rdr; $|=1;
+    # select $orig;
+
     my $this = tie *{$fake}, $class,
         (%args, pid=>$pid, wtr=>$wtr, rdr=>$rdr, err=>$err, sel=>$sel, )
             or croak $!;
@@ -32,9 +36,10 @@ sub DESTROY { $_[0]->_waitpid }
 
 sub FILENO {
     my $this = shift;
+    my $rdr  = $this->{rdr};
 
     # do we mean rdr or wtr? meh?
-    fileno $this->{rdr}; # probably need this for select() on the read handle
+    fileno($rdr); # probably need this for select() on the read handle
 }
 
 sub TIEHANDLE {
@@ -73,7 +78,8 @@ sub READLINE {
     my $rdr  = $this->{rdr};
 
     $this->_chkerr;
-    <$rdr>
+    my $line = <$rdr>;
+    return $line;
 }
 
 sub _waitpid {
