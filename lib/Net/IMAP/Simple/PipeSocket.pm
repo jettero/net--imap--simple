@@ -53,7 +53,7 @@ sub _chkerr {
     my $this = shift;
     my $sel = $this->{sel};
 
-    while( my @rdy = $sel->can_read(0.1) ) {
+    while( my @rdy = $sel->can_read(0) ) {
         for my $fh (@rdy) {
             if( eof($fh) ) {
                 $sel->remove($fh);
