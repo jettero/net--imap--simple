@@ -14,7 +14,7 @@ sub new {
 
     croak "command (e.g. 'ssh hostname dovecot') argument required" unless $args{cmd};
 
-    open my $fake, "+>", undef or die "initernal error dealing with blarg: $!";
+    open my $fake, "+>", undef or die "initernal error dealing with blarg: $!"; ## no critic
 
     my($wtr, $rdr, $err); $err = gensym;
     my $pid = eval { open3($wtr, $rdr, $err, $args{cmd}) } or croak $@;
@@ -31,15 +31,15 @@ sub new {
     return $fake;
 }
 
-sub UNTIE   { $_[0]->_waitpid }
-sub DESTROY { $_[0]->_waitpid }
+sub UNTIE   { return $_[0]->_waitpid }
+sub DESTROY { return $_[0]->_waitpid }
 
 sub FILENO {
     my $this = shift;
     my $rdr  = $this->{rdr};
 
     # do we mean rdr or wtr? meh?
-    fileno($rdr); # probably need this for select() on the read handle
+    return fileno($rdr); # probably need this for select() on the read handle
 }
 
 sub TIEHANDLE {
@@ -63,6 +63,8 @@ sub _chkerr {
             warn "PIPE ERR: $line";
         }
     }
+
+    return
 }
 
 sub PRINT {
@@ -70,7 +72,7 @@ sub PRINT {
     my $wtr  = $this->{wtr};
 
     $this->_chkerr;
-    print $wtr @_;
+    return print $wtr @_;
 }
 
 sub READLINE {
