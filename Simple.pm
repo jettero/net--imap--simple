@@ -9,7 +9,7 @@ use IO::Socket;
 use IO::Select;
 use Net::IMAP::Simple::PipeSocket;
 
-our $VERSION = "1.2015";
+our $VERSION = "1.2016";
 
 BEGIN {
     # I'd really rather the pause/cpan indexers miss this "package"
@@ -159,10 +159,10 @@ sub _connect {
     return $sock;
 }
 
-sub _port        { return $_[0]->{use_ssl} ? 993 : 143 } 
+sub _port        { return $_[0]->{use_ssl} ? 993 : 143 }
 sub _sock        { return $_[0]->{sock} }
 sub _count       { return $_[0]->{count} }
-sub _last        { $_[0]->select unless exists $_[0]->{last}; return $_[0]->{last} }
+sub _last        { $_[0]->select unless exists $_[0]->{last}; return $_[0]->{last}||0 }
 sub _timeout     { return 90 }
 sub _retry       { return 1 }
 sub _retry_delay { return 5 }
@@ -490,8 +490,14 @@ sub list2range {
 sub list {
     my ( $self, $number ) = @_;
 
+    # NOTE: this entire function is horrible:
+    # 1. it should be called message_size() or something similar
+    # 2. what if $number is a range? none of this works right
+
     my $messages = $number || '1:' . $self->_last;
     my %list;
+
+    return {} if $messages eq "1:0";
 
     return $self->_process_cmd(
         cmd => [ FETCH => qq[$messages RFC822.SIZE] ],

@@ -1,3 +1,6 @@
+1.2016: Mon Aug 30 2010
+   - found something to fix in https://rt.cpan.org/Ticket/Display.html?id=60537
+
 1.2015: Sun Aug 29 2010
    - got the pipesocket working
    - made sure it ps works in the context of nisim
