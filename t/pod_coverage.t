@@ -9,4 +9,15 @@ if (not $ENV{TEST_AUTHOR}) {
 
 eval "use Test::Pod::Coverage 1.00";
 plan skip_all => "Test::Pod::Coverage 1.00 required for testing POD" if $@;
-all_pod_coverage_ok( { trustme => ['WCOREDUMP'] } );
+
+my %params = (
+    'Net::IMAP::Simple::PipeSocket' => {trustme=>['.']},
+);
+
+my @modules = all_modules();
+
+plan tests => scalar @modules;
+
+for my $m (@modules) {
+    pod_coverage_ok( $m, $params{$m} );
+}
