@@ -66,13 +66,14 @@ sub new {
         $self->{port}   = $prt;
     }
 
-    $self->{timeout}          = ( $opts{timeout} ? $opts{timeout} : $self->_timeout );
-    $self->{retry}            = ( $opts{retry} ? $opts{retry} : $self->_retry );
-    $self->{retry_delay}      = ( $opts{retry_delay} ? $opts{retry_delay} : $self->_retry_delay );
-    $self->{bindaddr}         = $opts{bindaddr};
-    $self->{use_select_cache} = $opts{use_select_cache};
-    $self->{select_cache_ttl} = $opts{select_cache_ttl};
-    $self->{debug}            = $opts{debug};
+    $self->{timeout}           = ( $opts{timeout} ? $opts{timeout} : $self->_timeout );
+    $self->{retry}             = ( $opts{retry} ? $opts{retry} : $self->_retry );
+    $self->{retry_delay}       = ( $opts{retry_delay} ? $opts{retry_delay} : $self->_retry_delay );
+    $self->{bindaddr}          = $opts{bindaddr};
+    $self->{use_select_cache}  = $opts{use_select_cache};
+    $self->{select_cache_ttl}  = $opts{select_cache_ttl};
+    $self->{debug}             = $opts{debug};
+    $self->{readline_callback} = $opts{readline_callback};
 
     # Pop the port off the address string if it's not an IPv6 IP address
     if( $self->{server} ) {
