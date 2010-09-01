@@ -117,6 +117,12 @@ written using the L<warn> command.  If it is a string of the form C<file:name>
 then the named file will be opened for append and the debugs written to it.
 Otherwise debugging will be written to C<STDOUT>
 
+=item readline_callback => CODE
+
+You may choose to pass a callback function for the purpose of pre-processing
+lines before they are handed to the rest of the L<Net::IMAP::Simple> internals.
+This can be handy for animating a spinner or modifying the IMAP behavior.
+
 =back
 
 =head1 PREAUTH

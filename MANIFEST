@@ -67,6 +67,7 @@ t/10_list.t
 t/11_mailboxes.t
 t/15_flags.t
 t/17_status_and_select.t
+t/19_readline_callback.t
 t/22_copy_multiple.t
 t/22_uidcopy_multiple.t
 t/23_delete_multiple.t
