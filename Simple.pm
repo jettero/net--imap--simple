@@ -1065,13 +1065,19 @@ sub _process_cmd {
     $args{process} = sub {} unless ref($args{process}) eq "CODE";
     $args{final}   = sub {} unless ref($args{final})   eq "CODE";
 
+    my $cb = $self->{readline_callback};
+
     my $res;
     while ( $res = $sock->getline ) {
+        $cb->($res) if $cb;
         $self->_debug( caller, __LINE__, '_process_cmd', $res ) if $self->{debug};
 
         if ( $res =~ /^\*.*\{(\d+)\}[\r\n]*$/ ) {
             $args{process}->($res);
-            $args{process}->($_) foreach $self->_read_multiline( $sock, $1 );
+            foreach( $self->_read_multiline( $sock, $1 ) ) {
+                $cb->($_) if $cb;
+                $args{process}->($_)
+            }
 
         } else {
             my $ok = $self->_cmd_ok($res);
