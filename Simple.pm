@@ -69,8 +69,7 @@ sub new {
             # fall through
 
         } else {
-            # is this necessary?
-            # croak "server?";
+            $self->{server} = $server;
         }
 
         $self->{port} = $self->_port unless defined $self->{port};
