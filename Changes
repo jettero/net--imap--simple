@@ -1,3 +1,6 @@
+1.2016: Sun Sep 05 2010
+   - fixed ipv4 address stuff
+
 1.2016: Wed Sep 01 2010
    - added readline callbacks; which I think I may leave
      undocumented for now.
@@ -143,7 +146,7 @@
        message-id:
             <blarg-blarg.blarg>
 
-       date: wednesday, blarg blarg 
+       date: wednesday, blarg blarg
             xx:xx:xx (pdt)
 
      The results are somewhat random concerning, lines vs
@@ -423,7 +426,7 @@
     - Added arguments for searching in paths and for mailboxes in
       the mailboxes() command.
     - Distribution clean up.
-    
+
 
 0.93  Thu Dec 16 16:15:00 1999
     - LIST ... {\d}\r\nmailbox parsing in mailboxes()

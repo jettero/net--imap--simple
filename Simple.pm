@@ -9,7 +9,7 @@ use IO::Socket;
 use IO::Select;
 use Net::IMAP::Simple::PipeSocket;
 
-our $VERSION = "1.2016";
+our $VERSION = "1.2017";
 
 BEGIN {
     # I'd really rather the pause/cpan indexers miss this "package"
@@ -59,11 +59,21 @@ sub new {
         $self->{cmd} = $1;
 
     } else {
-        my ( $srv, $prt ) = split( /:/, $server, 2 );
-        $prt ||= ( $opts{port} ? $opts{port} : $self->_port );
+        if( ($self->{server}, $self->{port}) = $server =~ m/^(\d{1,3}(?:\.\d{1,3}){3})(?::(\d+))?\z/ ) {
+            # fall through
 
-        $self->{server} = $srv;
-        $self->{port}   = $prt;
+        } elsif( ($self->{server}, $self->{port}) = $server =~ m/^\[([a-fA-F0-9:]+)\]:(\d+)\z/ ) {
+            # fall through
+
+        } elsif( ($self->{server}, $self->{port}) = $server =~ m/^([a-fA-F0-9:]+)\z/ ) {
+            # fall through
+
+        } else {
+            # is this necessary?
+            # croak "server?";
+        }
+
+        $self->{port} = $self->_port unless defined $self->{port};
     }
 
     $self->{timeout}           = ( $opts{timeout} ? $opts{timeout} : $self->_timeout );
@@ -74,13 +84,6 @@ sub new {
     $self->{select_cache_ttl}  = $opts{select_cache_ttl};
     $self->{debug}             = $opts{debug};
     $self->{readline_callback} = $opts{readline_callback};
-
-    # Pop the port off the address string if it's not an IPv6 IP address
-    if( $self->{server} ) {
-        if ( !$self->{use_v6} && $self->{server} =~ /^[A-Fa-f0-9]{4}:[A-Fa-f0-9]{4}:/ && $self->{server} =~ s/:(\d+)$//g ) {
-            $self->{port} = $1;
-        }
-    }
 
     my $sock;
     my $c;
@@ -1138,4 +1141,4 @@ sub _debug {
     return;
 }
 
-"True"; ## no critic -- pfft
+1;
