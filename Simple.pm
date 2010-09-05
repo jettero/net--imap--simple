@@ -60,13 +60,12 @@ sub new {
 
     } else {
         if( ($self->{server}, $self->{port}) = $server =~ m/^(\d{1,3}(?:\.\d{1,3}){3})(?::(\d+))?\z/ ) {
-            # fall through
 
         } elsif( ($self->{server}, $self->{port}) = $server =~ m/^\[([a-fA-F0-9:]+)\]:(\d+)\z/ ) {
-            # fall through
 
         } elsif( ($self->{server}, $self->{port}) = $server =~ m/^([a-fA-F0-9:]+)\z/ ) {
-            # fall through
+
+        } elsif( ($self->{server}, $self->{port}) = $server =~ m/^([^:]+):(\d+)\z/ ) {
 
         } else {
             $self->{server} = $server;
