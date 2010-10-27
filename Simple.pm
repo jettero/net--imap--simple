@@ -1046,8 +1046,14 @@ sub _read_multiline {
     my $read_so_far = 0;
 
     while ( $read_so_far < $count ) {
-        push @lines, $sock->getline;
-        $read_so_far += length( $lines[-1] );
+        if( my $line = $sock->getline ) {
+            $read_so_far += length( $line );
+            push @lines, $line;
+
+        } else {
+            $self->_seterrstr( "error reading $count bytes from socket" );
+            last;
+        }
     }
 
     if ( $self->{debug} ) {
