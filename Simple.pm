@@ -1046,7 +1046,7 @@ sub _read_multiline {
     my $read_so_far = 0;
 
     while ( $read_so_far < $count ) {
-        if( my $line = $sock->getline ) {
+        if( defined( my $line = $sock->getline ) ) {
             $read_so_far += length( $line );
             push @lines, $line;
 
