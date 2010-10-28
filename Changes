@@ -1,3 +1,7 @@
+1.2017: Thu Oct 28 2010
+   - minor bug with the sloppy CRLF code
+     Thanks go to: http://github.com/marado
+
 1.2016: Sun Sep 05 2010
    - fixed ipv4 address stuff
 
