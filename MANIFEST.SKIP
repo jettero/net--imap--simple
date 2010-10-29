@@ -9,6 +9,7 @@
 ^go$
 ^imap_server\.pid$
 ^pm_to_blib$
+fix-test-server-Net-Server-0.99.patch
 inc/slurp_fetchmailx.pm
 slurp_net_imap_server.sh
 test_simplex
