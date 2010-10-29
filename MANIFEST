@@ -72,7 +72,6 @@ t/22_copy_multiple.t
 t/22_uidcopy_multiple.t
 t/23_delete_multiple.t
 t/35_imap_results_in_message_body.t
-t/40_preauth.t
 t/42_preauth_with_command.t
 t/45_search.t
 t/50_body_summary.t
@@ -86,5 +85,4 @@ t/Shutdown.pm
 t/critic.t
 t/pod.t
 t/pod_coverage.t
-t/ppsc_server.pm
 t/test_server.pm
