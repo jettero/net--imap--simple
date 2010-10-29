@@ -1,29 +1,18 @@
-diff --git a/lib/Net/Server/Proto/SSL.pm b/lib/Net/Server/Proto/SSL.pm
-index b39b2ea..7b3abc8 100644
---- a/lib/Net/Server/Proto/SSL.pm
-+++ b/lib/Net/Server/Proto/SSL.pm
-@@ -69,16 +69,16 @@ sub object {
-  $args{$_} = \$prop->{$_} for @ssl_args;
-  $server->configure(\%args);
-
--  my $sock = $class->new;
-+  my $sock = $class->new(
-+      map { my $val = defined($prop->{$_}) ? $prop->{$_}
-+                    : $server->can($_)     ? $server->$_($host, $port, 'SSL')
-+                    :                        undef;
-+            $val ? ($_ => $val) : () } @ssl_args );
-+;
-  $sock->NS_host($host);
-  $sock->NS_port($port);
-  $sock->NS_proto('SSL');
-
--  for my $key (@ssl_args) {
--    my $val = defined($prop->{$key}) ? $prop->{$key} : $server->can($key) ? $server->$key($host, $port, 'SSL') : undef;
+diff --git a/usr/local/share/perl/5.10.1/Net/Server/Proto/SSL.pm b/usr/local/share/perl/5.10.1/Net/Server/Proto/SSL.pm.jet
+index b39b2ea..45dc282 100644
+--- a/usr/local/share/perl/5.10.1/Net/Server/Proto/SSL.pm
++++ b/usr/local/share/perl/5.10.1/Net/Server/Proto/SSL.pm.jet
+@@ -76,7 +76,12 @@ sub object {
+ 
+   for my $key (@ssl_args) {
+     my $val = defined($prop->{$key}) ? $prop->{$key} : $server->can($key) ? $server->$key($host, $port, 'SSL') : undef;
 -    $sock->$key($val);
--  }
--
-  return $sock;
- }
-
---
-1.7.0.3.254.g4503b
++    if( $sock->can($key) ) {
++        $sock->$key($val);
++
++    } else {
++        $sock->{$key} = $val;
++    }
+   }
+ 
+   return $sock;
