@@ -390,7 +390,7 @@ Save a message to the server under the folder named C<$mailbox_name>.  You may
 optionally specify flags for the mail (e.g. C<\Seen>, C<\Answered>), but they
 must start with a slash.
 
-If C<$msg> is an arrayref, the lines will be printed correctly.
+If C<$message> is an arrayref, the lines will be printed correctly.
 
 =item msg_flags
 
