@@ -797,8 +797,8 @@ attempt to force your string into the RFC3501 quoted-string format.
 This function takes a single argument we'll call C<< <x> >> and returns numbers
 of messages that were received before C<< <x> >>.  If you have L<Date::Manip>
 installed (optional), this function will attempt to force the date into the
-format C<%d-%m-%Y> (date-month-year) as RFC3501 requires.  If you do not have
-that module, no attempt will be made to coerce your date into the correct
+format C<%d-%b-%Y> (date-monthName-year) as RFC3501 requires.  If you do not
+have that module, no attempt will be made to coerce your date into the correct
 format.
 
 =item search_since
