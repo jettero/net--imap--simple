@@ -256,7 +256,7 @@ This method is an alias for C<$imap->select>
 
 =item flags
 
-    print "Avaliable server flags: " . join(", ", $imap->flags) . "\n";
+    print "Available server flags: " . join(", ", $imap->flags) . "\n";
 
 This method accepts an optional folder name and returns the current available
 server flags as a list, for the selected folder. If no folder name is provided
