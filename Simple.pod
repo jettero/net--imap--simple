@@ -596,7 +596,7 @@ failure and the C<errstr()> error handler is set with the error message.
   print "copied" if $imap->copy( $message_number, $mailbox );
 
 This method copies the message number (or L<sequence set>) in the currently
-selected mailbox to the fold specified in the second argument.  Both arguments
+selected mailbox to the folder specified in the second argument.  Both arguments
 are required.  On success this method returns true. Returns false on failure and
 the C<errstr()> error handler is set with the error message.
 
