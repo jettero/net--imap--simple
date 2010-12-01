@@ -66,6 +66,7 @@ t/09_concurrent_connections_new.t
 t/10_list.t
 t/11_mailboxes.t
 t/15_flags.t
+t/16_exotic_flags.t
 t/17_status_and_select.t
 t/19_readline_callback.t
 t/22_copy_multiple.t
@@ -79,6 +80,7 @@ t/55_uid_stuff.t
 t/60_fetch_with_grammar.t
 t/70_list2range.t
 t/Auth.pm
+t/CanFlag.pm
 t/Connection.pm
 t/Model.pm
 t/Shutdown.pm

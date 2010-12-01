@@ -115,6 +115,7 @@ if( my $pid = fork ) {
     # (we don't really care if the above fails...)
 
     use t::Shutdown;
+    use t::CanFlag;
     Net::IMAP::Server->new(
         port             => 19794,
         ssl_port         => 19795,
