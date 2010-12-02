@@ -20,7 +20,7 @@ sub run_tests {
     $imap->add_flags(1 => qw($blarg \fluurg ^^carmel^^nugget) );
 
     my @flags = $imap->msg_flags(1);
-    ok( @flags+0, 3 );
+    ok( @flags+0, 3+1 ); # we get \Recent for free
     ok( (grep {m/blarg/}  @flags), 1 );
     ok( (grep {m/fluurg/} @flags), 1 );
     ok( (grep {m/carmel/} @flags), 1 );

@@ -619,10 +619,9 @@ sub get {
 
 sub _process_flags {
     my $self = shift;
+    my @ret = map { split m/\s+/, $_ } grep { $_ } @_;
 
-    return grep { m/^\\\w+\z/ }
-            map { split m/\s+/, $_ }
-            @_;
+    return @ret;
 }
 
 sub put {

@@ -11,7 +11,7 @@ BEGIN { $old_csf = \&Net::IMAP::Server::Mailbox::can_set_flag; }
 sub Net::IMAP::Server::Mailbox::can_set_flag {
     my ($this, $flag) = @_;
 
-    return 1 if $flag =~ m/^[\w%\$\\\^][\w\d]*$/;
+    return 1 if $flag =~ m/^[\w%\$\\\^]\S*$/;
 
     goto &$old_csf;
 }
