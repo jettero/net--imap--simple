@@ -1,3 +1,9 @@
+1.2019: Wed Dec 01 2010
+   - _process_flags() was a little too aggressive about what's a
+     valid flag and what isn't.  Really, it needs to be up to the
+     server.  https://rt.cpan.org/Ticket/Display.html?id=63282
+   - many doc bugs fixed thanks to HM 2k
+
 1.2018: Thu Oct 28 2010
    - minor bug with the sloppy CRLF code
      Thanks go to: http://github.com/marado
