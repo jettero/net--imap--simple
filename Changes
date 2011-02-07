@@ -1,3 +1,6 @@
+1.2020: Mon Feb 07 2011
+   - Andrzej Adam Filip requested a CLOSE method for ::PipeSocket
+
 1.2019: Wed Dec 01 2010
    - _process_flags() was a little too aggressive about what's a
      valid flag and what isn't.  Really, it needs to be up to the
