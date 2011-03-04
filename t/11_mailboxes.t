@@ -22,5 +22,5 @@ sub run_tests {
     ok( $e[$_], $E[$_] ) for 0 .. $#e;
 }   
 
-do "t/test_server.pm" or die "error starting imap server: $!$@";
+do "t/test_server.pm";
 

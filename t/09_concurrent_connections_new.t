@@ -23,4 +23,4 @@ sub run_tests {
     ok( not $c->() );
 }
 
-do "t/test_server.pm" or die "error starting imap server: $!$@";
+do "t/test_server.pm";

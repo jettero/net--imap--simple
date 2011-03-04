@@ -37,4 +37,4 @@ sub run_tests {
     ok( "@ssuid", "@uid" );
 }
 
-do "t/test_server.pm" or die "error starting imap server: $!$@";
+do "t/test_server.pm";

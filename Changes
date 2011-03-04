@@ -1,3 +1,7 @@
+1.2021: Fri Mar 04 2011
+   - removed the die() after do("") loading the test server
+     http://goo.gl/FUQPn
+
 1.2020: Mon Feb 07 2011
    - Andrzej Adam Filip requested a CLOSE method for ::PipeSocket
 

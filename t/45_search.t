@@ -34,4 +34,4 @@ sub run_tests {
     ok( 0+$imap->search_subject("test-3"), 1 );
 }
 
-do "t/test_server.pm" or die "error starting imap server: $!$@";
+do "t/test_server.pm";

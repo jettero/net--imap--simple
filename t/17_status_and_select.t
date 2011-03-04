@@ -34,4 +34,4 @@ sub run_tests {
     ok( "total  $total",  "total  10" );
 }
 
-do "t/test_server.pm" or die "error starting imap server: $!$@";
+do "t/test_server.pm";

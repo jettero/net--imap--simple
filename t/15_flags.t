@@ -85,4 +85,4 @@ sub run_tests {
     ok( defined $imap->deleted(5) );
 }
 
-do "t/test_server.pm" or die "error starting imap server: $!$@";
+do "t/test_server.pm";

@@ -28,4 +28,4 @@ sub run_tests {
     ok( $v, 21 );
 }
 
-do "t/test_server.pm" or die "error starting imap server: $!$@";
+do "t/test_server.pm";

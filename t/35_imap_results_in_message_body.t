@@ -36,5 +36,5 @@ sub run_tests {
     ok( $imap->get(1), $special_message );
 }   
 
-do "t/test_server.pm" or die "error starting imap server: $!$@";
+do "t/test_server.pm";
 

@@ -29,5 +29,5 @@ sub run_tests {
     ok($imap->select("INBOX/working"), 6 );
 }   
 
-do "t/test_server.pm" or die "error starting imap server: $!$@";
+do "t/test_server.pm";
 
