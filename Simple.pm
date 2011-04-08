@@ -154,7 +154,7 @@ sub _connect {
             PeerPort => $self->{port},
             Timeout  => $self->{timeout},
             Proto    => 'tcp',
-            ( $self->{bindaddr} ? { LocalAddr => $self->{bindaddr} } : () )
+            ( $self->{bindaddr} ? ( LocalAddr => $self->{bindaddr} ) : () )
         );
     }
 
