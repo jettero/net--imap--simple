@@ -75,8 +75,8 @@ sub new {
     }
 
     $self->{timeout}           = ( $opts{timeout} ? $opts{timeout} : $self->_timeout );
-    $self->{retry}             = ( $opts{retry} ? $opts{retry} : $self->_retry );
-    $self->{retry_delay}       = ( $opts{retry_delay} ? $opts{retry_delay} : $self->_retry_delay );
+    $self->{retry}             = ( defined($opts{retry}) ? $opts{retry} : $self->_retry );
+    $self->{retry_delay}       = ( defined($opts{retry_delay}) ? $opts{retry_delay} : $self->_retry_delay );
     $self->{bindaddr}          = $opts{bindaddr};
     $self->{use_select_cache}  = $opts{use_select_cache};
     $self->{select_cache_ttl}  = $opts{select_cache_ttl};
