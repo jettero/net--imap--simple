@@ -1,3 +1,9 @@
+1.2024: Tue Aug 02 2011
+   - Jason Woodard submitted a patch to remove the post-sort from
+     range2list.  I don't recall why the sort was there to begin
+     with, so the patch seems reasonable to me.  All tests
+     passed, released.
+
 1.2023: Wed May 25 2011
    - patch for minor (but annoying) options bug. Thanks Mr.  Griffiths!
 
