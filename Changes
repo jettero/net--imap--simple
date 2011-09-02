@@ -1,3 +1,6 @@
+1.2025: Fri Sep 02 2011
+   - removed unused build rules that fail to compile in dmake
+
 1.2024: Tue Aug 02 2011
    - Jason Woodard submitted a patch to remove the post-sort from
      range2list.  I don't recall why the sort was there to begin

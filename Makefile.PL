@@ -10,6 +10,14 @@ if( $build_simplex =~ m/[Yy]/ ) {
     open my $out, ">test_simplex" or die "unable to setup body-summary tests: $!";
     chmod 0444, qw(SimpleX.pod SimpleX.pm); # prevent myself from editing them without realizing it
 
+=cut
+SimpleX.%: contrib/SimpleX.%
+	$(RM) $@; $(CP) $< $@ && $(CHMOD) 0444 $@
+
+inc/slurp_fetchmailx.pm: inc/slurp_fetchmail.pm
+	sed -e s/slurp_fetchmail/slurp_fetchmailx/ -e s/Net::IMAP::Simple/Net::IMAP::SimpleX/ $< > $@
+=cut
+
 } else {
     unlink qw(SimpleX.pod SimpleX.pm test_simplex);
 }
@@ -66,19 +74,3 @@ WriteMakefile(
 
     ) : ()),
 );
-
-sub MY::postamble {
-    return unless $build_simplex;
-
-    my $postamble = <<'MAKE_FRAG';
-
-SimpleX.%: contrib/SimpleX.%
-	[ -f $@ ] && $(RM) $@; $(CP) $< $@ && $(CHMOD) 0444 $@
-
-inc/slurp_fetchmailx.pm: inc/slurp_fetchmail.pm
-	sed -e s/slurp_fetchmail/slurp_fetchmailx/ -e s/Net::IMAP::Simple/Net::IMAP::SimpleX/ $< > $@
-
-MAKE_FRAG
-
-    return $postamble;
-}
