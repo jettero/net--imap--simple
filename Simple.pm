@@ -525,7 +525,7 @@ sub search {
     # add rfc5256 sort, requires charset :(
     if ($sort) {
         $sort = uc $sort;
-        $cmd = "SORT ($sort) \"$charset\"";
+        $cmd = ($uidm ? "UID ": "") . "SORT ($sort) \"$charset\"";
     }
 
     my @seq;
