@@ -1,3 +1,6 @@
+1.2026: Mon Oct 10 2011
+   - Bug in UID search, contribs by Jorge
+
 1.2025: Fri Sep 02 2011
    - removed unused build rules that fail to compile in dmake
 
