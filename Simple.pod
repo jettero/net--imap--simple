@@ -860,15 +860,15 @@ required, you can instead use so-called I<sequence sets>.  Examples:
 
 Joao Fonseca C<< <joao_g_fonseca@yahoo.com> >>
 
-=item 2004 maintainer
+=item Maintainer 2004
 
 Casey West C<< <casey@geeknst.com> >>
 
-=item 2005 maintainer
+=item Maintainer 2005
 
 Colin Faber C<< <cfaber@fpsn.net> >>
 
-=item 2009 maintainer
+=item Maintainer 2009
 
 Paul Miller C<< <jettero@cpan.org> >>
 
