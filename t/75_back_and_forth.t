@@ -4,7 +4,7 @@ use warnings;
 use Test;
 use Net::IMAP::Simple;
 
-plan tests => 2 + (our $tests = 10);
+plan tests => 3 + (our $tests = 10);
 
 sub run_tests {
     open INFC, ">>", "informal-imap-client-dump.log" or die $!;
@@ -30,6 +30,9 @@ sub run_tests {
 
         ok($errors, 0);
     }
+
+    $imap->get($tests + 9_00); # finishing move
+    ok( $imap->errstr, "blarg");
 }   
 
 do "t/test_server.pm";
