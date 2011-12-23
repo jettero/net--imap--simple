@@ -16,6 +16,8 @@ sub run_tests {
     my $nm = $imap->select('INBOX')
         or die " failure selecting INBOX: " . $imap->errstr . "\n";
 
+    $imap->create_mailbox('test');
+
     ok( $imap->select("INBOX")+0, 0 );
     $imap->put( INBOX => "Subject: test-$_\n\ntest-$_" . "\n" . (" xxxxxx " x 2_000), '\Seen' ) for 1 .. $tests;
     ok( $imap->select("INBOX")+0, $tests );
