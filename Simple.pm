@@ -610,7 +610,7 @@ sub get {
         cmd => [ FETCH => qq[$number $arg] ],
         final => sub {
             if( $fetching ) {
-                $lines[-1] =~ s/\s+\)[\x0d\x0a]*\z//;
+                $lines[-1] =~ s/\)[\x0d\x0a]*\z//;
                 return  wantarray ? @lines : Net::IMAP::Simple::_message->new(\@lines)
             }
 
