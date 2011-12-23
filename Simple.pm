@@ -641,16 +641,18 @@ sub put {
         cmd   => [ APPEND => _escape($mailbox_name) ." (@flags) {$size}" ],
         final => sub { $self->_clear_cache },
         process => sub {
-            if ($size) {
-                my $sock = $self->_sock;
-                if ( ref $msg eq "ARRAY" ) {
-                    print $sock $_ for @$msg;
+            if( $_[0] =~ m/^\+\s+/ ) { # + continue (or go ahead, or whatever)
+                if ($size) {
+                    my $sock = $self->_sock;
+                    if ( ref $msg eq "ARRAY" ) {
+                        print $sock $_ for @$msg;
 
-                } else {
-                    print $sock $msg;
+                    } else {
+                        print $sock $msg;
+                    }
+                    $size = undef;
+                    print $sock "\r\n";
                 }
-                $size = undef;
-                print $sock "\r\n";
             }
         },
 
