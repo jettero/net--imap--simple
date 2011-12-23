@@ -32,7 +32,7 @@ sub run_tests {
     }
 
     $imap->get($tests + 9_00); # finishing move
-    ok( $imap->errstr, "blarg");
+    ok( $imap->errstr, qr(message not found) ); # SPURIOUS: there's really no such error in imap
 }   
 
 do "t/test_server.pm";
