@@ -1,3 +1,6 @@
+1.2027: Fri Dec 23 2011
+   - deal with this: https://rt.cpan.org/Ticket/Display.html?id=73431
+
 1.2026: Mon Oct 10 2011
    - Bug in UID search, contribs by Jorge
 
