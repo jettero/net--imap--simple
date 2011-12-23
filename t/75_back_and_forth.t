@@ -4,7 +4,7 @@ use warnings;
 use Test;
 use Net::IMAP::Simple;
 
-plan tests => 2 + (our $tests = 200);
+plan tests => 2 + (our $tests = 10);
 
 sub run_tests {
     open INFC, ">>", "informal-imap-client-dump.log" or die $!;
@@ -19,6 +19,15 @@ sub run_tests {
     ok( $imap->select("INBOX")+0, 0 );
     $imap->put( INBOX => "Subject: test-$_\n\ntest-$_" . "\n" . (" xxxxxx " x 2_000), '\Seen' ) for 1 .. $tests;
     ok( $imap->select("INBOX")+0, $tests );
+
+    for my $i ( 1 .. $tests ) {
+        my $errors = 0;
+        my $msg = $imap->get($i)   or do { $errors ++; warn " " . $imap->errstr };
+        $imap->put( test => $msg ) or do { $errors ++; warn " " . $imap->errstr };
+        $imap->delete( $i )        or do { $errors ++; warn " " . $imap->errstr };
+
+        ok($errors, 0);
+    }
 }   
 
 do "t/test_server.pm";
