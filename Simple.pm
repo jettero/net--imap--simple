@@ -9,7 +9,7 @@ use IO::Socket;
 use IO::Select;
 use Net::IMAP::Simple::PipeSocket;
 
-our $VERSION = "1.2027";
+our $VERSION = "1.20271";
 
 BEGIN {
     # I'd really rather the pause/cpan indexers miss this "package"
