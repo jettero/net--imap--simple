@@ -214,6 +214,18 @@ sub login {
     );
 }
 
+sub separator {
+    my ( $self, ) = @_;
+    my $sep;
+
+        return $self->_process_cmd (
+        cmd     => [ LIST => qq["" ""]  ],
+        final => sub { $sep },
+        process => sub { (undef,undef,undef,$sep,undef) = split /\s/smx , $_[0];
+                        $sep =~ s/["]//g;  },
+    );
+}
+
 sub _clear_cache {
     my $self = shift;
 
