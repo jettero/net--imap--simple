@@ -264,6 +264,11 @@ the last folder C<< $imap->select >>'ed will be used.
 
 This method uses caching.
 
+=item separator
+
+Returns the folder separator (technically "hierarchy separator", rfc3501§6.3.8)
+for the server.
+
 =item recent
 
     print "Recent messages value: " . $imap->recent . "\n";
