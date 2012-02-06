@@ -2,7 +2,31 @@ our $tests;
 
 use strict;
 use IO::Socket::INET;
+use Fcntl qw(:flock);
 no warnings;
+
+BEGIN {
+    # NOTE: the latest cpan smokers seem to run tests simultaneously, which
+    # completely breaks a ton of my tests.  Therefore, I'm doing this horrible
+    # thing.  If there is a better way, please tell it to me.
+
+    our @lock;
+    open my $lock, "<", $0 or die "error trying to open myself for locking purposes: $!";
+    flock $lock, LOCK_EX;
+
+    my ($o) = $0 =~ m/^(\d+)/;
+
+    sleep 1;
+
+    push @lock, $lock;
+    for my $i (sort glob "t/*.t") {
+        my ($i) = $0 =~ m/^(\d+)/;
+        next unless $i > $o;
+        open my $another_lock, "<", $0 or die "error trying to open myself for locking purposes: $!";
+        flock $another_lock, LOCK_EX;
+        push @lock, $another_lock;
+    }
+}
 
 BEGIN {
     eval q [use lib 'inc'] # use our local copy of Net::IMAP::Server
