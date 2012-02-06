@@ -622,7 +622,17 @@ sub get {
         cmd => [ FETCH => qq[$number $arg] ],
         final => sub {
             if( $fetching ) {
-                $lines[-1] =~ s/\)[\x0d\x0a]*\z//;
+                if( $fetching > 0 ) {
+                    # XXX: this is just about the least efficient way in the
+                    # world to do this; I should appologize, but really,
+                    # nothing in this module is done particularly well.  I
+                    # doubt anyone will notice this.
+
+                    local $"="";
+                    my $message = "@lines";
+                    @lines = split m/(?<=\x0d\x0a)/, substr($message, 0, $fetching)
+                        if( length $message > $fetching );
+                }
                 return  wantarray ? @lines : Net::IMAP::Simple::_message->new(\@lines)
             }
 
