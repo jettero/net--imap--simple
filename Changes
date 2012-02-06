@@ -2,7 +2,10 @@
    - fixed bug in get that was fetching more message than there
      actually was to get (spuriously appending FLAGS \Seen and
      the like)
-   - made sure the tests run in order (re: EV testers)
+   - made sure the tests run in order (re: EV testers).  What I
+     did is really truly awful.  If there is a good way to force
+     the tests to run in order, please tell it to me.  My
+     solution is just horrible (see top of t/test_server.pm)
 
 1.2029: Mon Jan 30 2012
    - spelling fix from the debian people
