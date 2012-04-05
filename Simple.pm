@@ -37,6 +37,11 @@ sub new {
             if $opts{use_v6} and $opts{use_ssl};
     }
 
+    if( $opts{ssl_version} ) {
+        $self->{ssl_version} = $opts{ssl_version};
+        $opts{use_ssl} = 1;
+    }
+
     if( $opts{use_ssl} ) {
         eval {
             require IO::Socket::SSL;
@@ -146,18 +151,22 @@ sub _connect {
     my $sock;
 
     if( $self->{cmd} ) {
+        $self->_debug( caller, __LINE__, '_connect', "popping open a pipesocket for command: $self->{cmd}" ) if $self->{debug};
         $sock = Net::IMAP::Simple::PipeSocket->new(cmd=>$self->{cmd});
 
     } else {
+        $self->_debug( caller, __LINE__, '_connect', "connecting to $self->{server}:$self->{port}" ) if $self->{debug};
         $sock = $self->_sock_from->new(
             PeerAddr => $self->{server},
             PeerPort => $self->{port},
             Timeout  => $self->{timeout},
             Proto    => 'tcp',
-            ( $self->{bindaddr} ? ( LocalAddr => $self->{bindaddr} ) : () )
+            ( $self->{bindaddr} ? ( LocalAddr => $self->{bindaddr} ) : () ),
+            ( $_[0]->{ssl_version} ? (SSL_version => $self->{ssl_version}) : ()),
         );
     }
 
+    $self->_debug( caller, __LINE__, '_connect', "connected, returning socket" ) if $self->{debug};
     return $sock;
 }
 
@@ -188,7 +197,7 @@ sub starttls {
 
             my $startres = IO::Socket::SSL->start_SSL(
                 $self->{sock},
-                SSL_version        => "SSLv3 TLSv1",
+                SSL_version        => $self->{ssl_version} || "SSLv3 TLSv1",
                 SSL_startHandshake => 0,
             );
 
