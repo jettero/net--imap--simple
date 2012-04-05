@@ -96,6 +96,15 @@ If set to true, attempt to use L<IO::Socket::SSL> sockets rather than vanilla so
 
 This option requires the L<IO::Socket::SSL> module
 
+=item ssl_version => version
+
+This should be one or more of the following (space separated): SSLv3 SSLv2
+TLSv1.  If you specify, for example, "SSLv3 SSLv2" then L<IO::Socket::SSL> will
+attempt auto negotiation.  At the time of this writing, the default string was
+v3/v2 auto negotiation -- it may have changed by the time you read this.
+
+Warning: setting this will also set use_ssl.
+
 =item bindaddr => str
 
 Assign a local address to bind
