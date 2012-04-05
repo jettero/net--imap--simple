@@ -1,3 +1,8 @@
+1.2032: Thu Apr 05 2012
+   - my school switched to SSLv3 only and they just kinda time
+     out on autonegotiation...  So I added a way to specify the
+     ssl version.
+
 1.2031: Fri Mar 02 2012
    - these tests don't work under this new EV multithreaded
      system.  Disabled all tests unless people promise to test
