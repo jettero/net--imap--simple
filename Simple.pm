@@ -9,7 +9,7 @@ use IO::Socket;
 use IO::Select;
 use Net::IMAP::Simple::PipeSocket;
 
-our $VERSION = "1.2032";
+our $VERSION = "1.2033";
 
 BEGIN {
     # I'd really rather the pause/cpan indexers miss this "package"
@@ -657,10 +657,10 @@ sub get {
             return;
         },
         process => sub {
-            if ( $_[0] =~ /^\*\s+\d+\s+FETCH\s+\(.+?\{(\d+)\}\E/ ) {
+            if ( $_[0] =~ /^\*\s+\d+\s+FETCH\s+\(.+?\{(\d+)\}/ ) {
                 $fetching = $1;
 
-            } elsif( $_[0] =~ /^\*\s+\d+\s+FETCH\s+\(.+?\"(.*)\"\s*\)\E/ ) {
+            } elsif( $_[0] =~ /^\*\s+\d+\s+FETCH\s+\(.+?\"(.*)\"\s*\)/ ) {
                 # XXX: this is not tested because Net::IMAP::Server doesn't do
                 # this type of string result (that I know of) for this it might
                 # work, ... frog knows.  Not likely to come up very often, if

@@ -1,3 +1,6 @@
+1.2033: Mon Jul 23 2012
+   - https://rt.cpan.org/Public/Bug/Display.html?id=78539
+
 1.2032: Thu Apr 05 2012
    - my school switched to SSLv3 only and they just kinda time
      out on autonegotiation...  So I added a way to specify the
