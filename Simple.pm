@@ -9,7 +9,7 @@ use IO::Socket;
 use IO::Select;
 use Net::IMAP::Simple::PipeSocket;
 
-our $VERSION = "1.2033";
+our $VERSION = "1.2034";
 
 BEGIN {
     # I'd really rather the pause/cpan indexers miss this "package"
@@ -216,8 +216,10 @@ sub starttls {
 sub login {
     my ( $self, $user, $pass ) = @_;
 
+    $pass = _escape($pass);
+
     return $self->_process_cmd(
-        cmd     => [ LOGIN => qq[$user "$pass"] ],
+        cmd     => [ LOGIN => qq[$user $pass] ],
         final   => sub { 1 },
         process => sub { },
     );
