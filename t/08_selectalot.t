@@ -1,30 +1,23 @@
-BEGIN { unless( $ENV{I_PROMISE_TO_TEST_SINGLE_THREADED} ) { print "1..1\nok 1\n"; exit 0; } }
-
 use strict;
-use warnings;
 
 use Test;
 use Net::IMAP::Simple;
 
 plan tests => our $tests = 3;
 
+our $imap;
+
 sub run_tests {
-    open INFC, ">informal-imap-client-dump.log";
-    # we don't care very much if the above command fails
-
-    my $imap = Net::IMAP::Simple->new($ENV{NIS_TEST_HOST}, debug=>\*INFC, use_ssl=>1)
-        or die "\nconnect failed: $Net::IMAP::Simple::errstr\n";
-
-    $imap->login(qw(working login)) or die "\nlogin failure: " . $imap->errstr . "\n";
-
     $imap->select("INBOX") or warn " \e[1;33m" . $imap->errstr . "\e[m\n";
     ok( $imap->current_box, "INBOX" );
 
-    $imap->select("blarg");
+    $imap->select("reallynowaythissuckerexistsIhope");
     ok( $imap->current_box, "INBOX" );
 
-    $imap->select("INBOX/working") or warn " \e[1;33m" . $imap->errstr . "\e[m\n";
-    ok( $imap->current_box, "INBOX/working" );
+    $imap->create_mailbox("anotherthingy");
+
+    $imap->select("anotherthingy") or warn " \e[1;33m" . $imap->errstr . "\e[m\n";
+    ok( $imap->current_box, "anotherthingy" );
 }
 
-do "t/test_server.pm";
+do "t/test_runner.pm";
