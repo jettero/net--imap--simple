@@ -1,7 +1,9 @@
 our $tests;
+our $imap;
 
 use strict;
 use IO::Socket::INET;
+use Time::HiRes qw(time);
 use Fcntl qw(:flock);
 no warnings;
 
@@ -25,6 +27,9 @@ no warnings;
 #     export NIS_TEST_HOST=someserver.org
 #     export NIS_TEST_USER=someguyname
 #     export NIS_TEST_PASS=blarg
+#  
+# HOST will get connections on 143 and 993, specifying a port is not possible
+# at this time.
 #
 #
 
@@ -35,6 +40,11 @@ unless( exists $ENV{NIS_TEST_HOST} and exists $ENV{NIS_TEST_USER} and exists $EN
     print STDERR "\e7\e[5000C\e[${len}D$line\e8";
     exit 0;
 }
+
+open INFC, ">/tmp/client-run-" . time . ".log";
+# we don't care very much if the above command fails
+
+$imap = Net::IMAP::Simple->new($ENV{NIS_TEST_HOST}, debug=>\*INFC, use_ssl=>1) or die "\nconnect failed: $Net::IMAP::Simple::errstr\n";
 
 if( __PACKAGE__->can('run_tests') ) {
     run_tests()

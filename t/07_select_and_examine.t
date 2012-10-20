@@ -1,28 +1,20 @@
 use strict;
-use warnings;
+no warnings;
 
 use Test;
 use Net::IMAP::Simple;
 
-plan tests => our $tests = 18;
+plan tests => our $tests = 17;
+
+our $imap;
 
 sub run_tests {
-    open INFC, ">informal-imap-client-dump.log";
-    # we don't care very much if the above command fails
-
-    my $imap = Net::IMAP::Simple->new($ENV{NIS_TEST_HOST}, debug=>\*INFC, use_ssl=>1)
-        or die "\nconnect failed: $Net::IMAP::Simple::errstr\n";
-
-    ok( $imap->login(@ENV{qw(NIS_TEST_USER NIS_TEST_PASS)}) )
-        or die "\nlogin failure: " . $imap->errstr . "\n";
-
-    my $nm = $imap->select("INBOX");
+    my $nm = $imap->select("INBOX") or die "imap error: " . $imap->errstr;
     $imap->delete("1:$nm");
     $imap->expunge_mailbox;
     $nm = $imap->select("INBOX");
 
-    ok( $imap->put( INBOX => "Subject: test!\n\ntest!" ), 1 )
-        or die " error putting test message: " . $imap->errstr . "\n";
+    $imap->put( INBOX => "Subject: test!\n\ntest!" ) or die "problem putting message: " . $imap->errstr;
 
     my @c = (
         [ scalar $imap->select("fake"),  $imap->current_box, $imap->unseen, $imap->last, $imap->recent ],
@@ -37,10 +29,7 @@ sub run_tests {
     ok( $c[1][0], $nm+1 );
     ok( $c[2][0], undef );
     ok( $c[3][0], $nm+1 );
-
-    { no warnings 'uninitialized';
-        ok( "@{ $c[$_] }[2,3,4]", " 1 0" ) for 0 .. $#c;
-    }
+    ok( "@{ $c[$_] }[2,3,4]", " 1 0" ) for 0 .. $#c;
 
     ## Test EXMAINE
 

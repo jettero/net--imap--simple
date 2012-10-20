@@ -702,7 +702,7 @@ sub put {
 
     return $self->_process_cmd(
         cmd   => [ APPEND => _escape($mailbox_name) ." (@flags) {$size}" ],
-        final => sub { $self->_clear_cache },
+        final => sub { $self->_clear_cache; 1 },
         process => sub {
             if( $_[0] =~ m/^\+\s+/ ) { # + continue (or go ahead, or whatever)
                 if ($size) {
