@@ -44,6 +44,7 @@ unless( Net::IMAP::Simple->new('localhost:19794') ) {
     print STDERR "\e7\e[5000C\e[${len}D$line\e8";
     exit 0;
 }
+    warn "3";
 
 if( __PACKAGE__->can('run_tests') ) {
     run_tests()

@@ -105,8 +105,9 @@ if( my $pid = fork ) {
         run_tests()
 
     } else {
-        warn "\nserver started in standalone testing mode...\n";
-        warn "if this isn't what you wanted, provide a run_tests() function.\n";
+        #warn "\nserver started in standalone testing mode...\n";
+        #warn "if this isn't what you wanted, provide a run_tests() function.\n";
+        print "started server\n";
         exit 0;
     }
 
