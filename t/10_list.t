@@ -8,12 +8,14 @@ use Net::IMAP::Simple;
 
 plan tests => our $tests = 5;
 
-sub run_tests {
-    my $imap = Net::IMAP::Simple->new('localhost:19795', debug=>"file:informal-imap-client-dump.log", use_ssl=>1)
-        or die "\nconnect failed: $Net::IMAP::Simple::errstr";
+our $imap;
 
-    $imap->login(qw(working login));
+sub run_tests {
     $imap->create_mailbox("blarg");
+    my $n = $imap->select("blarg");
+    $imap->delete("1:$n");
+    $imap->expunge_mailbox;
+
     $imap->select("blarg");
 
     my $h = $imap->list();
@@ -27,7 +29,7 @@ sub run_tests {
     ok( ref $h, "HASH" );
     ok( int(keys %$h), 1 );
     my ($v) = values %$h;
-    ok( $v, 21 );
+    ok( $v == 21 || $v == 25 ); # dovecot puts another \r\n on the end (or something like that) and is 25 instead of the expected 21 bytes
 }
 
-do "t/test_server.pm";
+do "t/test_runner.pm";
