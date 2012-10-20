@@ -21,8 +21,6 @@ MANIFEST
 README
 Simple.pm
 Simple.pod
-start_server.sh
-stop_server.sh
 t/01_load.t
 t/07_select_and_examine.t
 t/08_selectalot.t
@@ -47,4 +45,5 @@ t/75_back_and_forth.t
 t/critic.t
 t/pod.t
 t/pod_coverage.t
+t/test_runner.pm
 TODO
