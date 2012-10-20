@@ -28,7 +28,7 @@ no warnings;
 #
 #
 
-unless( exists $ENV{NIS_TEST_HOST} and exists $ENV{NIS_TEST_USER} and exists $ENV{NIS_TEST_PASS} and Net::IMAP::Simple->new($NIS_TEST_HOST) ) {
+unless( exists $ENV{NIS_TEST_HOST} and exists $ENV{NIS_TEST_USER} and exists $ENV{NIS_TEST_PASS} and Net::IMAP::Simple->new($ENV{NIS_TEST_HOST}) ) {
     ok($_) for 1 .. $tests;  # just skip everything
     my $line = "[not actually running any tests -- see t/test_runner.pm]";
     my $len = length $line; $len ++;
