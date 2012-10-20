@@ -56,4 +56,4 @@ sub run_tests {
     ok( $imap->select('INBOX'), 2 );
 }
 
-do "t/test_server.pm";
+do "t/test_runner.pm";
