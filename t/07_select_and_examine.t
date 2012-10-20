@@ -4,7 +4,7 @@ no warnings;
 use Test;
 use Net::IMAP::Simple;
 
-plan tests => our $tests = 17;
+plan tests => our $tests = 16;
 
 our $imap;
 
