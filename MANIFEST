@@ -24,7 +24,6 @@ Simple.pod
 t/01_load.t
 t/07_select_and_examine.t
 t/08_selectalot.t
-t/09_concurrent_connections_new.t
 t/10_list.t
 t/11_mailboxes.t
 t/15_flags.t
