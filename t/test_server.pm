@@ -102,7 +102,9 @@ if( my $pid = fork ) {
     $0 = "Net::IMAP::Simple($$)";
 
     if( __PACKAGE__->can('run_tests') ) {
-        run_tests()
+        my $res = eval { run_tests(); 7_7};
+
+        warn "\n\nERROR running tests: $@\n\n" if $res != 7_7;
 
     } else {
         warn "\nserver started in standalone testing mode...\n";
