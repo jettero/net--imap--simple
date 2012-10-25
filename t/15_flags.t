@@ -1,7 +1,4 @@
-BEGIN { unless( $ENV{I_PROMISE_TO_TEST_SINGLE_THREADED} ) { print "1..1\nok 1\n"; exit 0; } }
-
 use strict;
-use warnings;
 
 use Test;
 use Net::IMAP::Simple;
@@ -13,13 +10,9 @@ plan tests => our $tests =
     + 8 # grab flags for some nonexistnat messages, and for some existant ones
     ;
 
+our $imap;
+
 sub run_tests {
-    open INFC, ">>", "informal-imap-client-dump.log" or die $!;
-
-    my $imap = Net::IMAP::Simple->new('localhost:19795', debug=>\*INFC, use_ssl=>1)
-        or die "\nconnect failed: $Net::IMAP::Simple::errstr\n";
-
-    $imap->login(qw(working login));
     my $nm = $imap->select('INBOX')
         or die " failure selecting INBOX: " . $imap->errstr . "\n";
 
@@ -87,4 +80,4 @@ sub run_tests {
     ok( defined $imap->deleted(5) );
 }
 
-do "t/test_server.pm";
+do "t/test_runner.pm";
