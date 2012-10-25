@@ -1,3 +1,8 @@
+1.2034_1: Thu Oct 25 2012
+   - I still have no idea why t/07 fails on basically everyone's
+     machine except mine, but I did find that croaks and dies are
+     totally lost because of the way I run the tests.
+
 1.2034: Wed Oct 10 2012
    - https://rt.cpan.org/Ticket/Display.html?id=80088
 
