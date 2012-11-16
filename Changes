@@ -1,3 +1,9 @@
+1.2034_2: Fri Nov 16 2012
+   - finally, some testers rand _1 ... didn't tell me anything;
+     but they ran it.  I'm just going to remove the offending
+     module load.  I'm never going to figure out why it fails on
+     so many machines (but never ever mine).
+
 1.2034_1: Thu Oct 25 2012
    - I still have no idea why t/07 fails on basically everyone's
      machine except mine, but I did find that croaks and dies are
