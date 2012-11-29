@@ -42,6 +42,11 @@ sub new {
         $opts{use_ssl} = 1;
     }
 
+    if( $opts{ssl_opts} ) {
+        $self->{ssl_opts} = $opts{ssl_opts};
+        $opts{use_ssl} = 1;
+    }
+
     if( $opts{use_ssl} ) {
         eval {
             require IO::Socket::SSL;
@@ -163,6 +168,7 @@ sub _connect {
             Proto    => 'tcp',
             ( $self->{bindaddr} ? ( LocalAddr => $self->{bindaddr} ) : () ),
             ( $_[0]->{ssl_version} ? (SSL_version => $self->{ssl_version}) : ()),
+            ( $self->{ssl_opts} ? (%{$self->{ssl_opts}}) : ()),
         );
     }
 

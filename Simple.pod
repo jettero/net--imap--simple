@@ -105,6 +105,24 @@ v3/v2 auto negotiation -- it may have changed by the time you read this.
 
 Warning: setting this will also set use_ssl.
 
+=item ssl_opts => { ... }
+
+Pass-through options for L<IO::Socket::SSL>.  See L<IO::Socket::SSL> for a list of valid options.
+
+Example:
+
+  my $imap_dest = Net::IMAP::Simple->new(
+    $server,
+    port => $port,
+    use_ssl => 1,
+    ssl_opts => {
+      SSL_ca_path => '/usr/share/ca-certificates/',
+      SSL_verify_mode => 'SSL_VERIFY_PEER',
+    }
+  );
+
+Warning: setting this will also set use_ssl.
+
 =item bindaddr => str
 
 Assign a local address to bind
