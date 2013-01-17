@@ -161,8 +161,9 @@ sub _connect {
             PeerPort => $self->{port},
             Timeout  => $self->{timeout},
             Proto    => 'tcp',
-            ( $self->{bindaddr} ? ( LocalAddr => $self->{bindaddr} ) : () ),
-            ( $_[0]->{ssl_version} ? (SSL_version => $self->{ssl_version}) : ()),
+            ( $self->{bindaddr}    ? ( LocalAddr => $self->{bindaddr} )                        : () ),
+            ( $_[0]->{ssl_version} ? ( SSL_version => $self->{ssl_version} )                   : () ),
+            ( $_[0]->{use_ssl}     ? ( SSL_verify_mode => IO::Socket::SSL::SSL_VERIFY_PEER() ) : () ),
         );
     }
 
