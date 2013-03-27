@@ -441,9 +441,17 @@ sub recent {
 sub unseen {
     my ( $self, $folder ) = @_;
 
-    $self->select($folder);
+    my $oflags = $self->{BOXES}{ $self->current_box }{oflags};
 
-    return $self->{BOXES}{ $self->current_box }{oflags}{UNSEEN};
+    if( exists $oflags->{UNSEEN} ) {
+        $self->select($folder);
+
+        return $self->{BOXES}{ $self->current_box }{oflags}{UNSEEN};
+    }
+
+    my ($unseen) = $self->status;
+
+    return $unseen;
 }
 
 sub current_box {

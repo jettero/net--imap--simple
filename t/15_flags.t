@@ -21,7 +21,6 @@ sub run_tests {
         $imap->expunge_mailbox;
     }
 
-    ok( 0+$imap->recent, 0 );
     ok( 0+$imap->last,   0 );
     ok( 0+$imap->unseen, 0 );
 
@@ -29,14 +28,11 @@ sub run_tests {
         ok( $imap->put( INBOX => "Subject: test-$_\n\ntest-$_" ) );
 
         ok( 0+$imap->last,   $_ );
-        ok( 0+$imap->recent, $_ );
         ok( 0+$imap->unseen, $_ );
 
         $imap->see($_);
         ok( 0+$imap->unseen, 0 );
     }
-
-    exit;
 
     $imap->unsee(4);
     $imap->delete(4);

@@ -301,6 +301,9 @@ this will issue a SELECT first.
 
 This method uses caching.
 
+If the server does not provide UNSEEN during SELECT -- surprisingly common --
+this method will fall back and use STATUS to determine the unseen count.
+
 B<NOTE>: This is not the opposite of L<seen> below.  The UNSEEN value varies
 from server to server, but according to the IMAP specification, it should be the
 I<number of the first unseen message>, in the case the flag is provided.  (If
