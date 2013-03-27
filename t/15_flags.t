@@ -4,7 +4,7 @@ use Test;
 use Net::IMAP::Simple;
 
 plan tests => our $tests =
-    ((my $puts = 5)+1)*5 -2 # the put lines
+    ((my $puts = 5)+1)*4 -2 # the put lines
     + 8 # some arbitrary flag tests on message 4
     + 8 # some msg_flags return values
     + 8 # grab flags for some nonexistnat messages, and for some existant ones
@@ -65,8 +65,8 @@ sub run_tests {
     my @flags5 = $imap->msg_flags(5); ok( not ($w=$imap->waserr) ); warn $imap->errstr if $w;
     my $flags5 = $imap->msg_flags(5); ok( not ($w=$imap->waserr) ); warn $imap->errstr if $w;
 
-    ok( 0+@flags4, 1 ); # \Recent
-    ok( 0+@flags5, 4 ); # \Recent \Seen \Answered \Deleted
+    ok( 0+@flags4, 0 ); #
+    ok( 0+@flags5, 3 ); # \Seen \Answered \Deleted
     ok( defined $flags4 );
     ok( defined $flags5 );
 
