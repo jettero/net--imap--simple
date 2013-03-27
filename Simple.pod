@@ -94,6 +94,10 @@ This option requires the L<IO::Socket::INET6> module
 
 If set to true, attempt to use L<IO::Socket::SSL> sockets rather than vanilla sockets.
 
+Note that no attempt is made to check the certificate validity by default.  This
+is terrible personal security but matches the previous behavior of this module.
+Please consider using C<find_ssl_defaults> below.
+
 This option requires the L<IO::Socket::SSL> module
 
 =item ssl_version => version
@@ -103,7 +107,22 @@ TLSv1.  If you specify, for example, "SSLv3 SSLv2" then L<IO::Socket::SSL> will
 attempt auto negotiation.  At the time of this writing, the default string was
 v3/v2 auto negotiation -- it may have changed by the time you read this.
 
-Warning: setting this will also set use_ssl.
+Warning: setting this will also set C<use_ssl>.
+
+=item find_ssl_defaults => []
+
+Looks in some standard places for CA certificate libraries and if found sets
+reasonable defaults along the lines of the following.
+
+    ssl_options => [ SSL_ca_path => "/etc/ssl/certs/",
+        SSL_verify_mode => IO::Socket::SSL::SSL_VERIFY_PEER() ]
+
+Warning: setting this will also set C<use_ssl>.
+
+=item ssl_options => []
+
+You may provide your own L<IO::Socket::SSL> options if you desire to do so.
+It is completely overridden by C<find_ssl_defaults> above.
 
 =item bindaddr => str
 
