@@ -773,6 +773,7 @@ sub msg_flags {
 
     my @flags;
     $self->{_waserr} = 1; # assume something went wrong.
+    $self->{_errstr} = "flags not found during fetch";
 
     #  _send_cmd] 15 FETCH 12 (FLAGS)\r\n
     #  _process_cmd] * 12 FETCH (FLAGS (\Seen))\r\n
@@ -787,7 +788,7 @@ sub msg_flags {
             wantarray ? @flags : "@flags";
         },
         process => sub {
-            if( $_[0] =~ m/\* $number FETCH \(FLAGS \(([^()]+?)\)\)/i ) {
+            if( $_[0] =~ m/\* $number FETCH \(FLAGS \(([^()]*?)\)\)/i ) {
                 @flags = $self->_process_flags($1);
                 delete $self->{_waserr};
             }
