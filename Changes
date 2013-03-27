@@ -1,3 +1,16 @@
+1.2100: Wed Mar 27 2013
+   - SSL evolved on me.  They actually expect me to check certs?
+     Madness.  I came up with some reasonable defaults and some
+     settings and things.  The final solution to the defaults
+     puzzle was an amalgam of various ideas from Tom Heady
+     (https://github.com/tomheady).
+
+   - There are no more local server tests and no more
+     Net::IMAP::Server environments to test in.  It was driving
+     me crazy how buggy that was, so I removed it.  If you want
+     to test against a real dovecot or uwash server, super! check
+     the t/test_runner.pm file for the settings.
+
 1.2034_2: Fri Nov 16 2012
    - finally, some testers rand _1 ... didn't tell me anything;
      but they ran it.  I'm just going to remove the offending
