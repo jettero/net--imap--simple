@@ -7,9 +7,16 @@ use Net::IMAP::Simple;
 plan tests => our $tests = 16;
 
 our $imap;
+my $nm;
 
 sub run_tests {
-    my $nm = $imap->select("INBOX") or die "imap error: " . $imap->errstr;
+    my $nm = $imap->select("fake");
+    if( $nm ) {
+        $imap->delete("1:$nm");
+        $imap->expunge_mailbox;
+    }
+
+    $nm = $imap->select("INBOX") or die "imap error: " . $imap->errstr;
     $imap->delete("1:$nm");
     $imap->expunge_mailbox;
     $nm = $imap->select("INBOX");
@@ -29,7 +36,7 @@ sub run_tests {
     ok( $c[1][0], $nm+1 );
     ok( $c[2][0], undef );
     ok( $c[3][0], $nm+1 );
-    ok( "@{ $c[$_] }[2,3,4]", " 1 0" ) for 0 .. $#c;
+    ok( "@{ $c[$_] }[2,3,4]", "1 1 0" ) for 0 .. $#c;
 
     ## Test EXMAINE
 

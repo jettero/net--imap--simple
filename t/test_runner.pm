@@ -24,9 +24,15 @@ no warnings;
 #
 # If you want to test, set these environment variables and run the tests.
 #
+#
+#     THIS WILL DELETE ALL MAIL IN THIS ACCOUNT
+#     BE SURE IT IS A TEST ACCOUNT
+#
+#
 #     export NIS_TEST_HOST=someserver.org
 #     export NIS_TEST_USER=someguyname
 #     export NIS_TEST_PASS=blarg
+#
 #  
 # HOST will get connections on 143 and 993, specifying a port is not possible
 # at this time.
