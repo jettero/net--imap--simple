@@ -50,7 +50,11 @@ unless( exists $ENV{NIS_TEST_HOST} and exists $ENV{NIS_TEST_USER} and exists $EN
 open INFC, ">/tmp/client-run-" . time . ".log";
 # we don't care very much if the above command fails
 
-$imap = Net::IMAP::Simple->new($ENV{NIS_TEST_HOST}, debug=>\*INFC, use_ssl=>1) or die "\nconnect failed: $Net::IMAP::Simple::errstr\n";
+our $CALLBACK_TEST;
+
+my @c = $CALLBACK_TEST ? (readline_callback => $CALLBACK_TEST) :();
+
+$imap = Net::IMAP::Simple->new($ENV{NIS_TEST_HOST}, debug=>\*INFC, @c, use_ssl=>1) or die "\nconnect failed: $Net::IMAP::Simple::errstr\n";
 $imap->login(@ENV{qw(NIS_TEST_USER NIS_TEST_PASS)});
 
 if( __PACKAGE__->can('run_tests') ) {
