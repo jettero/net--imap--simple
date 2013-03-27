@@ -16,21 +16,27 @@ sub run_tests {
     my $nm = $imap->select('INBOX')
         or die " failure selecting INBOX: " . $imap->errstr . "\n";
 
-    ok( 0+$imap->last, 0 );
-    ok( 0+$imap->unseen, 0 );
+    if( $nm ) {
+        $imap->delete("1:$nm");
+        $imap->expunge_mailbox;
+    }
+
     ok( 0+$imap->recent, 0 );
+    ok( 0+$imap->last,   0 );
+    ok( 0+$imap->unseen, 0 );
 
     for(1 .. $puts) {
         ok( $imap->put( INBOX => "Subject: test-$_\n\ntest-$_" ) );
 
-        ok( 0+$imap->last, $_ );
+        ok( 0+$imap->last,   $_ );
         ok( 0+$imap->recent, $_ );
-
         ok( 0+$imap->unseen, $_ );
 
         $imap->see($_);
         ok( 0+$imap->unseen, 0 );
     }
+
+    exit;
 
     $imap->unsee(4);
     $imap->delete(4);

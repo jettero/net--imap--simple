@@ -54,7 +54,10 @@ $imap = Net::IMAP::Simple->new($ENV{NIS_TEST_HOST}, debug=>\*INFC, use_ssl=>1) o
 $imap->login(@ENV{qw(NIS_TEST_USER NIS_TEST_PASS)});
 
 if( __PACKAGE__->can('run_tests') ) {
-    run_tests()
+    eval {
+        run_tests();
+
+    1} or warn "\nfail: $@\n";
 
 } else {
     warn "weird, no tests";
