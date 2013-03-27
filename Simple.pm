@@ -163,7 +163,7 @@ sub _connect {
             Proto    => 'tcp',
             ( $self->{bindaddr}    ? ( LocalAddr => $self->{bindaddr} )                        : () ),
             ( $_[0]->{ssl_version} ? ( SSL_version => $self->{ssl_version} )                   : () ),
-            ( $_[0]->{use_ssl}     ? ( SSL_verify_mode => IO::Socket::SSL::SSL_VERIFY_PEER() ) : () ),
+            ( $_[0]->{use_ssl}     ? ( SSL_ca_path=>'/etc/ssl/certs/', SSL_verify_mode => IO::Socket::SSL::SSL_VERIFY_PEER() ) : () ),
         );
     }
 
