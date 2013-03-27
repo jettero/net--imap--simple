@@ -276,8 +276,9 @@ sub separator {
 
 sub _clear_cache {
     my $self = shift;
+    my $cb = $self->current_box;
 
-    push @_, $self->{working_box} if exists $self->{working_box} and not @_;
+    push @_, $cb if $cb and not @_;
     return unless @_;
 
     for my $box (@_) {
