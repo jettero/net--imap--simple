@@ -9,7 +9,7 @@ use IO::Socket;
 use IO::Select;
 use Net::IMAP::Simple::PipeSocket;
 
-our $VERSION = "1.2034";
+our $VERSION = "1.2034_2";
 
 BEGIN {
     # I'd really rather the pause/cpan indexers miss this "package"
@@ -42,6 +42,8 @@ sub new {
         $opts{use_ssl} = 1;
     }
 
+    $opts{use_ssl} = 1 if $opts{find_ssl_defaults};
+
     if( $opts{use_ssl} ) {
         eval {
             require IO::Socket::SSL;
@@ -49,6 +51,40 @@ sub new {
             "true";
 
         } or croak "IO::Socket::SSL must be installed in order to use_ssl";
+
+         $self->{ssl_options}       = [ eval {@{ $opts{ssl_options} }} ];
+         carp "ignoring ssl_options: $@" if $opts{ssl_options} and not @{ $self->{ssl_options} };
+
+        unless( @{ $self->{ssl_options} } ) {
+            if( $opts{find_ssl_defaults} ) {
+                my $nothing = 1;
+
+                for(qw(
+                            /etc/ssl/certs/ca-certificates.crt
+                            /etc/pki/tls/certs/ca-bundle.crt
+                            /etc/ssl/ca-bundle.pem
+                            /etc/ssl/certs/
+                    )) {
+
+                    if( -f $_ ) {
+                        @{ $self->{ssl_options} } = (SSL_ca_file=>$_, SSL_verify_mode => IO::Socket::SSL::SSL_VERIFY_PEER());
+                        last;
+
+                    } elsif( -d $_ ) {
+                        @{ $self->{ssl_options} } = (SSL_ca_path=>$_, SSL_verify_mode => IO::Socket::SSL::SSL_VERIFY_PEER());
+                        last;
+                    }
+                }
+
+                if( $nothing ) {
+                    carp "couldn't find rational defaults for ssl verify.  Choosing to not verify.";
+                    @{ $self->{ssl_options} } = (SSL_verify_mode => IO::Socket::SSL::SSL_VERIFY_NONE());
+                }
+
+            } else {
+                @{ $self->{ssl_options} } = (SSL_verify_mode => IO::Socket::SSL::SSL_VERIFY_NONE());
+            }
+        }
     }
 
     if ( $opts{use_v6} ) {
@@ -161,9 +197,9 @@ sub _connect {
             PeerPort => $self->{port},
             Timeout  => $self->{timeout},
             Proto    => 'tcp',
-            ( $self->{bindaddr}    ? ( LocalAddr => $self->{bindaddr} )                        : () ),
-            ( $_[0]->{ssl_version} ? ( SSL_version => $self->{ssl_version} )                   : () ),
-            ( $_[0]->{use_ssl}     ? ( SSL_verify_mode => IO::Socket::SSL::SSL_VERIFY_PEER() ) : () ),
+            ( $self->{bindaddr}    ? ( LocalAddr => $self->{bindaddr} )      : () ),
+            ( $_[0]->{ssl_version} ? ( SSL_version => $self->{ssl_version} ) : () ),
+            ( $_[0]->{use_ssl}     ? (@{ $self->{ssl_options} })             : () ),
         );
     }
 
