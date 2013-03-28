@@ -25,10 +25,6 @@ no warnings;
 # If you want to test, set these environment variables and run the tests.
 #
 #
-#     THIS WILL DELETE ALL MAIL IN THIS ACCOUNT
-#     BE SURE IT IS A TEST ACCOUNT
-#
-#
 #     export NIS_TEST_HOST=someserver.org
 #     export NIS_TEST_USER=someguyname
 #     export NIS_TEST_PASS=blarg
@@ -58,10 +54,28 @@ $imap = Net::IMAP::Simple->new($ENV{NIS_TEST_HOST}, debug=>\*INFC, @c, use_ssl=>
 $imap->login(@ENV{qw(NIS_TEST_USER NIS_TEST_PASS)});
 
 if( __PACKAGE__->can('run_tests') ) {
+    for my $mb (qw(testing testing1 testing2 testing3)) {
+        $imap->create_mailbox($mb);
+        my $nm = $imap->select($mb);
+        if( $nm > 0 ) {
+            $imap->delete("1:$nm");
+            $imap->expunge_mailbox;
+        }
+    }
+
     eval {
         run_tests();
 
     1} or warn "\nfail: $@\n";
+
+    for my $mb (qw(testing testing1 testing2 testing3)) {
+        my $nm = $imap->select($mb);
+        if( $nm > 0 ) {
+            $imap->delete("1:$nm");
+            $imap->expunge_mailbox;
+        }
+        $imap->delete_mailbox($mb);
+    }
 
 } else {
     warn "weird, no tests";
