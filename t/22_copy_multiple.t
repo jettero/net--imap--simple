@@ -1,5 +1,3 @@
-BEGIN { unless( $ENV{I_PROMISE_TO_TEST_SINGLE_THREADED} ) { print "1..1\nok 1\n"; exit 0; } }
-
 use strict;
 use warnings;
 
@@ -8,43 +6,24 @@ use Net::IMAP::Simple;
 
 plan tests => our $tests = 5;
 
+our $imap;
+
 sub run_tests {
-    open INFC, ">>", "informal-imap-client-dump.log" or die $!;
+    my $nm = $imap->select('testing')
+        or die " failure selecting testing: " . $imap->errstr . "\n";
 
-    my $imap = Net::IMAP::Simple->new('localhost:19795', debug=>\*INFC, use_ssl=>1)
-        or die "\nconnect failed: $Net::IMAP::Simple::errstr\n";
+    ok( $imap->select("testing")+0, 0 );
 
-    $imap->login(qw(working login));
-    my $nm = $imap->select('INBOX')
-        or die " failure selecting INBOX: " . $imap->errstr . "\n";
+    $imap->put( testing => "Subject: test-$_\n\ntest-$_", '\Seen' ) for 1 .. 10;
+    ok( $imap->select("testing")+0, 10 );
 
-    ok( $imap->select("INBOX")+0, 0 );
-
-    $imap->put( INBOX => "Subject: test-$_\n\ntest-$_", '\Seen' ) for 1 .. 10;
-    ok( $imap->select("INBOX")+0, 10 );
+    $imap->create_mailbox("testing2");
 
     my @res;
-    ok( $res[0] = $imap->copy( "3:5,9", 'INBOX/working' ) );
-    ok( $res[1] = $imap->copy( "1,7",   'INBOX/working' ) );
-    ok( $res[2] = $imap->select("INBOX/working"), 6 );
-
-    if( $ENV{AUTOMATED_TESTING} ) {
-        unless( $res[0] and $res[1] and $res[2] ) {
-            warn "\n\n multi-copy test restuls have been vexing module maintainer, logdump follows( @res )\n";
-            sleep 1;
-
-            for my $file(qw(informal-imap-client-dump.log informal-imap-server-dump.log)) {
-                if( open my $in, "<", $file ) {
-                    print STDERR "dumping $file\n";
-                    my @log = <$in>;
-                       @log = @log[-200 .. -1] if @log > 200;
-
-                    print STDERR @log;
-                }
-            }
-        }
-    }
+    ok( $res[0] = $imap->copy( "3:5,9", 'testing2' ) );
+    ok( $res[1] = $imap->copy( "1,7",   'testing2' ) );
+    ok( $res[2] = $imap->select("testing2"), 6 );
 }   
 
-do "t/test_server.pm";
+do "t/test_runner.pm";
 

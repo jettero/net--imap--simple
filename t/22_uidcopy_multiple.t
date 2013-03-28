@@ -1,5 +1,3 @@
-BEGIN { unless( $ENV{I_PROMISE_TO_TEST_SINGLE_THREADED} ) { print "1..1\nok 1\n"; exit 0; } }
-
 use strict;
 use warnings;
 
@@ -8,28 +6,26 @@ use Net::IMAP::Simple;
 
 plan tests => our $tests = 5;
 
+our $imap;
+
 sub run_tests {
-    open INFC, ">>", "informal-imap-client-dump.log" or die $!;
+    my $nm = $imap->select('testing')
+        or die " failure selecting testing: " . $imap->errstr . "\n";
 
-    my $imap = Net::IMAP::Simple->new('localhost:19795', debug=>\*INFC, use_ssl=>1)
-        or die "\nconnect failed: $Net::IMAP::Simple::errstr\n";
+    ok( $imap->select("testing")+0, 0 );
 
-    $imap->login(qw(working login));
-    my $nm = $imap->select('INBOX')
-        or die " failure selecting INBOX: " . $imap->errstr . "\n";
+    $imap->put( testing => "Subject: test-$_\n\ntest-$_", '\Seen' ) for 1 .. 10;
+    ok( $imap->select("testing")+0, 10 );
 
-    ok( $imap->select("INBOX")+0, 0 );
-
-    $imap->put( INBOX => "Subject: test-$_\n\ntest-$_", '\Seen' ) for 1 .. 10;
-    ok( $imap->select("INBOX")+0, 10 );
+    $imap->create_mailbox("testing2");
 
     my @_uid359 = $imap->uid("3:5,9");
     my @_uid17  = $imap->uid("1,7");
 
-    ok($imap->uidcopy( join(",",@_uid359), 'INBOX/working' ) );
-    ok($imap->uidcopy( join(",",@_uid17),  'INBOX/working' ) );
-    ok($imap->select("INBOX/working"), 6 );
+    ok($imap->uidcopy( join(",",@_uid359), 'testing2' ) );
+    ok($imap->uidcopy( join(",",@_uid17),  'testing2' ) );
+    ok($imap->select("testing2"), 6 );
 }   
 
-do "t/test_server.pm";
+do "t/test_runner.pm";
 
