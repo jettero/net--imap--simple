@@ -1,5 +1,3 @@
-BEGIN { unless( $ENV{I_PROMISE_TO_TEST_SINGLE_THREADED} ) { print "1..1\nok 1\n"; exit 0; } }
-
 use strict;
 use warnings;
 
@@ -8,21 +6,17 @@ use Net::IMAP::Simple;
 
 plan tests => (our $tests = 10 + 3);
 
+our $imap;
+
 sub run_tests {
-    open INFC, ">>", "informal-imap-client-dump.log" or die $!;
-
-    my $imap = Net::IMAP::Simple->new('localhost:19795', debug=>\*INFC, use_ssl=>1)
-        or die "\nconnect failed: $Net::IMAP::Simple::errstr\n";
-
-    $imap->login(qw(working login));
-    my $nm = $imap->select('INBOX')
-        or die " failure selecting INBOX: " . $imap->errstr . "\n";
+    my $nm = $imap->select('testing')
+        or die " failure selecting testing: " . $imap->errstr . "\n";
 
     $imap->create_mailbox('test');
 
-    ok( $imap->select("INBOX")+0, 0 );
-    $imap->put( INBOX => "Subject: test-$_\n\ntest-$_" . "\n" . (" xxxxxx " x 2_000), '\Seen' ) for 1 .. $tests;
-    ok( $imap->select("INBOX")+0, $tests );
+    ok( $imap->select("testing")+0, 0 );
+    $imap->put( testing => "Subject: test-$_\n\ntest-$_" . "\n" . (" xxxxxx " x 2_000), '\Seen' ) for 1 .. $tests;
+    ok( $imap->select("testing")+0, $tests );
 
     for my $i ( 1 .. ($tests-3) ) {
         my $errors = 0;
@@ -33,9 +27,15 @@ sub run_tests {
         ok($errors, 0);
     }
 
+    # hey, look at that... dovecot produces this error on its own
+    # [...blib/lib/Net/IMAP/Simple.pm line 1181 in sub _send_cmd] 56 FETCH 913 RFC822\r\n
+    # [...blib/lib/Net/IMAP/Simple.pm line 725 in sub _process_cmd] 56 BAD Error in IMAP command FETCH: Invalid messageset\r\n
+    # [...blib/lib/Net/IMAP/Simple.pm line 1201 in sub _cmd_ok] 56 BAD Error in IMAP command FETCH: Invalid messageset\r\n
+
+
     $imap->get($tests + 9_00); # finishing move
-    ok( $imap->errstr, qr(message not found) ); # SPURIOUS: there's really no such error in imap
+    ok( $imap->errstr, qr(Invalid messageset|message not found)i );
 }   
 
-do "t/test_server.pm";
+do "t/test_runner.pm";
 

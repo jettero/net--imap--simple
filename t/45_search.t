@@ -1,5 +1,3 @@
-BEGIN { unless( $ENV{I_PROMISE_TO_TEST_SINGLE_THREADED} ) { print "1..1\nok 1\n"; exit 0; } }
-
 use strict;
 use warnings;
 
@@ -7,28 +5,22 @@ use Test;
 use Net::IMAP::Simple;
 
 plan tests => our $tests =
-    (my $puts = 5)*2
-    +2 # startup
+    (my $puts = 5)*1
+    +1 # startup
     +2 # subject searches
     ;
 
+our $imap;
+
 sub run_tests {
-    open INFC, ">>", "informal-imap-client-dump.log" or die $!;
-
-    my $imap = Net::IMAP::Simple->new('localhost:19795', debug=>\*INFC, use_ssl=>1)
-        or die "\nconnect failed: $Net::IMAP::Simple::errstr\n";
-
-    $imap->login(qw(working login));
-    my $nm = $imap->select('INBOX')
-        or die " failure selecting INBOX: " . $imap->errstr . "\n";
+    my $nm = $imap->select('testing')
+        or die " failure selecting testing: " . $imap->errstr . "\n";
 
     ok( 0+$imap->search_unseen, 0 );
-    ok( 0+$imap->search_recent, 0 );
 
     for my $pnum (1 .. $puts) {
-        $imap->put( INBOX => "Subject: test-$pnum\n\ntest-$pnum" );
+        $imap->put( testing => "Subject: test-$pnum\n\ntest-$pnum" );
 
-        ok( 0+$imap->search_recent, $pnum );
         ok( 0+$imap->search_unseen, $pnum );
     }
 
@@ -36,4 +28,4 @@ sub run_tests {
     ok( 0+$imap->search_subject("test-3"), 1 );
 }
 
-do "t/test_server.pm";
+do "t/test_runner.pm";

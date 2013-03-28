@@ -1,5 +1,3 @@
-BEGIN { unless( $ENV{I_PROMISE_TO_TEST_SINGLE_THREADED} ) { print "1..1\nok 1\n"; exit 0; } }
-
 use strict;
 use warnings;
 
@@ -18,17 +16,14 @@ use Net::IMAP::SimpleX;
 
 plan tests => our $tests = 4 + (3+4);
 
+our $imap;
+our $USE_SIMPLEX = 1;
+
 sub run_tests {
-    open INFC, ">>", "informal-imap-client-dump.log" or die $!;
+    my $nm = $imap->select('testing')
+        or die " failure selecting testing: " . $imap->errstr . "\n";
 
-    my $imap = Net::IMAP::SimpleX->new('localhost:19795', debug=>\*INFC, use_ssl=>1)
-        or die "\nconnect failed: $Net::IMAP::Simple::errstr\n";
-
-    $imap->login(qw(working login));
-    my $nm = $imap->select('INBOX')
-        or die " failure selecting INBOX: " . $imap->errstr . "\n";
-
-    $imap->put( INBOX => "Subject: test" );
+    $imap->put( testing => "Subject: test" );
 
     my $bs = $imap->body_summary(1);
     ok( not $bs->has_parts() );
@@ -36,7 +31,7 @@ sub run_tests {
     ok( not $bs->parts() );
     ok( $bs->body()->content_type(), "text/plain" );
 
-    $imap->put( INBOX => <<TEST2 );
+    $imap->put( testing => <<TEST2 );
 From jettero\@cpan.org Wed Jun 30 11:34:39 2010
 Subject: something
 MIME-Version: 1.0
@@ -67,4 +62,4 @@ TEST2
     ok( $parts[1]->charset(), "fake-charset-2" );
 }
 
-do "t/test_server.pm";
+do "t/test_runner.pm";

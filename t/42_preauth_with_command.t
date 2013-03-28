@@ -1,5 +1,3 @@
-BEGIN { unless( $ENV{I_PROMISE_TO_TEST_SINGLE_THREADED} ) { print "1..1\nok 1\n"; exit 0; } }
-
 use strict;
 no warnings;
 
@@ -48,11 +46,15 @@ unless( $cmd ) {
 my $imap = Net::IMAP::Simple->new("cmd:$cmd", debug=>\*INFC)
     or die "\nconnect failed: $Net::IMAP::Simple::errstr\n";
 
-my $nm = $imap->select('INBOX')
-    or die " failure selecting INBOX: " . $imap->errstr . "\n";
+$imap->create_mailbox('testing');
 
-$imap->put( INBOX => $msg ); my $gmsg =
+my $nm = $imap->select('testing')
+    or die " failure selecting testing: " . $imap->errstr . "\n";
+
+$imap->put( testing => $msg ); my $gmsg =
 $imap->get( $nm + 1 );
+
+$imap->delete_mailbox('testing');
 
 fixeol($msg);
 fixeol($gmsg);

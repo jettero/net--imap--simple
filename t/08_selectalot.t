@@ -8,11 +8,11 @@ plan tests => our $tests = 3;
 our $imap;
 
 sub run_tests {
-    $imap->select("INBOX") or warn " \e[1;33m" . $imap->errstr . "\e[m\n";
-    ok( $imap->current_box, "INBOX" );
+    $imap->select("testing") or warn " \e[1;33m" . $imap->errstr . "\e[m\n";
+    ok( $imap->current_box, "testing" );
 
     $imap->select("reallynowaythissuckerexistsIhope");
-    ok( $imap->current_box, "INBOX" );
+    ok( $imap->current_box, "testing" );
 
     $imap->create_mailbox("anotherthingy");
 

@@ -22,13 +22,9 @@ our $imap;
 
 sub run_tests {
 
-    my $nm = $imap->select("INBOX");
-    if( $nm ) {
-        $imap->delete("1:$nm");
-        $imap->expunge_mailbox;
-    }
+    my $nm = $imap->select("testing");
 
-    $imap->put( INBOX => "Subject: test!\n\ntest-$_!" ) for 1 .. 5;
+    $imap->put( testing => "Subject: test!\n\ntest-$_!" ) for 1 .. 5;
     $imap->get( $_ ) for 1 .. 5;
 
     ok( $append_ok, 5 );

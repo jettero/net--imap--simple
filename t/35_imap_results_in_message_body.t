@@ -1,5 +1,3 @@
-BEGIN { unless( $ENV{I_PROMISE_TO_TEST_SINGLE_THREADED} ) { print "1..1\nok 1\n"; exit 0; } }
-
 use strict;
 use warnings;
 
@@ -23,20 +21,21 @@ Hi, this is a message, do you like it?
 
 HERE
 
+our $imap;
+
 sub run_tests {
-    open INFC, ">>", "informal-imap-client-dump.log" or die $!;
+    my $nm = $imap->select('testing')
+        or die " failure selecting testing: " . $imap->errstr . "\n";
 
-    my $imap = Net::IMAP::Simple->new('localhost:19795', debug=>\*INFC, use_ssl=>1)
-        or die "\nconnect failed: $Net::IMAP::Simple::errstr\n";
+    $imap->put( testing => $special_message );
 
-    $imap->login(qw(working login));
-    my $nm = $imap->select('INBOX')
-        or die " failure selecting INBOX: " . $imap->errstr . "\n";
+    my $return = $imap->get(1);
 
-    $imap->put( INBOX => $special_message );
+    $special_message =~ s/\x0d?\x0a/\x07/g;
+    $return =~ s/\x0d?\x0a/\x07/g;
 
-    ok( $imap->get(1), $special_message );
+    ok( $return, $special_message );
 }   
 
-do "t/test_server.pm";
+do "t/test_runner.pm";
 

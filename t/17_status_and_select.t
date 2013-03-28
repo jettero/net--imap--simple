@@ -9,17 +9,17 @@ plan tests => our $tests = 6;
 our $imap;
 
 sub run_tests {
-    my $nm = $imap->select('INBOX')
-        or die " failure selecting INBOX: " . $imap->errstr . "\n";
+    my $nm = $imap->select('testing')
+        or die " failure selecting testing: " . $imap->errstr . "\n";
 
     if( $nm ) {
         $imap->delete("1:$nm");
         $imap->expunge_mailbox;
     }
 
-    ok( $imap->select("INBOX")+0, 0 );
+    ok( $imap->select("testing")+0, 0 );
 
-    $imap->put( INBOX => "Subject: test-$_\n\ntest-$_", '\Seen' ) for 1 .. 10;
+    $imap->put( testing => "Subject: test-$_\n\ntest-$_", '\Seen' ) for 1 .. 10;
 
     my ($unseen, $recent, $total) = $imap->status;
     ok( "unseen $unseen", "unseen 0" );
