@@ -27,7 +27,7 @@ NiSim Test
 
 HERE
 
-open INFC, ">>", "informal-imap-client-dump.log" or die $!;
+#open INFC, ">>", "informal-imap-client-dump.log" or die $!;
 
 my $cmd;
 if( my $t = "$ENV{HOME}/.ppsc_test" ) {
@@ -43,8 +43,8 @@ unless( $cmd ) {
     exit 0;
 }
 
-my $imap = Net::IMAP::Simple->new("cmd:$cmd", debug=>\*INFC)
-    or die "\nconnect failed: $Net::IMAP::Simple::errstr\n";
+my $imap = Net::IMAP::Simple->new("cmd:$cmd", #debug=>\*INFC
+) or die "\nconnect failed: $Net::IMAP::Simple::errstr\n";
 
 $imap->create_mailbox('testing');
 

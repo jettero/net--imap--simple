@@ -1,8 +1,4 @@
 .perlcriticrc
-.todo
-certs/server-cert.csr
-certs/server-cert.pem
-certs/server-key.pem
 Changes
 contrib/33189_attach.pl
 contrib/connectalot.pl
