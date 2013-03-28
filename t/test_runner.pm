@@ -23,10 +23,15 @@ no warnings;
 # management the way I was doing it.  I gave up.
 #
 # If you want to test, set these environment variables and run the tests.
+# These settings are intentionally un-obvious.  If you want to run automated
+# tests please help debug the failures.  Automated test results against unknown
+# environments help absolutely nobody at all.  Your IMAP server will differ
+# from mine, so some of the tests will fail and I won't have any ability to
+# figure out why without your /tmp/ logs and/or some help.  With most modules
+# cpan testers is the best thing in the entire world.  With IMAP, not so much.
 #
 #     ** THIS WILL DESTROY ANY FOLDERS YOU HAVE NAMED
 #     **      TESTING, TESTING2 OR TESTING3
-#     ** USE A TEST ACCOUNT!
 #
 #     export NIS_TEST_HOST=someserver.org
 #     export NIS_TEST_USER=someguyname
@@ -34,7 +39,6 @@ no warnings;
 #
 #     ** THIS WILL DESTROY ANY FOLDERS YOU HAVE NAMED
 #     **      TESTING, TESTING2 OR TESTING3
-#     ** USE A TEST ACCOUNT!
 #  
 # HOST will get connections on 143 and 993, specifying a port is not possible
 # at this time.

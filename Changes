@@ -5,11 +5,17 @@
      puzzle was an amalgam of various ideas from Tom Heady
      (https://github.com/tomheady).
 
-   - There are no more local server tests and no more
-     Net::IMAP::Server environments to test in.  It was driving
-     me crazy how buggy that was, so I removed it.  If you want
-     to test against a real dovecot or uwash server, super! check
-     the t/test_runner.pm file for the settings.
+   - I deleted the Net::IMAP::Server from inc/ and there is no
+     longer a Net::IMAP::Server environment to test in.  It was
+     driving me crazy how buggy that was in some places, and I
+     had no ability to reproduce those environments, so I removed
+     it.  If you want to test against a real dovecot or uwash
+     server, super! check the t/test_runner.pm file for the
+     settings.  They are intentionally unobvious -- please don't
+     run automated tests unless you're willing to help debug.
+     The automated results don't help anybody without further
+     information on the failures.  Normally, cpan testers is the
+     best thing in the world ... IMAP sucks.
 
 1.2034_2: Fri Nov 16 2012
    - finally, some testers rand _1 ... didn't tell me anything;
