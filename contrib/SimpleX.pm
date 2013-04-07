@@ -61,7 +61,7 @@ use Carp;
 use Parse::RecDescent;
 use base 'Net::IMAP::Simple';
 
-our $VERSION = "1.0010";
+our $VERSION = "1.1000";
 
 # directly from http://tools.ietf.org/html/rfc3501#section-9
 # try and flatten, format as best we can
