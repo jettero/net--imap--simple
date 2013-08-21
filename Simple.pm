@@ -1225,6 +1225,15 @@ sub _seterrstr {
     return;
 }
 
+sub debug {
+    my $this = shift;
+    if( @_ ) {
+        $this->{debug} = shift;
+    }
+
+    return $this->{debug};
+}
+
 sub _debug {
     my ( $self, $package, $filename, $line, $dline, $routine, $str ) = @_;
 
