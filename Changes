@@ -1,5 +1,8 @@
 1.2203: Mon Oct 07 2013
    - https://rt.cpan.org/Public/Bug/Display.html?id=89296
+     I think I fixed a design problem (no argument sanitization)
+     thinking it fixed the bug, but there may have never been a
+     bug.
 
 1.2202: Wed Oct 02 2013
    - really minor pod fix
