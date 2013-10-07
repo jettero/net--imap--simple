@@ -1155,7 +1155,7 @@ sub _cmd_ok {
 }
 
 sub _read_multiline {
-    my ( $self, $sock, $count ) = @_;
+    my ( $self, $sock, $list, $count ) = @_;
 
     my @lines;
     my $read_so_far = 0;
@@ -1171,9 +1171,26 @@ sub _read_multiline {
         }
     }
 
+    if($list and $lines[-1] !~ /\)/) {
+        $self->_debug( caller, __LINE__, '_read_multiline', "Looking for ending parenthsis match..." );
+
+        my $unmatched = 1;
+        while( $unmatched ) {
+            if( defined( my $line = $sock->getline ) ) {
+                push @lines, $line;
+                $unmatched = 0 if($line =~ /\)/);
+            } else {
+                $self->_seterrstr( "error reading $count bytes from socket" );
+                last;
+            }
+        }
+    }
+
     if ( $self->{debug} ) {
+        my $count=0;
         for ( my $i = 0 ; $i < @lines ; $i++ ) {
-            $self->_debug( caller, __LINE__, '_read_multiline', "[$i] $lines[$i]" );
+            $count += length($lines[$i]);
+            $self->_debug( caller, __LINE__, '_read_multiline', "[$i] ($count) $lines[$i]" );
         }
     }
 
@@ -1195,8 +1212,13 @@ sub _process_cmd {
         $self->_debug( caller, __LINE__, '_process_cmd', $res ) if $self->{debug};
 
         if ( $res =~ /^\*.*\{(\d+)\}[\r\n]*$/ ) {
+            my $count = $1;
+            my $list;
+
+            $list = 1 if($res =~ /\(/);
+
             $args{process}->($res);
-            foreach( $self->_read_multiline( $sock, $1 ) ) {
+            foreach( $self->_read_multiline( $sock, $list, $count ) ) {
                 $cb->($_) if $cb;
                 $args{process}->($_)
             }
