@@ -6,7 +6,7 @@ use warnings;
 use Test;
 use Net::IMAP::Simple;
 
-plan tests => our $tests = 1;
+plan tests => our $tests = 3;
 
 our $imap;
 
@@ -23,6 +23,16 @@ sub run_tests {
     my @a = "@r" =~ m/(test\d+)/g;
 
     ok( "@a", "test1 test2" );
+
+    @r = $imap->top(1);
+    @a = "@r" =~ m/(test\d+)/g;
+
+    ok( "@a", "test1" );
+
+    @r = $imap->top(2);
+    @a = "@r" =~ m/(test\d+)/g;
+
+    ok( "@a", "test2" );
 }
 
 do "t/test_runner.pm";
