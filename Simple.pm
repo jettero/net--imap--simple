@@ -1273,19 +1273,23 @@ sub _debug {
 
     $line = "[$short_fname line $line in sub $routine] $str\n";
 
-    if ( ref( $self->{debug} ) eq 'GLOB' ) {
-        print { $self->{debug} } $line;
+    if( exists $self->{debug} and defined $self->{debug} ) {
 
-    } elsif( $self->{debug} eq "warn" ) {
-        warn $line;
+        if ( ref( $self->{debug} ) eq 'GLOB' ) {
+            print { $self->{debug} } $line;
 
-    } elsif( $self->{debug} =~ m/^file:(.+)/ ) {
-        open my $out, ">>",  $1 or warn "[log io fail: $@] $line";
-        print $out $line;
-        CORE::close($out);
+        } elsif( $self->{debug} eq "warn" ) {
+            warn $line;
 
-    } else {
-        print STDOUT $line;
+        } elsif( $self->{debug} =~ m/^file:(.+)/ ) {
+            open my $out, ">>",  $1 or warn "[log io fail: $@] $line";
+            print $out $line;
+            CORE::close($out);
+
+        } else {
+            print STDOUT $line;
+        }
+
     }
 
     return;
