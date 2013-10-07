@@ -3,6 +3,8 @@
      I think I fixed a design problem (no argument sanitization)
      thinking it fixed the bug, but there may have never been a
      bug.
+   - nope, was a format problem.  Holborn supplied his own
+     patches.
 
 1.2202: Wed Oct 02 2013
    - really minor pod fix
