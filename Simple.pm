@@ -9,7 +9,7 @@ use IO::Socket;
 use IO::Select;
 use Net::IMAP::Simple::PipeSocket;
 
-our $VERSION = "1.2202";
+our $VERSION = "1.2203";
 
 BEGIN {
     # I'd really rather the pause/cpan indexers miss this "package"
@@ -480,6 +480,7 @@ sub noop {
 
 sub top {
     my ( $self, $number ) = @_;
+    my $messages = $number || '1:' . $self->_last;
 
     my @lines;
 
@@ -496,12 +497,13 @@ sub top {
     ## rfc2822 ##    sections 3 and 4 of this standard.
 
     return $self->_process_cmd(
-        cmd   => [ FETCH => qq[$number RFC822.HEADER] ],
+        cmd   => [ FETCH => qq[$messages RFC822.HEADER] ],
         final => sub {
-            $lines[-1] =~ s/\)\x0d\x0a\z//; # sometimes we get this and I don't think we should
+            $lines[-1] =~ s/\)\x0d\x0a\z//  # sometimes we get this and I don't think we should
                                             # I really hoping I'm not breaking someting by doing this.
+                if @lines;
 
-            \@lines
+            return wantarray ? @lines : \@lines
         },
         process => sub {
             return if $_[0] =~ m/\*\s+\d+\s+FETCH/i; # should this really be case insensitive?

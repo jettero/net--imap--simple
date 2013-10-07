@@ -37,6 +37,7 @@ t/55_uid_stuff.t
 t/60_fetch_with_grammar.t
 t/70_list2range.t
 t/75_back_and_forth.t
+t/80_top.t
 t/critic.t
 t/pod.t
 t/pod_coverage.t
