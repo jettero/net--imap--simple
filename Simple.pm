@@ -1171,16 +1171,19 @@ sub _read_multiline {
         }
     }
 
-    if($list and $lines[-1] !~ /\)/) {
-        $self->_debug( caller, __LINE__, '_read_multiline', "Looking for ending parenthsis match..." );
+    if($list and $lines[-1] !~ /^\)[\r\n]*$/) {
+        $self->_debug( caller, __LINE__, '_read_multiline', "Looking for ending parenthses match..." ) if $self->{debug};
 
         my $unmatched = 1;
         while( $unmatched ) {
             if( defined( my $line = $sock->getline ) ) {
-                push @lines, $line;
-                $unmatched = 0 if($line =~ /\)/);
+                if($line =~ /^\)[\r\n]*$/) {
+                    $unmatched = 0;
+                } else {
+                    push @lines, $line;
+                }
             } else {
-                $self->_seterrstr( "error reading $count bytes from socket" );
+                $self->_seterrstr( "error matching ending parentheses after reading $count bytes from socket" );
                 last;
             }
         }
