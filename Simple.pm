@@ -9,7 +9,7 @@ use IO::Socket;
 use IO::Select;
 use Net::IMAP::Simple::PipeSocket;
 
-our $VERSION = "1.2203";
+our $VERSION = "1.2204";
 
 BEGIN {
     # I'd really rather the pause/cpan indexers miss this "package"
@@ -1003,22 +1003,18 @@ sub expunge_mailbox {
     # S: * 8 EXPUNGE
     # S: A202 OK EXPUNGE completed
 
-    $self->{_waserr} = 1;
-
     my @expunged;
     return $self->_process_cmd(
         cmd   => ['EXPUNGE'],
         final => sub {
             $self->_clear_cache;
-            return if $self->{_waserr};
-            return @expunged if wantarray;
+            return @expunged if wantarray; # don't return 0E0 if want array and we're empty
             return "0E0" unless @expunged;
             return @expunged;
         },
         process => sub {
             if( $_[0] =~ m/^\s*\*\s+(\d+)\s+EXPUNGE[\r\n]*$/i ) {
                 push @expunged, $1;
-                delete $self->{_waserr};
             }
         },
     );
