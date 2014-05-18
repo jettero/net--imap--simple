@@ -112,6 +112,7 @@ sub new {
 
         } else {
             $self->{server} = $server;
+            $self->{port}   = $opts{port};
         }
 
         $self->{port} = $self->_port unless defined $self->{port};
