@@ -1,3 +1,6 @@
+1.2205: Sat May 17 2014
+   - Patch from Rob Hoelz to fix bug/docbug regarding port numbers.
+
 1.2204: Sat Dec 14 2013
    - disable error checking on expunge.  It's not clear to me
      that this ever produces an error (which would be with the
