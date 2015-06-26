@@ -678,8 +678,7 @@ sub get {
     my $arg = $part ?
 		( $part =~ /[\[\]\<\>]/ ? $part : "BODY[$part]" )
 		: 'RFC822';
-	# XXX: if data item is recognised as part specifier,
-	# try putting it in brackets
+	# XXX: some data items will still be recognised as part specifiers
 
     my @lines;
     my $fetching;
