@@ -675,10 +675,13 @@ sub search_body    { my $self = shift; my $t = _process_qstring(shift); return $
 
 sub get {
     my ( $self, $number, $part ) = @_;
-    my $arg = $part ?
-		( $part =~ /[\[\]\<\>]/ ? $part : "BODY[$part]" )
-		: 'RFC822';
-	# XXX: some data items will still be recognised as part specifiers
+    my $arg = $part ? "BODY[$part]" : 'RFC822';
+	return $self->fetch( $number, $part );
+}
+
+sub fetch {
+    my ( $self, $number, $part ) = @_;
+    my $arg = $part or 'RFC822';
 
     my @lines;
     my $fetching;
