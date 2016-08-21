@@ -137,7 +137,7 @@ Enable C<select()> caching internally
 =item select_cache_ttl => int
 
 The number of seconds to allow a select cache result live before running
-C<$imap->select()> again.
+C<< $imap->select() >> again.
 
 =item debug => BOOL | \*HANDLE | warn | file:name
 
@@ -282,7 +282,7 @@ Un-selects the current mailbox, leaving no mailbox selected.
 
     print "Messages in Junk Mail -- " . $imap->messages("INBOX.Junk Mail") .  "\n";
 
-This method is an alias for C<$imap->select>
+This method is an alias for C<< $imap->select >>
 
 =item flags
 
