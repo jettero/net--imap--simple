@@ -886,7 +886,7 @@ is a "simple" module after all), so in most places where a message number is
 required, you can instead use so-called I<sequence sets>.  Examples:
 
     $imap->copy(   "3,4,9:22", "ANOTHERBOX" ) or die $imap->errstr;
-    $imap->delete( "3,4,9:22", "ANOTHERBOX" ) or die $imap->errstr;
+    $imap->delete( "3,4,9:22" ) or die $imap->errstr;
 
 =back
 
