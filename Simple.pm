@@ -681,7 +681,7 @@ sub get {
 
 sub fetch {
     my ( $self, $number, $part ) = @_;
-    my $arg = $part or 'RFC822';
+    my $arg = $part || 'RFC822';
 
     my @lines;
     my $fetching;
