@@ -45,6 +45,9 @@ no warnings;
 #
 #
 
+open my $lock, "<", "t/test_runner.pm" or die "couldn't open lockfile: $!";
+flock $lock, LOCK_EX or die "couldn't lock lockfile: $!";
+
 unless( exists $ENV{NIS_TEST_HOST} and exists $ENV{NIS_TEST_USER} and exists $ENV{NIS_TEST_PASS} and Net::IMAP::Simple->new($ENV{NIS_TEST_HOST}) ) {
     ok($_) for 1 .. $tests;  # just skip everything
     my $line = "[not actually running any tests -- see t/test_runner.pm]";
