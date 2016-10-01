@@ -11,3 +11,4 @@ test_simplex
 entire_response.dat
 MYMETA.*
 .prove
+t/test_runner.pm.lock

@@ -14,3 +14,4 @@ inc/slurp_fetchmailx.pm
 slurp_net_imap_server.sh
 test_simplex
 ^MYMETA
+t/test_runner.pm.lock
