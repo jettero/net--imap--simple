@@ -1,3 +1,8 @@
+1.2207: Sat Oct 01 2016
+   - repair unit tests to work with gmail (pfft)
+   - added in pull requests on github
+     the only non-doc item was https://github.com/jettero/net--imap--simple/pull/6
+
 1.2206: Thu Dec 18 2014
    - minor debug issue
 
