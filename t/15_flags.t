@@ -23,7 +23,7 @@ sub run_tests {
         ok( $imap->put( testing => "Subject: test-$_\n\ntest-$_" ) );
 
         ok( 0+$imap->last,   $_ );
-        ok( 0+$imap->unseen, $_ );
+        ok( 0+$imap->unseen, 1  );
 
         $imap->see($_);
         ok( 0+$imap->unseen, 0 );
