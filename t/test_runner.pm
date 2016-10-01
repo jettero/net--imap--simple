@@ -13,6 +13,8 @@ no warnings;
 # test against your own server if you wish to test.  I highly recommend
 # skipping the tests.  If you choose to report errors, please also explain why
 # they failed.
+#
+### these tests are all tuned for gmail, used to test best on dovecot ###
 # 
 # For example, the last failures from CPAN Testers seemed to be segmentation
 # faults in SSL that I couldn't reproduce at my house or at work.  Not really a

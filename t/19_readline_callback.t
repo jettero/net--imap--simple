@@ -13,7 +13,7 @@ sub callback_test {
     my ($line) = @_;
 
     # e.g.: 5 OK [APPENDUID 1283347568 1002] APPEND COMPLETED
-    $append_ok ++ if $line =~ m/\d+\s+OK.+?APPEND COMPLETED/i;
+    $append_ok ++ if $line =~ m/\d+\s+OK.+?APPEND/i;
     $get_ok    ++ if $line =~ m/test-\d+!/;
 }
 
