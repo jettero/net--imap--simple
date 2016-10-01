@@ -45,8 +45,8 @@ no warnings;
 #
 #
 
-#open my $lock, ">", "t/test_runner.pm.lock" or die "couldn't open lockfile: $!";
-#flock $lock, LOCK_EX or die "couldn't lock lockfile: $!";
+open my $lock, ">", "t/test_runner.pm.lock" or die "couldn't open lockfile: $!";
+flock $lock, LOCK_EX or die "couldn't lock lockfile: $!";
 
 unless( exists $ENV{NIS_TEST_HOST} and exists $ENV{NIS_TEST_USER} and exists $ENV{NIS_TEST_PASS} ) {
     ok($_) for 1 .. $tests;  # just skip everything
