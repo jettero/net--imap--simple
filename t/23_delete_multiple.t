@@ -18,7 +18,7 @@ sub run_tests {
     $imap->delete( "3:4,6" ) or warn $imap->errstr;
     my @e = $imap->expunge_mailbox;
     ok( not $imap->waserr );
-    ok( "@e", "6 4 3" );
+    ok( "@e", qr(6 4 3|3 3 4) ); # (rational dovecot following imap sec | gmail doing its own thing)
 
     ok( $imap->last, 7 );
 }   
