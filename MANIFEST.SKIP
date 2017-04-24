@@ -16,3 +16,4 @@ test_simplex
 ^MYMETA
 t/test_runner.pm.lock
 .prove
+.travis.yml

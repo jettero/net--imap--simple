@@ -1,0 +1,17 @@
+language: perl
+#group:    stable
+#dist:     trusty
+#os:       linux
+
+perl:
+  - '5.8'
+  - '5.24'
+  - '5.26'
+
+script:
+  - cpanm --notest Parse::RecDescent
+  - cpanm --notest Test::Pod
+  - cpanm --notest Test::Pod::Coverage
+  - cpanm --notest Test::Perl::Critic
+  - TEST_AUTHOR=1 PERL_MM_USE_DEFAULT=1 perl Makefile.PL
+  - TEST_AUTHOR=1 make test
