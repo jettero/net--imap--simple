@@ -389,6 +389,22 @@ a scalar value is returned. When listing the entire mailbox a hash is returned.
 On failure, nothing is returned and the C<errstr()> error handler is set with the
 error message.
 
+=item fetch
+
+  my $headers = $imap->fetch("1:5")
+
+Fetch the headers for messages 1-5 in the current folder.
+
+  for my $midx ( keys %$headers ) {
+      for my $hdr in ($headers->{$midx}) {
+          say "$hdr"
+
+          # In many situations the headers will be parsed and may not be simple
+          # strings (e.g., with the SimpleX RecDescent parse). The simplest
+          # way to get a feel for the output is to use a dumper on it.
+      }
+  }
+
 =item get
 
   my $message = $imap->get( $message_number ) or die $imap->errstr;
