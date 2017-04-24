@@ -8,9 +8,9 @@ sudo: false
 perl:
   - '5.8'
   - '5.24'
+  - '5.26'
 
 env:
-  - PERL_MM_USE_DEFAULT=1
   - PERL_MM_USE_DEFAULT=1 TEST_AUTHOR=1
 
 cache:
@@ -18,13 +18,18 @@ cache:
     - perl_modules
 
 before_install:
-  - cpanm local::lib
-  - eval "$(perl -Mlocal::lib=${PWD}/perl_modules)"
-
-script:
+  - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
+  - source ~/travis-perl-helpers/init
+  - build-perl
+  - perl -V
+  - cpanm --local::lib
   - cpanm --notest Parse::RecDescent
   - cpanm --notest Test::Pod
   - cpanm --notest Test::Pod::Coverage
   - cpanm --notest Test::Perl::Critic
-  - perl Makefile.PL
+  - eval "$(perl -Mlocal::lib=${PWD}/perl_modules)"
+  - build-dist
+  - cd $BUILD_DIR
+
+script:
   - make test
