@@ -9,7 +9,7 @@ perl:
   - '5.26'
 
 script:
-  - [ "$TRAVIS_PERL_VERSION" = 5.26 ] && perlbrew install perl-5.26.0 && perlbrew use perl-5.26.0
+  - '[ "$TRAVIS_PERL_VERSION" = 5.26 ] && perlbrew install perl-5.26.0 && perlbrew use perl-5.26.0'
   - cpanm --notest Parse::RecDescent
   - cpanm --notest Test::Pod
   - cpanm --notest Test::Pod::Coverage
