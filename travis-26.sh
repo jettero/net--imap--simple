@@ -10,3 +10,5 @@ if [ "$TRAVIS_PERL_VERSION" = 5.26 ]; then
         perlbrew use perl-5.26.0     || exit 1
     fi
 fi
+
+exit 0
