@@ -9,7 +9,7 @@ perl:
   - 'perl-blead'
 
 env:
-  - TEST_AUTHOR=1 PERL_MM_USE_DEFAULT=1
+  - TEST_AUTHOR=1 PERL_MM_USE_DEFAULT=1 PERL5LIB=~/perl5
 
 script:
   - bash travis-blead.sh
