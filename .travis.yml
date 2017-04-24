@@ -12,6 +12,7 @@ env:
   - TEST_AUTHOR=1 PERL_MM_USE_DEFAULT=1
 
 script:
+  - bash travis-blead.sh
   - cpanm --notest Parse::RecDescent
   - cpanm --notest Test::Pod
   - cpanm --notest Test::Pod::Coverage
