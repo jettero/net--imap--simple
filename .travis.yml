@@ -9,7 +9,7 @@ perl:
   - '5.26'
 
 script:
-  - set
+  - set | grep PERL
   - cpanm --notest Parse::RecDescent
   - cpanm --notest Test::Pod
   - cpanm --notest Test::Pod::Coverage
