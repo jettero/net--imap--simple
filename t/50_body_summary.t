@@ -64,4 +64,4 @@ TEST2
     # ok( $parts[1]->charset(), "fake-charset-2" );
 }
 
-do "t/test_runner.pm";
+do "./t/test_runner.pm";

@@ -31,4 +31,4 @@ sub run_tests {
     ok( $get_ok,    5 );
 }
 
-do "t/test_runner.pm";
+do "./t/test_runner.pm";
