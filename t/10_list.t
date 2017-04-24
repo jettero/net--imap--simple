@@ -30,4 +30,4 @@ sub run_tests {
     ok( $v == 21 || $v == 25 ); # dovecot puts another \r\n on the end (or something like that) and is 25 instead of the expected 21 bytes
 }
 
-do "t/test_runner.pm";
+do "./t/test_runner.pm";

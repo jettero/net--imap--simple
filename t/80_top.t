@@ -34,4 +34,4 @@ sub run_tests {
     ok( "@a", "test2" );
 }
 
-do "t/test_runner.pm";
+do "./t/test_runner.pm";

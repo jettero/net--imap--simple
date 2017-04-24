@@ -78,4 +78,4 @@ sub run_tests {
     ok( defined $imap->deleted(5) );
 }
 
-do "t/test_runner.pm";
+do "./t/test_runner.pm";
