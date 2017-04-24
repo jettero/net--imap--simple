@@ -3,6 +3,8 @@ language: perl
 #dist:     trusty
 #os:       linux
 
+sudo: false
+
 perl:
   - '5.8'
   - '5.24'
@@ -10,6 +12,14 @@ perl:
 env:
   - PERL_MM_USE_DEFAULT=1
   - PERL_MM_USE_DEFAULT=1 TEST_AUTHOR=1
+
+cache:
+  directories:
+    - perl_modules
+
+before_install:
+  - cpanm local::lib
+  - eval "$(perl -Mlocal::lib=${PWD}/perl_modules)"
 
 script:
   - cpanm --notest Parse::RecDescent
