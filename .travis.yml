@@ -27,5 +27,8 @@ before_install:
   - build-dist
   - cd $BUILD_DIR
 
+# travis seems to issue cpanm --quiet --installdeps --notest . for us somewhere
+# after the last <before_install> and somewhere before the first <script>
+
 script:
   - make test
