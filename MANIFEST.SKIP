@@ -17,4 +17,3 @@ test_simplex
 t/test_runner.pm.lock
 .prove
 .travis.yml
-travis-26.sh
