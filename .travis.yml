@@ -7,6 +7,10 @@ perl:
   - '5.8'
   - '5.24'
 
+env:
+  - TEST_AUTHOR=0 PERL_MM_USE_DEFAULT=1
+  - TEST_AUTHOR=1 PERL_MM_USE_DEFAULT=1
+
 script:
   - bash travis-blead.sh
   - cpanm --notest Parse::RecDescent
