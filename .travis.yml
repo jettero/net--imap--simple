@@ -9,9 +9,9 @@ perl:
   - '5.26'
 
 script:
-  - sudo cpanm --notest Parse::RecDescent
-  - sudo cpanm --notest Test::Pod
-  - sudo cpanm --notest Test::Pod::Coverage
-  - sudo cpanm --notest Test::Perl::Critic
+  - cpanm --notest Parse::RecDescent
+  - cpanm --notest Test::Pod
+  - cpanm --notest Test::Pod::Coverage
+  - cpanm --notest Test::Perl::Critic
   - TEST_AUTHOR=1 PERL_MM_USE_DEFAULT=1 perl Makefile.PL
   - TEST_AUTHOR=1 make test
