@@ -1,35 +1,23 @@
 language: perl
-#group:    stable
-#dist:     trusty
-#os:       linux
-
 sudo: false
-
 perl:
-  - '5.8'
-  - '5.24'
-  # dev
-  # blead
-
+- '5.8'
+- '5.24'
 env:
+  global:
   - PERL_MM_USE_DEFAULT=1 TEST_AUTHOR=1
-
+  - secure: HqgquMg0UdA4gg2w7Zc8PIay77WlvN9zJLcBTBPULr2x1FCV2YvmxRGpn9dIotzGnTWRoqNHNAdqr+0V4cuaXGxOZ4hmfX53NY3V2zdWbNwyb+/aQqxgVM25TYohpB2g5B5NqiaYBoAtk7pZf6B0HywljgS3IITc16+dX6keOCxrMd06NPFHhF3arqNSw/QIGgiUrJXLtprQCC0vX5/dbIe9pwuvqyFfLt+VjjkuzCGgkTTjSFRIJ0pASOVsOpsOACCIULCF0gktaAtIJSGW8ulpeQTJE9jQqxl0UFX+EdT7m0uaIxAxjVoztOr2ZyPcrGV/TYQB72a/hrZwEElP7TxBrZf+PdWUxbo+/1rIpgWjOtQ3Mgg4aPzz9WCJ7OM3ijZQ1mmHKN0Qs7z7eSi5Y0pcvrhIC9eCysbd1F2Z8DpyS773vp/MPd/QdUcQYgM5jfVi/OUirQZbNMbb7ZVrQFMdXS1+URh5k7kbbL8Tbyy9C69xzgMtBpWwvALjsXnNU5lQ69c52JGXC44UI6iRvagUEGqtyt++ZvmPtsFHaVuKEd7AK94fMRZRSq+xky6Ix/tgbdrkAiil+lfndB3YlSwzn7gXxZxe2hrByKsrAYTXU82O79EqBvkMdgKvTfvBlzIOs7viTEeFKIZGq7+rdn/jGh4MH1dD8A8+T8veuSA=
 cache:
   directories:
-    - perl_modules
-
+  - perl_modules
 before_install:
-  - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
-  - source ~/travis-perl-helpers/init
-  - build-perl
-  - perl -V
-  - cpanm --notest local::lib
-  - eval "$(perl -Mlocal::lib=${PWD}/perl_modules)"
-  - build-dist
-  - cd $BUILD_DIR
-
-# travis seems to issue cpanm --quiet --installdeps --notest . for us somewhere
-# after the last <before_install> and somewhere before the first <script>
-
+- git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
+- source ~/travis-perl-helpers/init
+- build-perl
+- perl -V
+- cpanm --notest local::lib
+- eval "$(perl -Mlocal::lib=${PWD}/perl_modules)"
+- build-dist
+- cd $BUILD_DIR
 script:
-  - make test
+- make test
