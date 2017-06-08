@@ -1,3 +1,6 @@
+1.2207: Thu Jun 08 2017
+   - made SimpleX not optional
+
 1.2207: Sat Oct 01 2016
    - repair unit tests to work with gmail (pfft)
    - added in pull requests on github
