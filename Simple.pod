@@ -446,6 +446,17 @@ must start with a slash.
 
 If C<$message> is an arrayref, the lines will be printed correctly.
 
+=item put_with_date
+
+  $imap->put_with_date( $mailbox_name, $message, $date, @flags ) or warn $imap->errstr;
+
+Save a message to the server under the folder named C<$mailbox_name> just like the 
+put method above, but supplying a date will set the IMAP server internal date for 
+the message if supported per RFC 3501 Section 6.3.11.
+
+Note when using this with Gmail it expects the date format to be:
+DD-Mon-YYYY hh:mm:ss tz  for example  31-Dec-2016 12:59:59 -0500
+
 =item msg_flags
 
     my @flags = $imap->msg_flags( $message_number );

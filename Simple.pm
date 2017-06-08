@@ -779,6 +779,49 @@ sub put {
     );
 }
 
+# This supports supplying a date per IMAP RFC 3501 
+# APPEND Command - Section 6.3.11
+# Implemented here as a new method so when calling the put above 
+# older code will not break
+sub put_with_date {
+    my ( $self, $mailbox_name, $msg, $date, @flags ) = @_;
+
+    croak "usage: \$imap->put_with_date(mailbox, message, date, \@flags)" unless defined $msg and defined $mailbox_name;
+
+    my $size = length $msg;
+    if ( ref $msg eq "ARRAY" ) {
+        $size = 0;
+        $size += length $_ for @$msg;
+    }
+
+    @flags = $self->_process_flags(@flags);
+
+    my $cmd_str = _escape($mailbox_name) . " (@flags)";
+    $cmd_str .= " " . _escape($date) if $date ne "";
+    $cmd_str .= " {$size}";
+    
+    return $self->_process_cmd(
+        cmd   => [ APPEND => $cmd_str ],
+        final => sub { $self->_clear_cache; 1 },
+        process => sub {
+            if( $_[0] =~ m/^\+\s+/ ) { # + continue (or go ahead, or whatever)
+                if ($size) {
+                    my $sock = $self->_sock;
+                    if ( ref $msg eq "ARRAY" ) {
+                        print $sock $_ for @$msg;
+
+                    } else {
+                        print $sock $msg;
+                    }
+                    $size = undef;
+                    print $sock "\r\n";
+                }
+            }
+        },
+
+    );
+}
+
 sub msg_flags {
     my ( $self, $number ) = @_;
 
