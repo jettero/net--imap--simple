@@ -1,7 +1,6 @@
 \.log$
 ^MANIFEST\.SKIP$
 ^Makefile$
-^SimpleX.p
 ^\.git
 ^\.pm-desc\.html$
 ^\.st$
@@ -12,7 +11,6 @@
 fix-test-server-Net-Server-0.99.patch
 inc/slurp_fetchmailx.pm
 slurp_net_imap_server.sh
-test_simplex
 ^MYMETA
 t/test_runner.pm.lock
 .prove
