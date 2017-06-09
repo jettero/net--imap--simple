@@ -11,3 +11,4 @@ MYMETA.*
 .prove
 t/test_runner.pm.lock
 Maildir
+ssl
