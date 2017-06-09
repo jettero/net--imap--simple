@@ -18,5 +18,8 @@ ssl_cert = <$PWD/ssl/server.crt
 ssl_key  = <$PWD/ssl/server.key
 EOF
 
+sed -e 's/^/# dovecot.conf # /' /etc/dovecot/dovecot.conf
+sed -e 's/^/# local.conf   # /' /etc/dovecot/local.conf
+
 echo "#### RESTARTING dovecot"
 service dovecot restart

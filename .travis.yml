@@ -12,7 +12,7 @@ cache:
     - perl_modules
 before_install:
   - bash config-ssl.sh
-  - sudo bash config-imap.sh
+  - sudo bash config-dovecot.sh
   - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
   - source ~/travis-perl-helpers/init
   - build-perl
