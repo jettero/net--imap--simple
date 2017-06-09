@@ -12,5 +12,13 @@ echo "user:{plain}password:$SUDO_UID:$SUDO_GID::$PWD::userdb_mail=maildir:~/Mail
 chown -c dovecot:dovecot /etc/dovecot/users
 chmod -c 0640 /etc/dovecot/users
 
+echo "#### CONFIGURING SSL"
+bash config-ssl.sh
+cat > /etc/dovecot/local.conf << EOF
+ssl = yes
+ssl_cert = <$PWD/ssl/server.pem
+ssl_key  = <$PWD/ssl/server.pem
+EOF
+
 echo "#### RESTARTING dovecot"
 service dovecot restart
