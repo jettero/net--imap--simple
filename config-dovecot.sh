@@ -23,7 +23,8 @@ for i in dovecot.conf local.conf conf.d/10-auth.conf; do
 done
 sed -e 's/^/# local.conf   # /' /etc/dovecot/local.conf
 
-netstat -ntlp | sed -e 's/^/# netstat # /'
-
 echo "#### RESTARTING dovecot"
 service dovecot restart
+
+sleep 1
+netstat -ntlp | sed -e 's/^/# netstat # /'
