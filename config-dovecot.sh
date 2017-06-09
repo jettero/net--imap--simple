@@ -21,5 +21,7 @@ EOF
 sed -e 's/^/# dovecot.conf # /' /etc/dovecot/dovecot.conf
 sed -e 's/^/# local.conf   # /' /etc/dovecot/local.conf
 
+netstat -ntlp | grep dovecot | sed -e 's/^/# netstat # /'
+
 echo "#### RESTARTING dovecot"
 service dovecot restart
