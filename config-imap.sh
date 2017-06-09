@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+apt-get install dovecot-imapd
+
 sed -i -e 's/^[!]include auth/#!include auth/' \
        -e 's/^#!include auth-passwdfile/!include auth-passwdfile/' \
        /etc/dovecot/conf.d/10-auth.conf
