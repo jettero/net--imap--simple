@@ -18,7 +18,9 @@ ssl_cert = <$PWD/ssl/server.crt
 ssl_key  = <$PWD/ssl/server.key
 EOF
 
-sed -e 's/^/# dovecot.conf # /' /etc/dovecot/dovecot.conf
+for i in dovecot.conf local.conf conf.d/10-auth.conf; do
+    sed -e "s/^/# $i # /" /etc/dovecot/$i
+done
 sed -e 's/^/# local.conf   # /' /etc/dovecot/local.conf
 
 netstat -ntlp | grep dovecot | sed -e 's/^/# netstat # /'
