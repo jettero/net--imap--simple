@@ -88,7 +88,7 @@ if( __PACKAGE__->can('run_tests') ) {
 
     1} or warn "\nfail: $@\n";
 
-    for my $mb (qw(testing testing1 testing2 testing3)) {
+    for my $mb (qw(test anotherthing blarg testing testing1 testing2 testing3)) {
         my $nm = $imap->select($mb);
         if( $nm > 0 ) {
             $imap->delete("1:$nm");
