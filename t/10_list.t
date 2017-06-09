@@ -20,14 +20,17 @@ sub run_tests {
     ok( ref $h, "HASH" );
     ok( int(keys %$h), 0 );
 
-    $imap->put( blarg => "Subject: test!\n\ntest!" );
+    my $msg = "Subject: test!\n\ntest!";
+    $imap->put( blarg => $msg );
     $imap->select('blarg');
 
     $h = $imap->list();
     ok( ref $h, "HASH" );
     ok( int(keys %$h), 1 );
     my ($v) = values %$h;
-    ok( $v == 21 || $v == 25 ); # dovecot puts another \r\n on the end (or something like that) and is 25 instead of the expected 21 bytes
+
+    my $bytes = $ENV{NIS_TEST_HOST} =~ m/gmail/ ? length($msg) : length($msg)+2;
+    ok( $v, $bytes )
 }
 
 do "./t/test_runner.pm";
