@@ -19,7 +19,7 @@ ssl_key  = <$PWD/ssl/server.key
 EOF
 
 for i in dovecot.conf local.conf conf.d/10-auth.conf; do
-    sed -e "s/^/# $i # /" /etc/dovecot/$i
+    sed -e "s,^,# $i # ," /etc/dovecot/$i
 done
 sed -e 's/^/# local.conf   # /' /etc/dovecot/local.conf
 
