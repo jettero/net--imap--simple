@@ -11,6 +11,7 @@ cache:
   directories:
     - perl_modules
 before_install:
+  - bash config-ssl.sh
   - sudo bash config-imap.sh
   - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
   - source ~/travis-perl-helpers/init
