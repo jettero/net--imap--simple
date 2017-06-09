@@ -43,4 +43,4 @@ sub run_tests {
     ok( $imap->select('testing'), 2 );
 }
 
-do "./t/test_runner.pm" or die "hrm: $!$?";
+do "./t/test_runner.pm" == 777 or die "test-runner-failed: $@$!";
