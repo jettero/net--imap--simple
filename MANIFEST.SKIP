@@ -15,3 +15,5 @@ slurp_net_imap_server.sh
 t/test_runner.pm.lock
 .prove
 .travis.yml
+config-imap.sh
+Maildir
