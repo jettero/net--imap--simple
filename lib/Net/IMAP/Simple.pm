@@ -779,9 +779,9 @@ sub put {
     );
 }
 
-# This supports supplying a date per IMAP RFC 3501 
+# This supports supplying a date per IMAP RFC 3501
 # APPEND Command - Section 6.3.11
-# Implemented here as a new method so when calling the put above 
+# Implemented here as a new method so when calling the put above
 # older code will not break
 sub put_with_date {
     my ( $self, $mailbox_name, $msg, $date, @flags ) = @_;
@@ -799,7 +799,7 @@ sub put_with_date {
     my $cmd_str = _escape($mailbox_name) . " (@flags)";
     $cmd_str .= " " . _escape($date) if $date ne "";
     $cmd_str .= " {$size}";
-    
+
     return $self->_process_cmd(
         cmd   => [ APPEND => $cmd_str ],
         final => sub { $self->_clear_cache; 1 },
