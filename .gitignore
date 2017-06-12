@@ -12,3 +12,4 @@ MYMETA.*
 t/test_runner.pm.lock
 Maildir
 ssl
+dist
