@@ -83,10 +83,14 @@ if( __PACKAGE__->can('run_tests') ) {
         }
     }
 
+    $imap->noop;
+
     eval {
         run_tests();
 
     1} or warn "\nfail: $@\n";
+
+    $imap->noop;
 
     for my $mb (qw(test anotherthing blarg testing testing1 testing2 testing3)) {
         my $nm = $imap->select($mb);
