@@ -1,6 +1,9 @@
 dist: trusty
 language: perl
 sudo: required
+addons:
+  apt:
+    update: true
 perl:
   - '5.8'
   - '5.24'

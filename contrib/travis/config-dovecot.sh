@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-apt-get update
 apt-get install dovecot-imapd
 
 echo "#### RECONFIGURING DOVECOT for local virtual-user IMAP"
