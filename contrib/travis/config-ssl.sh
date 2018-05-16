@@ -5,6 +5,9 @@ function die() {
     exit 1
 }
 
+d="$(realpath "$(dirname "$0")")"
+cd "$d"
+
 [ -d ssl ] || mkdir ssl
 cd ssl || die
 
@@ -32,3 +35,9 @@ fi
     -subj "/CN=net-imap-simple" -config openssl.cnf
 [ -f server.crt ] || openssl x509 -req -in server.csr -CA ca.pem -CAkey ca-key.pem \
     -CAcreateserial -out server.crt -days 10000 -extensions v3_req -extfile openssl.cnf
+
+# added later... can't really use the entropy of the travis dockers (there isn't any)
+cd "$d"
+tar -jcvvf ssl.tar.xz ssl
+travis encrypt-file ssl.tar.xz ssl.tar.xz.enc --no-interactive
+rm -rvf ssl.tar.xz ssl

@@ -12,8 +12,10 @@ cache:
   directories:
     - perl_modules
 before_install:
-  - bash config-ssl.sh
-  - sudo bash config-dovecot.sh
+# - bash config-ssl.sh # this has to be run locally; there's no entropy in their cloud docker
+  - openssl aes-256-cbc -K $encrypted_d8450b93ccdb_key -iv $encrypted_d8450b93ccdb_iv -in contrib/travis/ssl.tar.xz.enc -out ssl.tar.xz -d
+  - tar -Jxvvf ssl.tar.xz
+  - sudo bash contrib/travis/config-dovecot.sh
   - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
   - source ~/travis-perl-helpers/init
   - build-perl
