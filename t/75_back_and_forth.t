@@ -32,9 +32,13 @@ sub run_tests {
     # [...blib/lib/Net/IMAP/Simple.pm line 725 in sub _process_cmd] 56 BAD Error in IMAP command FETCH: Invalid messageset\r\n
     # [...blib/lib/Net/IMAP/Simple.pm line 1201 in sub _cmd_ok] 56 BAD Error in IMAP command FETCH: Invalid messageset\r\n
 
+    # Zimbra says
+    # [...re/perl5/Net/IMAP/Simple.pm line 1202 in sub _send_cmd] 56 FETCH 913 RFC822\r\n
+    # [...re/perl5/Net/IMAP/Simple.pm line 730 in sub _process_cmd] 56 BAD parse error: invalid message sequence number: 913\r\n
+    # [...re/perl5/Net/IMAP/Simple.pm line 1227 in sub _cmd_ok] 56 BAD parse error: invalid message sequence number: 913\r\n
 
     $imap->get($tests + 9_00); # finishing move
-    ok( $imap->errstr, qr(Invalid messageset|message not found)i );
+    ok( $imap->errstr, qr(invalid message|message not found)i );
 }   
 
 do "./t/test_runner.pm";

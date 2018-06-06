@@ -29,8 +29,9 @@ sub run_tests {
     ok( int(keys %$h), 1 );
     my ($v) = values %$h;
 
-    my $bytes = $ENV{NIS_TEST_HOST} =~ m/gmail/ ? length($msg) : length($msg)+2;
-    ok( $v, $bytes )
+    # Some servers add two bytes, some don't.  Fine with us.
+    my($l0, $l2) = (length($msg), length($msg)+2);
+    ok( $v, qr/^(?:$l0|$l2)$/ )
 }
 
 do "./t/test_runner.pm";
