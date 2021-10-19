@@ -5,7 +5,7 @@ use Test;
 
 use Net::IMAP::Simple;
 
-plan tests => our $tests = 7;
+plan tests => our $tests = 2 * 3 + 3;
 
 our $imap;
 
@@ -13,9 +13,12 @@ sub run_tests {
     my $nm = $imap->select('testing')
         or die " failure selecting testing: " . $imap->errstr . "\n";
 
-    my @uidnext = ($imap->uidnext);
-    $imap->put( testing => "Subject: test1" ); push @uidnext, $imap->uidnext;
-    $imap->put( testing => "Subject: test2" );
+    my @uidnext;
+    for ( 1 .. (($tests - 3) / 3) ) {
+        push @uidnext, $imap->uidnext;
+        $imap->put( testing => "Subject: test$_" );
+        ok( $uidnext[-1] != $imap->uidnext );
+    }
 
     my @seq = $imap->search_since("1-Jan-1971");
     my @uid = $imap->uid(do{local $"=","; "@seq"});
